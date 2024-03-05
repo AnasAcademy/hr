@@ -630,9 +630,6 @@ class AttendanceEmployeeController extends Controller
 
         $time = date("H:i:s");
 
-        $time = Carbon::now('EET')->format('H:i:s');
-
-
         if ($lastClockOutEntry != null) {
             // Calculate late based on the difference between the last clock-out time and the current clock-in time
             $lastClockOutTime = $lastClockOutEntry->clock_out;
