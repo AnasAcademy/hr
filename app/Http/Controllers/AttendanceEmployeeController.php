@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AttendanceEmployeeController extends Controller
 {
@@ -370,6 +371,15 @@ class AttendanceEmployeeController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        $userIp = request()->ip();
+
+        $ip     = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$userIp])->first();
+
+        if (empty($ip)) {
+            return redirect()->back()->with('error', __('This ip is not allowed to clock in & clock out.'));
+        }
+
         if (\Auth::user()->type == 'company' || \Auth::user()->type == 'hr') {
             $employeeId      = AttendanceEmployee::where('employee_id', $request->employee_id)->first();
             $check = AttendanceEmployee::where('id', '=', $id)->where('employee_id', '=', $request->employee_id)->where('date', $request->date)->first();
@@ -415,7 +425,8 @@ class AttendanceEmployeeController extends Controller
                     'early_leaving' => ($earlyLeaving > 0) ? $earlyLeaving : '00:00:00',
                     'overtime' => $overtime,
                     'clock_in' => $clockIn,
-                    'clock_out' => $clockOut
+                    'clock_out' => $clockOut,
+                    'clock_out_ip' => $userIp
                 ]);
 
                 return redirect()->route('attendanceemployee.index')->with('success', __('Employee attendance successfully updated.'));
@@ -430,7 +441,6 @@ class AttendanceEmployeeController extends Controller
         $startTime = Utility::getValByName('company_start_time');
         $endTime   = Utility::getValByName('company_end_time');
         if (Auth::user()->type == 'employee') {
-
             $date = date("Y-m-d");
             $time = date("H:i:s");
 
@@ -455,6 +465,8 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee['clock_out']     = $time;
             $attendanceEmployee['early_leaving'] = $earlyLeaving;
             $attendanceEmployee['overtime']      = $overtime;
+            $attendanceEmployee['status']      = "leave";
+            $attendanceEmployee['clock_out_ip'] = $ip->id;
 
             if (!empty($request->date)) {
                 $attendanceEmployee['date']       =  $request->date;
@@ -499,6 +511,7 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee->early_leaving = $earlyLeaving;
             $attendanceEmployee->overtime      = $overtime;
             $attendanceEmployee->total_rest    = '00:00:00';
+            $attendanceEmployee->clock_out_ip    = $ip->id;
 
             $attendanceEmployee->save();
 
@@ -603,13 +616,23 @@ class AttendanceEmployeeController extends Controller
 
     public function attendance(Request $request)
     {
+
         $settings = Utility::settings();
 
         if ($settings['ip_restrict'] == 'on') {
-            $userIp = request()->ip();
-            $ip     = IpRestrict::where('created_by', \Auth::user()->creatorId())->whereIn('ip', [$userIp])->first();
+            // $userIp = request()->ip();
+            $shell = shell_exec('getmac');
+            $macAddress = "";
+            $pattern = '/([0-9A-Fa-f-]+)\s+\\\Device/';
+            if (preg_match($pattern, $shell, $matches)) {
+                $macAddress = $matches[1];
+            } else {
+                dd("Pattern not found");
+            }
 
-            if (!empty($ip)) {
+            $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$macAddress])->first();
+
+            if (empty($ip)) {
                 return redirect()->back()->with('error', __('This ip is not allowed to clock in & clock out.'));
             }
         }
@@ -619,6 +642,15 @@ class AttendanceEmployeeController extends Controller
         $startTime = Utility::getValByName('company_start_time');
         $endTime = Utility::getValByName('company_end_time');
 
+        $lastClockInEntry = AttendanceEmployee::orderBy('id', 'desc')
+            ->where('employee_id', '=', $employeeId)
+            ->where('clock_out', '=', '00:00:00')
+            ->where('date', '=', date('Y-m-d'))
+            ->first();
+
+        if ($lastClockInEntry != null) {
+            return redirect()->back()->with('error', __('You are already Clock In'));
+        }
         // Find the last clocked out entry for the employee
         $lastClockOutEntry = AttendanceEmployee::orderBy('id', 'desc')
             ->where('employee_id', '=', $employeeId)
@@ -643,7 +675,19 @@ class AttendanceEmployeeController extends Controller
             $hours = abs(floor($totalLateSeconds / 3600));
             $mins = abs(floor($totalLateSeconds / 60 % 60));
             $secs = abs(floor($totalLateSeconds % 60));
-            $late = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+            // $late = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+            $rest = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+
+            $time1 = Carbon::parse($lastClockOutEntry->total_rest);
+            $time2 = Carbon::parse($rest);
+
+            $sum = $time1->addHours($time2->hour)->addMinutes($time2->minute)->addSeconds($time2->second);
+
+            $lastClockOutEntry->total_rest = $sum->format('H:i:s');
+            $lastClockOutEntry->clock_out = '00:00:00';
+            $lastClockOutEntry->early_leaving = '00:00:00';
+            $lastClockOutEntry->status = 'present';
+            $lastClockOutEntry->save();
         } else {
             // If there is no previous clock-out entry, assume no lateness
             $expectedStartTime = $date . ' ' . $startTime;
@@ -658,16 +702,11 @@ class AttendanceEmployeeController extends Controller
             $mins = abs(floor($totalLateSeconds / 60 % 60));
             $secs = abs(floor($totalLateSeconds % 60));
             $late = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
-        }
 
-        $checkDb = AttendanceEmployee::where('employee_id', '=', \Auth::user()->employee->id)->get()->toArray();
-
-
-        if (empty($checkDb)) {
             $employeeAttendance                = new AttendanceEmployee();
             $employeeAttendance->employee_id   = $employeeId;
             $employeeAttendance->date          = $date;
-            $employeeAttendance->status        = 'Present';
+            $employeeAttendance->status        = 'present';
             $employeeAttendance->clock_in      = $time;
             $employeeAttendance->clock_out     = '00:00:00';
             $employeeAttendance->late          = $late;
@@ -675,29 +714,12 @@ class AttendanceEmployeeController extends Controller
             $employeeAttendance->overtime      = '00:00:00';
             $employeeAttendance->total_rest    = '00:00:00';
             $employeeAttendance->created_by    = \Auth::user()->id;
+            $employeeAttendance->clock_in_ip    = $ip->id;
 
             $employeeAttendance->save();
-
-            return redirect()->back()->with('success', __('Employee Successfully Clock In.'));
         }
-        foreach ($checkDb as $check) {
 
-            $employeeAttendance                = new AttendanceEmployee();
-            $employeeAttendance->employee_id   = $employeeId;
-            $employeeAttendance->date          = $date;
-            $employeeAttendance->status        = 'Present';
-            $employeeAttendance->clock_in      = $time;
-            $employeeAttendance->clock_out     = '00:00:00';
-            $employeeAttendance->late          = $late;
-            $employeeAttendance->early_leaving = '00:00:00';
-            $employeeAttendance->overtime      = '00:00:00';
-            $employeeAttendance->total_rest    = '00:00:00';
-            $employeeAttendance->created_by    = \Auth::user()->id;
-
-            $employeeAttendance->save();
-
-            return redirect()->back()->with('success', __('Employee Successfully Clock In.'));
-        }
+        return redirect()->back()->with('success', __('Employee Successfully Clock In.'));
     }
 
     public function bulkAttendance(Request $request)
