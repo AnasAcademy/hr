@@ -123,9 +123,9 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard.dashboard');
@@ -221,7 +221,7 @@ Route::group(['middleware' => ['verified']], function () {
             Route::delete('destroy/webhook/{id}', [SettingsController::class, 'destroyWebhook'])->name('destroy.webhook');
         }
     );
-  
+
     Route::group(
         [
             'middleware' => [
