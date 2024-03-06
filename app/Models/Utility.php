@@ -79,7 +79,7 @@ class Utility extends Model
             'leave_status' => '1',
             'contract' => '1',
             "default_language" => "en",
-            "display_landing_page" => "on",
+            "display_landing_page" => "off",
             "ip_restrict" => "on",
             "title_text" => "",
             "footer_text" => "",

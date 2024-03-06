@@ -107,7 +107,7 @@ return [
     'installed' => [
         'redirectOptions' => [
             'route' => [
-                'name' => 'welcome',
+                'name' => 'dashboard',
                 'data' => [],
             ],
             'abort' => [
