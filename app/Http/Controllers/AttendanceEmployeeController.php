@@ -372,9 +372,16 @@ class AttendanceEmployeeController extends Controller
     public function update(Request $request, $id)
     {
 
-        $userIp = request()->ip();
+        $shell = shell_exec('getmac');
+            $macAddress = "";
+            $pattern = '/([0-9A-Fa-f-]+)\s+\\\Device/';
+            if (preg_match($pattern, $shell, $matches)) {
+                $macAddress = $matches[1];
+            } else {
+                dd("Pattern not found");
+            }
 
-        $ip     = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$userIp])->first();
+            $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$macAddress])->first();
 
         if (empty($ip)) {
             return redirect()->back()->with('error', __('This ip is not allowed to clock in & clock out.'));

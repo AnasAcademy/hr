@@ -5,7 +5,7 @@
 @endsection
 @php
     $setting = App\Models\Utility::settings();
-    
+
 @endphp
 @section('content')
     <div class="row">
@@ -46,13 +46,16 @@
                 </div>
             </div>
             <div class="col-xxl-6">
-                <div class="card" style="height: 230px;">
+                <div class="card" style="min-height: 230px;">
                     <div class="card-header">
                         <h5>{{ __('Mark Attandance') }}</h5>
                     </div>
                     <div class="card-body">
-                        <p class="text-muted pb-0-5">
-                            {{ __('My Office Time: ' . $officeTime['startTime'] . ' to ' . $officeTime['endTime']) }}</p>
+                        <div class="d-flex gap-5 align-items-baseline flex-wrap mb-5">
+                            <p class="text-muted pb-0-5">
+                                {{ __('My Office Time: ' . $officeTime['startTime'] . ' to ' . $officeTime['endTime']) }}</p>
+                            <div id="countdown" class="btn btn-info text-center d-none" ></div>
+                        </div>
                         <div class="row">
                             <div class="col-md-6 float-right border-right">
                                 {{ Form::open(['url' => 'attendanceemployee/attendance', 'method' => 'post']) }}
@@ -607,7 +610,7 @@
         <script>
             (function() {
                 var options = {
-                    series: [{{ round($storage_limit,2) }}],
+                    series: [{{ round($storage_limit, 2) }}],
                     chart: {
                         height: 350,
                         type: 'radialBar',
@@ -647,6 +650,46 @@
                 var chart = new ApexCharts(document.querySelector("#device-chart"), options);
                 chart.render();
             })();
+        </script>
+    @endif
+
+
+
+    @if (\Auth::user()->type == 'employee')
+        <script>
+            @php
+                [$hours, $minutes] = explode(':', $officeTime['endTime']);
+            @endphp
+
+            var targetTime = new Date();
+            targetTime.setHours({{ $hours }}, {{ $minutes }}, 0, 0);
+
+
+            // Update the countdown every 1 second
+            var x = setInterval(function() {
+
+                // Get the current date and time
+                var now = new Date().getTime();
+
+                // Calculate the distance between now and the countdown date
+                var distance = targetTime - now;
+
+                // Calculate the days, hours, minutes, and seconds remaining
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Display the countdown timer
+                document.getElementById("countdown").innerHTML =  hours + "h " +
+                    minutes + "m " + seconds + "s ";
+                    document.getElementById("countdown").classList.remove("d-none");
+                // If the countdown is over, display a message
+                if (distance < 0) {
+                    clearInterval(x);
+                    document.getElementById("countdown").innerHTML = "EXPIRED";
+                }
+            }, 1000);
         </script>
     @endif
 
