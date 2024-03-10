@@ -123,7 +123,7 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 
- ip_// Route::get('/', function () {
+// Route::get('/', function () {
 //     return view('welcome');
 // });
 
