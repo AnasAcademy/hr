@@ -24,6 +24,8 @@ use File;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
+use App\Models\User;
+
 class SettingsController extends Controller
 {
     public function index(Request $request)
@@ -212,7 +214,7 @@ class SettingsController extends Controller
                 } else {
                     $post['theme_color'] = $request->custom_color;
                 }
-                
+
                 $settings = Utility::settings();
                 unset($post['_token'], $post['custom_color']);
                 foreach ($post as $key => $data) {
@@ -967,7 +969,8 @@ class SettingsController extends Controller
     }
     public function createIp()
     {
-        return view('restrict_ip.create');
+        $users = User::get();
+        return view('restrict_ip.create', ["users" => $users]);
     }
 
     public function storeIp(Request $request)
