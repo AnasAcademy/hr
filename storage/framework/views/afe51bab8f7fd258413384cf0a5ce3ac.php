@@ -60,8 +60,9 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 float-right border-right">
-                                <?php echo e(Form::open(['url' => 'attendanceemployee/attendance', 'method' => 'post'])); ?>
+                                <?php echo e(Form::open(['url' => 'attendanceemployee/attendance', 'method' => 'post', 'id' => 'clockInForm'])); ?>
 
+                                <input type="hidden" name="fingerprint" id="lockInFingerprint">
                                 <?php if(empty($employeeAttendance) || $employeeAttendance->clock_out != '00:00:00'): ?>
                                     <button type="submit" value="0" name="in" id="clock_in"
                                         class="btn btn-primary"><?php echo e(__('CLOCK IN')); ?></button>
@@ -74,8 +75,9 @@
                             </div>
                             <div class="col-md-6 float-left">
                                 <?php if(!empty($employeeAttendance) && $employeeAttendance->clock_out == '00:00:00'): ?>
-                                    <?php echo e(Form::model($employeeAttendance, ['route' => ['attendanceemployee.update', $employeeAttendance->id], 'method' => 'PUT'])); ?>
+                                    <?php echo e(Form::model($employeeAttendance, ['route' => ['attendanceemployee.update', $employeeAttendance->id], 'method' => 'PUT', 'id' => 'clockOutForm'])); ?>
 
+                                    <input type="hidden" name="fingerprint" id="lockOutFingerprint">
                                     <button type="submit" value="1" name="out" id="clock_out"
                                         class="btn btn-danger"><?php echo e(__('CLOCK OUT')); ?></button>
                                 <?php else: ?>
@@ -703,9 +705,39 @@
             if (clock_in.disabled) {
                 timeDown();
             }
-
         </script>
     <?php endif; ?>
+
+
+    <script src="<?php echo e(asset('js/userfingerprint.js')); ?>"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            document.getElementById('clockInForm').onsubmit = function(event) {
+                event.preventDefault();
+                getFingerPrint(function(fingerprintValue) {
+                    // Set the fingerprint value in the hidden input field
+                    document.getElementById("lockInFingerprint").value = fingerprintValue;
+                    let form = event.target;
+                    // Submit the form
+                    form.submit();
+                });
+            }
+
+            document.getElementById('clockoutForm').onsubmit = function(event) {
+                event.preventDefault();
+                getFingerPrint(function(fingerprintValue) {
+                    // Set the fingerprint value in the hidden input field
+                    document.getElementById("lockOutFingerprint").value = fingerprintValue;
+                    let form = event.target;
+                    // Submit the form
+                    form.submit();
+                });
+            }
+        });
+    </script>
+
 
 <?php $__env->stopPush(); ?>
 

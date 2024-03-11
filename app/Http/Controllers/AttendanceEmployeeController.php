@@ -372,16 +372,23 @@ class AttendanceEmployeeController extends Controller
     public function update(Request $request, $id)
     {
 
-        $shell = shell_exec('getmac');
-            $macAddress = "";
-            $pattern = '/([0-9A-Fa-f-]+)\s+\\\Device/';
-            if (preg_match($pattern, $shell, $matches)) {
-                $macAddress = $matches[1];
-            } else {
-                dd("Pattern not found");
-            }
+        $request->validate([
+            'fingerprint' => 'required',
+            // Add other validation rules for your request data
+        ]);
+        // $userIp = request()->ip();
+        // $shell = shell_exec('getmac');
+        // $macAddress = "";
+        // $pattern = '/([0-9A-Fa-f-]+)\s+\\\Device/';
+        // if (preg_match($pattern, $shell, $matches)) {
+        //     $macAddress = $matches[1];
+        // } else {
+        //     dd("Pattern not found");
+        // }
 
-            $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$macAddress])->first();
+
+
+        $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
 
         if (empty($ip)) {
             return redirect()->back()->with('error', __('This ip is not allowed to clock in & clock out.'));
@@ -433,7 +440,8 @@ class AttendanceEmployeeController extends Controller
                     'overtime' => $overtime,
                     'clock_in' => $clockIn,
                     'clock_out' => $clockOut,
-                    'clock_out_ip' => $userIp
+                    'clock_out_ip' => $ip,
+                    'status' => $status
                 ]);
 
                 return redirect()->route('attendanceemployee.index')->with('success', __('Employee attendance successfully updated.'));
@@ -473,7 +481,7 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee['early_leaving'] = $earlyLeaving;
             $attendanceEmployee['overtime']      = $overtime;
             $attendanceEmployee['status']      = "leave";
-            $attendanceEmployee['clock_out_ip'] = $ip->id;
+            $attendanceEmployee['clock_out_ip'] = $ip;
 
             if (!empty($request->date)) {
                 $attendanceEmployee['date']       =  $request->date;
@@ -518,7 +526,9 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee->early_leaving = $earlyLeaving;
             $attendanceEmployee->overtime      = $overtime;
             $attendanceEmployee->total_rest    = '00:00:00';
-            $attendanceEmployee->clock_out_ip    = $ip->id;
+            $attendanceEmployee->clock_out_ip    = $ip;
+            $attendanceEmployee->status    = "leave";
+
 
             $attendanceEmployee->save();
 
@@ -623,21 +633,29 @@ class AttendanceEmployeeController extends Controller
 
     public function attendance(Request $request)
     {
+        // dd($request->all());
 
         $settings = Utility::settings();
 
         if ($settings['ip_restrict'] == 'on') {
-            // $userIp = request()->ip();
-            $shell = shell_exec('getmac');
-            $macAddress = "";
-            $pattern = '/([0-9A-Fa-f-]+)\s+\\\Device/';
-            if (preg_match($pattern, $shell, $matches)) {
-                $macAddress = $matches[1];
-            } else {
-                dd("Pattern not found");
-            }
 
-            $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$macAddress])->first();
+          $request->validate([
+                'fingerprint' => 'required',
+                // Add other validation rules for your request data
+            ]);
+            // $userIp = request()->ip();
+            // $shell = shell_exec('getmac');
+            // $macAddress = "";
+            // $pattern = '/([0-9A-Fa-f-]+)\s+\\\Device/';
+            // if (preg_match($pattern, $shell, $matches)) {
+            //     $macAddress = $matches[1];
+            // } else {
+            //     dd("Pattern not found");
+            // }
+
+
+
+            $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
 
             if (empty($ip)) {
                 return redirect()->back()->with('error', __('This ip is not allowed to clock in & clock out.'));

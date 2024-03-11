@@ -59,7 +59,8 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 float-right border-right">
-                                {{ Form::open(['url' => 'attendanceemployee/attendance', 'method' => 'post']) }}
+                                {{ Form::open(['url' => 'attendanceemployee/attendance', 'method' => 'post', 'id' => 'clockInForm']) }}
+                                <input type="hidden" name="fingerprint" id="lockInFingerprint">
                                 @if (empty($employeeAttendance) || $employeeAttendance->clock_out != '00:00:00')
                                     <button type="submit" value="0" name="in" id="clock_in"
                                         class="btn btn-primary">{{ __('CLOCK IN') }}</button>
@@ -71,7 +72,8 @@
                             </div>
                             <div class="col-md-6 float-left">
                                 @if (!empty($employeeAttendance) && $employeeAttendance->clock_out == '00:00:00')
-                                    {{ Form::model($employeeAttendance, ['route' => ['attendanceemployee.update', $employeeAttendance->id], 'method' => 'PUT']) }}
+                                    {{ Form::model($employeeAttendance, ['route' => ['attendanceemployee.update', $employeeAttendance->id], 'method' => 'PUT', 'id' => 'clockOutForm']) }}
+                                    <input type="hidden" name="fingerprint" id="lockOutFingerprint">
                                     <button type="submit" value="1" name="out" id="clock_out"
                                         class="btn btn-danger">{{ __('CLOCK OUT') }}</button>
                                 @else
@@ -697,8 +699,38 @@
             if (clock_in.disabled) {
                 timeDown();
             }
-
         </script>
     @endif
+
+
+    <script src="{{ asset('js/userfingerprint.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            document.getElementById('clockInForm').onsubmit = function(event) {
+                event.preventDefault();
+                getFingerPrint(function(fingerprintValue) {
+                    // Set the fingerprint value in the hidden input field
+                    document.getElementById("lockInFingerprint").value = fingerprintValue;
+                    let form = event.target;
+                    // Submit the form
+                    form.submit();
+                });
+            }
+
+            document.getElementById('clockoutForm').onsubmit = function(event) {
+                event.preventDefault();
+                getFingerPrint(function(fingerprintValue) {
+                    // Set the fingerprint value in the hidden input field
+                    document.getElementById("lockOutFingerprint").value = fingerprintValue;
+                    let form = event.target;
+                    // Submit the form
+                    form.submit();
+                });
+            }
+        });
+    </script>
+
 
 @endpush
