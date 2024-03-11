@@ -980,6 +980,7 @@ class SettingsController extends Controller
                 $request->all(),
                 [
                     'ip' => 'required',
+                    'belongs_to' => 'required|exists:users,id'
                 ]
             );
             if ($validator->fails()) {
@@ -990,6 +991,7 @@ class SettingsController extends Controller
 
             $ip             = new IpRestrict();
             $ip->ip         = $request->ip;
+            $ip->belongs_to  = $request->belongs_to;
             $ip->created_by = \Auth::user()->creatorId();
             $ip->save();
 
