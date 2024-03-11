@@ -725,7 +725,7 @@
                 });
             }
 
-            document.getElementById('clockoutForm').onsubmit = function(event) {
+            document.getElementById('clockOutForm').onsubmit = function(event) {
                 event.preventDefault();
                 getFingerPrint(function(fingerprintValue) {
                     // Set the fingerprint value in the hidden input field

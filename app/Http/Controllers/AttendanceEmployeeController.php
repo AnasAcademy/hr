@@ -440,7 +440,7 @@ class AttendanceEmployeeController extends Controller
                     'overtime' => $overtime,
                     'clock_in' => $clockIn,
                     'clock_out' => $clockOut,
-                    'clock_out_ip' => $ip,
+                    'clock_out_ip' => $ip->id,
                     'status' => $status
                 ]);
 
@@ -481,7 +481,7 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee['early_leaving'] = $earlyLeaving;
             $attendanceEmployee['overtime']      = $overtime;
             $attendanceEmployee['status']      = "leave";
-            $attendanceEmployee['clock_out_ip'] = $ip;
+            $attendanceEmployee['clock_out_ip'] = $ip->id;
 
             if (!empty($request->date)) {
                 $attendanceEmployee['date']       =  $request->date;
