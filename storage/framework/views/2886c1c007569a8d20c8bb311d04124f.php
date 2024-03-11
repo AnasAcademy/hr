@@ -1,13 +1,13 @@
-<button id="deviceIndentifierBtn">Get My device Identifier</button>
-<p id="deviceIndentifier"></p>
+<button id="deviceIdentifierBtn">Get My device Identifier</button>
+<p id="deviceIdentifier"></p>
 
 <script src="<?php echo e(asset('js/userfingerprint.js')); ?>"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        document.getElementById('deviceIndentifierBtn').onclick = function(event) {
+        document.getElementById('deviceIdentifierBtn').onclick = function(event) {
             getFingerPrint(function(fingerprintValue) {
-                deviceIndentifier.innerHTML = fingerprintValue;
+                deviceIdentifier.innerHTML = fingerprintValue;
             });
         }
     });

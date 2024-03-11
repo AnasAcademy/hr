@@ -1674,7 +1674,7 @@ Route::group(['middleware' => ['verified']], function () {
         return redirect()->back()->with('success', 'Cache Clear Successfully');
     })->name('config.cache');
 
-    Route::get('deviceIndentifier', function(){
+    Route::get('deviceIdentifier', function(){
         return view("restrict_ip.userAdd");
     })->name('attendanceemployee.attendance')->middleware(
         [
