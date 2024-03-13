@@ -144,6 +144,25 @@
 
                         </ul>
                     </li>
+                    {{-- devices Ip --}}
+                    <li
+                        class="dash-item dash-hasmenu {{ Request::segment(1) == 'user' || Request::segment(1) == 'roles' || Request::segment(1) == 'lastlogin'
+                            ? ' active dash-trigger'
+                            : '' }} ">
+                        <a href="#!" class="dash-link"><span class="dash-micon"><i
+                                    class="ti ti-users"></i></span><span
+                                class="dash-mtext">{{ __('Device') }}</span><span class="dash-arrow"><i
+                                    data-feather="chevron-right"></i></span></a>
+                        <ul
+                            class="dash-submenu {{ Request::route()->getName() == 'index.ip' || Request::route()->getName() == 'users.create' || Request::route()->getName() == 'user.edit' || Request::route()->getName() == 'lastlogin' ? ' active' : '' }} ">
+                            @can('Manage User')
+                                <li class="dash-item {{ Request::segment(1) == 'lastlogin' ? 'active' : '' }} ">
+                                    <a class="dash-link" href="{{ route('index.ip') }}">{{ __('Devices Ip') }}</a>
+                                </li>
+                            @endcan
+
+                        </ul>
+                    </li>
                 @endif
             @endif
             <!-- user-->

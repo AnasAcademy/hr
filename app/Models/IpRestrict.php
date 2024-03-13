@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class IpRestrict extends Model
 {
-    protected $fillable = [
-        'ip',
-        'created_by',
-    ];
+    protected $guarded = [];
+
+    function admin(){
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+    function user(){
+        return $this->belongsTo(User::class, 'belongs_to');
+    }
 }

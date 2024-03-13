@@ -140,6 +140,25 @@
 
                         </ul>
                     </li>
+                    
+                    <li
+                        class="dash-item dash-hasmenu <?php echo e(Request::segment(1) == 'user' || Request::segment(1) == 'roles' || Request::segment(1) == 'lastlogin'
+                            ? ' active dash-trigger'
+                            : ''); ?> ">
+                        <a href="#!" class="dash-link"><span class="dash-micon"><i
+                                    class="ti ti-users"></i></span><span
+                                class="dash-mtext"><?php echo e(__('Device')); ?></span><span class="dash-arrow"><i
+                                    data-feather="chevron-right"></i></span></a>
+                        <ul
+                            class="dash-submenu <?php echo e(Request::route()->getName() == 'index.ip' || Request::route()->getName() == 'users.create' || Request::route()->getName() == 'user.edit' || Request::route()->getName() == 'lastlogin' ? ' active' : ''); ?> ">
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage User')): ?>
+                                <li class="dash-item <?php echo e(Request::segment(1) == 'lastlogin' ? 'active' : ''); ?> ">
+                                    <a class="dash-link" href="<?php echo e(route('index.ip')); ?>"><?php echo e(__('Devices Ip')); ?></a>
+                                </li>
+                            <?php endif; ?>
+
+                        </ul>
+                    </li>
                 <?php endif; ?>
             <?php endif; ?>
             <!-- user-->

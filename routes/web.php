@@ -108,6 +108,7 @@ use App\Http\Controllers\ToyyibpayPaymentController;
 use App\Http\Controllers\XenditPaymentController;
 use App\Http\Controllers\YooKassaController;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\DeviceIpController;
 
 // use App\Http\Controllers\PlanRequestController;
 
@@ -208,11 +209,16 @@ Route::group(['middleware' => ['verified']], function () {
             Route::post('test-mail', [SettingsController::class, 'testMail'])->name('test.mail');
             Route::post('test-mail/send', [SettingsController::class, 'testSendMail'])->name('test.send.mail');
 
-            Route::get('create/ip', [SettingsController::class, 'createIp'])->name('create.ip');
-            Route::post('create/ip', [SettingsController::class, 'storeIp'])->name('store.ip');
-            Route::get('edit/ip/{id}', [SettingsController::class, 'editIp'])->name('edit.ip');
-            Route::post('edit/ip/{id}', [SettingsController::class, 'updateIp'])->name('update.ip');
-            Route::delete('destroy/ip/{id}', [SettingsController::class, 'destroyIp'])->name('destroy.ip');
+            // device ip routes
+            Route::get('devices/ip', [DeviceIpController::class, 'index'])->name('index.ip');
+            Route::get('ip/{id}/action', [DeviceIpController::class, 'action'])->name('action.ip');
+            Route::post('ip/{id}/approve', [DeviceIpController::class, 'approveIp'])->name('approve.ip');
+            Route::post('ip/{id}/reject', [DeviceIpController::class, 'rejectIp'])->name('reject.ip');
+            Route::get('create/ip', [DeviceIpController::class, 'createIp'])->name('create.ip');
+            Route::post('create/ip', [DeviceIpController::class, 'storeIp'])->name('store.ip');
+            Route::get('edit/ip/{id}', [DeviceIpController::class, 'editIp'])->name('edit.ip');
+            Route::post('edit/ip/{id}', [DeviceIpController::class, 'updateIp'])->name('update.ip');
+            Route::delete('destroy/ip/{id}', [DeviceIpController::class, 'destroyIp'])->name('destroy.ip');
 
             Route::get('create/webhook', [SettingsController::class, 'createWebhook'])->name('create.webhook');
             Route::post('create/webhook', [SettingsController::class, 'storeWebhook'])->name('store.webhook');
@@ -1674,12 +1680,4 @@ Route::group(['middleware' => ['verified']], function () {
         return redirect()->back()->with('success', 'Cache Clear Successfully');
     })->name('config.cache');
 
-    Route::get('deviceIdentifier', function(){
-        return view("restrict_ip.userAdd");
-    })->name('attendanceemployee.attendance')->middleware(
-        [
-            'auth',
-            'XSS',
-        ]
-    );
 });

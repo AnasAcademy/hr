@@ -243,9 +243,9 @@ class AttendanceEmployeeController extends Controller
     //         $clockOut = $request->clock_out;
 
     //         if ($clockIn) {
-    //             $status = "present";
+    //             $status = "Present";
     //         } else {
-    //             $status = "leave";
+    //             $status = "Leave";
     //         }
 
     //         $totalLateSeconds = strtotime($clockIn) - strtotime($startTime);
@@ -405,9 +405,9 @@ class AttendanceEmployeeController extends Controller
             $clockOut = $request->clock_out;
 
             if ($clockIn) {
-                $status = "present";
+                $status = "Present";
             } else {
-                $status = "leave";
+                $status = "Leave";
             }
 
             $totalLateSeconds = strtotime($clockIn) - strtotime($startTime);
@@ -480,7 +480,7 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee['clock_out']     = $time;
             $attendanceEmployee['early_leaving'] = $earlyLeaving;
             $attendanceEmployee['overtime']      = $overtime;
-            $attendanceEmployee['status']      = "leave";
+            $attendanceEmployee['status']      = "Leave";
             $attendanceEmployee['clock_out_ip'] = $ip->id;
 
             if (!empty($request->date)) {
@@ -527,7 +527,7 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee->overtime      = $overtime;
             $attendanceEmployee->total_rest    = '00:00:00';
             $attendanceEmployee->clock_out_ip    = $ip;
-            $attendanceEmployee->status    = "leave";
+            $attendanceEmployee->status    = "Leave";
 
 
             $attendanceEmployee->save();
@@ -711,7 +711,7 @@ class AttendanceEmployeeController extends Controller
             $lastClockOutEntry->total_rest = $sum->format('H:i:s');
             $lastClockOutEntry->clock_out = '00:00:00';
             $lastClockOutEntry->early_leaving = '00:00:00';
-            $lastClockOutEntry->status = 'present';
+            $lastClockOutEntry->status = 'Present';
             $lastClockOutEntry->save();
         } else {
             // If there is no previous clock-out entry, assume no lateness
@@ -731,7 +731,7 @@ class AttendanceEmployeeController extends Controller
             $employeeAttendance                = new AttendanceEmployee();
             $employeeAttendance->employee_id   = $employeeId;
             $employeeAttendance->date          = $date;
-            $employeeAttendance->status        = 'present';
+            $employeeAttendance->status        = 'Present';
             $employeeAttendance->clock_in      = $time;
             $employeeAttendance->clock_out     = '00:00:00';
             $employeeAttendance->late          = $late;
@@ -919,9 +919,9 @@ class AttendanceEmployeeController extends Controller
                         $clockOut = $value[3];
 
                         if ($clockIn) {
-                            $status = "present";
+                            $status = "Present";
                         } else {
-                            $status = "leave";
+                            $status = "Leave";
                         }
 
                         $totalLateSeconds = strtotime($clockIn) - strtotime($startTime);

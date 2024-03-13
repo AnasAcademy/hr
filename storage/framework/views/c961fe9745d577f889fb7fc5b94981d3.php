@@ -12,7 +12,7 @@
 <div class="modal-body">
     <div class="row">
         <div class="form-group">
-            <?php $__errorArgs = ['ip'];
+            <?php $__errorArgs = ['deviceIp'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -22,9 +22,9 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-            <?php echo e(Form::label('ip', __('IP'), ['class' => 'col-form-label'])); ?>
+            <?php echo e(Form::label('deviceIp', __('Device Identifier'), ['class' => 'col-form-label'])); ?>
 
-            <?php echo e(Form::text('ip', null, ['class' => 'form-control', 'placeholder' => 'Enter Ip Address'])); ?>
+            <?php echo e(Form::text('deviceIp', null, ['class' => 'form-control', 'placeholder' => 'Enter the Device Identifier'])); ?>
 
         </div>
         <div class="form-group">
@@ -41,7 +41,7 @@ unset($__errorArgs, $__bag); ?>
             <?php echo e(Form::label('belongs_to', __('belongs_to'), ['class' => 'col-form-label'])); ?>
 
 
-           <select name="belongs_to" id="belongs_to">
+           <select name="belongs_to" id="belongs_to" class="form-control">
             <option value="0" selected disabled>Select The owner of this Ip</option>
 
             <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>

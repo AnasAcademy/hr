@@ -17,6 +17,15 @@
 
 
         @if (\Auth::user()->type == 'employee')
+            {{-- add device section --}}
+            <div class="d-flex justify-content-end mb-5">
+                <form action="create/ip" method="post" id="deviceIpIdentifier">
+                    @csrf
+                    <input type="hidden" name="deviceIp" id="deviceIp">
+                    <button class="btn btn-success" type="submit">Add My Device</button>
+                </form>
+
+            </div>
             <div class="col-xxl-6">
                 <div class="card">
                     <div class="card-header">
@@ -659,6 +668,26 @@
 
 
     @if (\Auth::user()->type == 'employee')
+        {{-- finger print script link --}}
+        <script src="{{ asset('js/userfingerprint.js') }}"></script>
+
+        {{-- add device script --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                document.getElementById('deviceIpIdentifier').onsubmit = function(event) {
+                    event.preventDefault();
+                    getFingerPrint(function(fingerprintValue) {
+                        document.getElementById("deviceIp").value = fingerprintValue;
+                        let form = event.target;
+                        // Submit the form
+                        form.submit();
+                    });
+                }
+            });
+        </script>
+
+        {{-- timeDown script --}}
         <script>
             function timeDown() {
                 @php
@@ -700,37 +729,38 @@
                 timeDown();
             }
         </script>
+
+
+        {{-- clock in and out script --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                document.getElementById('clockInForm').onsubmit = function(event) {
+                    event.preventDefault();
+                    getFingerPrint(function(fingerprintValue) {
+                        // Set the fingerprint value in the hidden input field
+                        document.getElementById("lockInFingerprint").value = fingerprintValue;
+                        let form = event.target;
+                        // Submit the form
+                        form.submit();
+                    });
+                }
+
+                document.getElementById('clockOutForm').onsubmit = function(event) {
+                    event.preventDefault();
+                    getFingerPrint(function(fingerprintValue) {
+                        // Set the fingerprint value in the hidden input field
+                        document.getElementById("lockOutFingerprint").value = fingerprintValue;
+                        let form = event.target;
+                        // Submit the form
+                        form.submit();
+                    });
+                }
+            });
+        </script>
     @endif
 
 
-    <script src="{{ asset('js/userfingerprint.js') }}"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-
-            document.getElementById('clockInForm').onsubmit = function(event) {
-                event.preventDefault();
-                getFingerPrint(function(fingerprintValue) {
-                    // Set the fingerprint value in the hidden input field
-                    document.getElementById("lockInFingerprint").value = fingerprintValue;
-                    let form = event.target;
-                    // Submit the form
-                    form.submit();
-                });
-            }
-
-            document.getElementById('clockOutForm').onsubmit = function(event) {
-                event.preventDefault();
-                getFingerPrint(function(fingerprintValue) {
-                    // Set the fingerprint value in the hidden input field
-                    document.getElementById("lockOutFingerprint").value = fingerprintValue;
-                    let form = event.target;
-                    // Submit the form
-                    form.submit();
-                });
-            }
-        });
-    </script>
 
 
 @endpush

@@ -11,11 +11,11 @@
 <div class="modal-body">
     <div class="row">
         <div class="form-group">
-            @error('ip')
+            @error('deviceIp')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
-            {{ Form::label('ip', __('IP'), ['class' => 'col-form-label']) }}
-            {{ Form::text('ip', null, ['class' => 'form-control', 'placeholder' => 'Enter Ip Address']) }}
+            {{ Form::label('deviceIp', __('Device Identifier'), ['class' => 'col-form-label']) }}
+            {{ Form::text('deviceIp', null, ['class' => 'form-control', 'placeholder' => 'Enter the Device Identifier']) }}
         </div>
         <div class="form-group">
             @error('belongs_to')
@@ -23,7 +23,7 @@
         @enderror
             {{ Form::label('belongs_to', __('belongs_to'), ['class' => 'col-form-label']) }}
 
-           <select name="belongs_to" id="belongs_to">
+           <select name="belongs_to" id="belongs_to" class="form-control">
             <option value="0" selected disabled>Select The owner of this Ip</option>
 
             @foreach ($users as $user )
