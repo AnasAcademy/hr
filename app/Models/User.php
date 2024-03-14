@@ -10,6 +10,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Employee;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Lab404\Impersonate\Models\Impersonate;
+use App\Models\IpRestrict;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -2662,5 +2663,7 @@ class User extends Authenticatable implements MustVerifyEmail
     //     );
     // }
 
-
+        public function devices(){
+            return $this->hasMany(IpRestrict::class, 'belongs_to');
+        }
 }
