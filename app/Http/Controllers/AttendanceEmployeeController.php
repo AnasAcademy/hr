@@ -390,8 +390,8 @@ class AttendanceEmployeeController extends Controller
 
         $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
 
-        if (empty($ip)) {
-            return redirect()->back()->with('error', __('This ip is not allowed to clock in & clock out.'));
+        if (empty($ip) || $ip->status != "approved") {
+            return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
         }
 
         if (\Auth::user()->type == 'company' || \Auth::user()->type == 'hr') {
@@ -657,8 +657,8 @@ class AttendanceEmployeeController extends Controller
 
             $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
 
-            if (empty($ip)) {
-                return redirect()->back()->with('error', __('This ip is not allowed to clock in & clock out.'));
+            if (empty($ip) || $ip->status != "approved") {
+                return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
             }
         }
 
