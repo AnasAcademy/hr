@@ -16,13 +16,35 @@
         @endif
 
 
-        @if (\Auth::user()->type == 'employee')
+        @if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager')
             {{-- add device section --}}
             <div class="d-flex justify-content-end mb-5">
                 <form action="create/ip" method="post" id="deviceIpIdentifier">
                     @csrf
                     <input type="hidden" name="deviceIp" id="deviceIp">
-                    <button class="btn btn-success" type="submit">Add My Device</button>
+
+                    @php
+                        $exist = false;
+                    @endphp
+                    @if (isset($_COOKIE['device_fingerprint']))
+                        @php
+                            $identifier = $_COOKIE['device_fingerprint'];
+                            $devices = \Auth::user()->devices;
+                        @endphp
+                        @foreach ($devices as $device)
+                            @if ($device->ip == $identifier)
+                                @php
+                                    $exist = true;
+                                @endphp
+                                @break
+                            @endif
+                        @endforeach
+                    @endif
+                    @if ($exist)
+                        <button class="btn btn-success disabled" disabled type="submit">Add My Device</button>
+                    @else
+                        <button class="btn btn-success" type="submit">Add My Device</button>
+                    @endif
                 </form>
 
             </div>
@@ -667,19 +689,30 @@
 
 
 
-    @if (\Auth::user()->type == 'employee')
+    @if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager')
         {{-- finger print script link --}}
         <script src="{{ asset('js/userfingerprint.js') }}"></script>
+
+        {{-- <script>
+            document.addEventListener('load', function() {
+                getFingerPrint(function(fingerprintValue) {
+                    log("device: " + fingerprintValue);
+                    document.cookie = "device_fingerprint=" + fingerprintValue;
+                });
+
+            });
+        </script> --}}
 
         {{-- add device script --}}
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-
                 document.getElementById('deviceIpIdentifier').onsubmit = function(event) {
                     event.preventDefault();
                     getFingerPrint(function(fingerprintValue) {
                         document.getElementById("deviceIp").value = fingerprintValue;
                         let form = event.target;
+                        let device = fingerprintValue;
+                        document.cookie = "device_fingerprint=" + fingerprintValue;
                         // Submit the form
                         form.submit();
                     });
