@@ -16,13 +16,35 @@
         <?php endif; ?>
 
 
-        <?php if(\Auth::user()->type == 'employee'): ?>
+        <?php if(\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager'): ?>
             
             <div class="d-flex justify-content-end mb-5">
                 <form action="create/ip" method="post" id="deviceIpIdentifier">
                     <?php echo csrf_field(); ?>
                     <input type="hidden" name="deviceIp" id="deviceIp">
-                    <button class="btn btn-success" type="submit">Add My Device</button>
+
+                    <?php
+                        $exist = false;
+                    ?>
+                    <?php if(isset($_COOKIE['device_fingerprint'])): ?>
+                        <?php
+                            $identifier = $_COOKIE['device_fingerprint'];
+                            $devices = \Auth::user()->devices;
+                        ?>
+                        <?php $__currentLoopData = $devices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $device): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php if($device->ip == $identifier): ?>
+                                <?php
+                                    $exist = true;
+                                ?>
+                                <?php break; ?>
+                            <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endif; ?>
+                    <?php if($exist): ?>
+                        <button class="btn btn-success disabled" disabled type="submit">Add My Device</button>
+                    <?php else: ?>
+                        <button class="btn btn-success" type="submit">Add My Device</button>
+                    <?php endif; ?>
                 </form>
 
             </div>
@@ -673,19 +695,22 @@
 
 
 
-    <?php if(\Auth::user()->type == 'employee'): ?>
+    <?php if(\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager'): ?>
         
         <script src="<?php echo e(asset('js/userfingerprint.js')); ?>"></script>
 
         
+
+        
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-
                 document.getElementById('deviceIpIdentifier').onsubmit = function(event) {
                     event.preventDefault();
                     getFingerPrint(function(fingerprintValue) {
                         document.getElementById("deviceIp").value = fingerprintValue;
                         let form = event.target;
+                        let device = fingerprintValue;
+                        document.cookie = "device_fingerprint=" + fingerprintValue;
                         // Submit the form
                         form.submit();
                     });

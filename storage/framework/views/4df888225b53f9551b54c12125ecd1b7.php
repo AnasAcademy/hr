@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Manage Attendance List')); ?>
 
@@ -206,7 +205,7 @@
                                     <th><?php echo e(__('Late')); ?></th>
                                     <th><?php echo e(__('Early Leaving')); ?></th>
                                     <th><?php echo e(__('Overtime')); ?></th>
-                                    <?php if(Gate::check('Edit Attendance') || Gate::check('Delete Attendance')): ?>
+                                    <?php if(Gate::check('Edit Attendance') || Gate::check('Delete Attendance') || \Auth::user()->type ="manager"): ?>
                                         <th width="200px"><?php echo e(__('Action')); ?></th>
                                     <?php endif; ?>
                                 </tr>
