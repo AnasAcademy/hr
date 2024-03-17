@@ -144,26 +144,37 @@
 
                         </ul>
                     </li>
-                    {{-- devices Ip --}}
+                    {{-- permissions --}}
+                    <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'permissions' ? ' active dash-trigger'
+                    : '' }} ">
+
+                        <a href="{{route("permissions.index")}}" class="dash-link"><span class="dash-micon"><i
+                            class="fas fa-lock"></i></span><span
+                        class="dash-mtext">{{ __('Manage Permissions') }}</span>
+                        {{-- <span class="dash-arrow"><i data-feather="chevron-right"></i></span> --}}
+                        </a>
+                    </li>
+
+                @endif
+                {{-- devices Ip --}}
+                    @can('Manage Device')
                     <li
-                        class="dash-item dash-hasmenu {{ Request::segment(1) == 'user' || Request::segment(1) == 'roles' || Request::segment(1) == 'lastlogin'
-                            ? ' active dash-trigger'
+                        class="dash-item dash-hasmenu {{ Request::segment(1) == 'devices' ? ' active dash-trigger'
                             : '' }} ">
                         <a href="#!" class="dash-link"><span class="dash-micon"><i
-                                    class="ti ti-users"></i></span><span
+                                    class="fas fa-desktop"></i></span><span
                                 class="dash-mtext">{{ __('Device') }}</span><span class="dash-arrow"><i
                                     data-feather="chevron-right"></i></span></a>
                         <ul
-                            class="dash-submenu {{ Request::route()->getName() == 'index.ip' || Request::route()->getName() == 'users.create' || Request::route()->getName() == 'user.edit' || Request::route()->getName() == 'lastlogin' ? ' active' : '' }} ">
-                            @can('Manage User')
+                            class="dash-submenu {{ Request::route()->getName() == 'index.ip' ? ' active' : '' }} ">
+
                                 <li class="dash-item {{ Request::segment(1) == 'lastlogin' ? 'active' : '' }} ">
                                     <a class="dash-link" href="{{ route('index.ip') }}">{{ __('Devices Ip') }}</a>
                                 </li>
-                            @endcan
 
                         </ul>
                     </li>
-                @endif
+                    @endcan
             @endif
             <!-- user-->
 
@@ -183,7 +194,7 @@
                         @php
                             $employee = App\Models\Employee::where('user_id', \Auth::user()->id)->first();
                         @endphp
-                        <li class="dash-item {{ Request::segment(1) == 'employee' ? 'active' : '' }}">
+                        <li class="dash-item {{ Request::segment(1) == 'employee' && Request::segment(2) != ''? 'active' : '' }}">
                             <a href="{{ route('employee.show', \Illuminate\Support\Facades\Crypt::encrypt($employee->id)) }}"
                                 class="dash-link"><span class="dash-micon"><i class="ti ti-user"></i></span><span
                                     class="dash-mtext">{{ __('Employee Profile') }}</span></a>

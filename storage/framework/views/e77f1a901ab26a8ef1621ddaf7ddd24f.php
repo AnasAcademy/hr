@@ -700,8 +700,6 @@
         <script src="<?php echo e(asset('js/userfingerprint.js')); ?>"></script>
 
         
-
-        
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('deviceIpIdentifier').onsubmit = function(event) {
@@ -710,7 +708,7 @@
                         document.getElementById("deviceIp").value = fingerprintValue;
                         let form = event.target;
                         let device = fingerprintValue;
-                        document.cookie = "device_fingerprint=" + fingerprintValue;
+                        // document.cookie = "device_fingerprint=" + fingerprintValue;
                         // Submit the form
                         form.submit();
                     });

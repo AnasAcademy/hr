@@ -44,9 +44,18 @@ class EmployeeController extends Controller
     {
 
         if (\Auth::user()->can('Manage Employee')) {
-            if (Auth::user()->type == 'employee') {
+            $user = \Auth::user();
+            if ($user->type == 'employee') {
                 $employees = Employee::where('user_id', '=', Auth::user()->id)->get();
-            } else {
+            } else if($user->type == 'manager'){
+                // $employees = Employee::where('department_id', '=', Auth::user()->managedDepartment->id ?? null)->with(['branch', 'department', 'designation', 'user'])->get();
+
+                $employees = Employee::whereHas('department', function ($query) use ($user) {
+                    $query->where('manager_id', $user->id);
+                })->get();
+
+            }
+            else{
                 $employees = Employee::where('created_by', \Auth::user()->creatorId())->with(['branch', 'department', 'designation', 'user'])->get();
             }
 

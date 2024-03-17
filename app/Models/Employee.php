@@ -49,7 +49,7 @@ class Employee extends Model
     {
         return $this->hasOne('App\Models\AccountList', 'id', 'account_type')->pluck('account_name')->first();
     }
- 
+
     public function get_net_salary()
     {
         $allowances      = Allowance::where('employee_id', '=', $this->id)->get();
@@ -88,7 +88,7 @@ class Employee extends Model
             } else {
                 $total_loan = $loan->amount + $total_loan;
             }
-           
+
         }
 
         //Saturation Deduction

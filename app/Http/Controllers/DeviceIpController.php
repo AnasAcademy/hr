@@ -8,10 +8,11 @@ use App\Models\User;
 
 use App\Models\IpRestrict;
 
+use Illuminate\Support\Facades\Cookie;
+
 class DeviceIpController extends Controller
 {
     //
-
     public function index(){
         $devices = IpRestrict::get();
 
@@ -25,7 +26,7 @@ class DeviceIpController extends Controller
 
     public function storeIp(Request $request)
     {
-        if (\Auth::user()->type == 'employee') {
+        if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager') {
             $validator = \Validator::make(
                 $request->all(),
                 [
@@ -40,7 +41,10 @@ class DeviceIpController extends Controller
 
             $exist = IpRestrict::where('ip', $request['deviceIp'])->first();
             if($exist) {
-                return redirect()->back()->with('error', __('this Device is already Added'));
+                if($exist->status == "approved"){
+                    return redirect()->back()->with('error', __('this Device is already Added'));
+                }
+                else return redirect()->back()->with('error', __('this Device is already Added wait to be approved'));
             }
 
             $ip             = new IpRestrict();
@@ -48,7 +52,7 @@ class DeviceIpController extends Controller
             $ip->belongs_to  = \Auth::user()->id;
             $ip->created_by = \Auth::user()->creatorId();
             $ip->save();
-
+            Cookie::make('device_fingerprint', $ip->ip);
             return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
         }
         else if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin') {

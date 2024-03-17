@@ -71,8 +71,33 @@ class PermissionController extends Controller
                 'name' => 'required|max:40',
             ]
         );
-        $input = $request->all();
-        $permission->fill($input)->save();
+
+        $name = $request['name'];
+        $permission->name = $name;
+
+        $roles = $request['roles'];
+
+        $permission->save();
+
+        if (!empty($request['roles'])) {
+            foreach ($roles as $role) {
+                $r          = Role::where('id', '=', $role)->firstOrFail();
+                $permission = Permission::where('name', '=', $name)->first();
+                $r->givePermissionTo($permission);
+            }
+            // Remove permission from roles that are unchecked
+            $uncheckedRoles = Role::whereNotIn('id', $roles)->get();
+            foreach ($uncheckedRoles as $role) {
+                $role->revokePermissionTo($permission);
+            }
+        } else {
+            // If no roles are selected, revoke the permission from all roles
+            $allRoles = Role::all();
+            foreach ($allRoles as $role) {
+                $role->revokePermissionTo($permission);
+            }
+        }
+
 
         return redirect()->route('permissions.index')->with(
             'success',

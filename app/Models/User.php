@@ -2617,6 +2617,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne('App\Models\Employee', 'user_id', 'id');
     }
+
+    public function managedDepartment()
+    {
+        return $this->hasOne('App\Models\Department', 'manager_id');
+    }
     public static function userDefaultData()
     {
 

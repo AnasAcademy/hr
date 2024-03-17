@@ -526,7 +526,7 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee->early_leaving = $earlyLeaving;
             $attendanceEmployee->overtime      = $overtime;
             $attendanceEmployee->total_rest    = '00:00:00';
-            $attendanceEmployee->clock_out_ip    = $ip;
+            $attendanceEmployee->clock_out_ip    = $ip->id;
             $attendanceEmployee->status    = "Leave";
 
 

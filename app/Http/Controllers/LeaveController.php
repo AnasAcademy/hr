@@ -21,11 +21,22 @@ class LeaveController extends Controller
     {
 
         if (\Auth::user()->can('Manage Leave')) {
+            $user     = \Auth::user();
             if (\Auth::user()->type == 'employee') {
-                $user     = \Auth::user();
                 $employee = Employee::where('user_id', '=', $user->id)->first();
                 $leaves = LocalLeave::where('employee_id', '=', $employee->id)->get();
-            } else {
+            }
+            else if(\Auth::user()->type == 'manager'){
+
+                $leaves = LocalLeave::where('employee_id', '=', $user->employee->id)->get();
+                // Get the leave records of employees in the managed department
+                $departmentId = $user->managedDepartment->id ?? "";
+
+                $leaves = LocalLeave::whereHas('employees', function ($query) use ($departmentId) {
+                    $query->where('department_id', $departmentId);
+    })->get();
+            }
+            else {
                 $leaves = LocalLeave::where('created_by', '=', \Auth::user()->creatorId())->with(['employees', 'leaveType'])->get();
             }
 

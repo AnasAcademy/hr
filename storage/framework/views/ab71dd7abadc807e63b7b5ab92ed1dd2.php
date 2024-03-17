@@ -141,25 +141,36 @@
                         </ul>
                     </li>
                     
+                    <li class="dash-item dash-hasmenu <?php echo e(Request::segment(1) == 'permissions' ? ' active dash-trigger'
+                    : ''); ?> ">
+
+                        <a href="<?php echo e(route("permissions.index")); ?>" class="dash-link"><span class="dash-micon"><i
+                            class="fas fa-lock"></i></span><span
+                        class="dash-mtext"><?php echo e(__('Manage Permissions')); ?></span>
+                        
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+                
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Device')): ?>
                     <li
-                        class="dash-item dash-hasmenu <?php echo e(Request::segment(1) == 'user' || Request::segment(1) == 'roles' || Request::segment(1) == 'lastlogin'
-                            ? ' active dash-trigger'
+                        class="dash-item dash-hasmenu <?php echo e(Request::segment(1) == 'devices' ? ' active dash-trigger'
                             : ''); ?> ">
                         <a href="#!" class="dash-link"><span class="dash-micon"><i
-                                    class="ti ti-users"></i></span><span
+                                    class="fas fa-desktop"></i></span><span
                                 class="dash-mtext"><?php echo e(__('Device')); ?></span><span class="dash-arrow"><i
                                     data-feather="chevron-right"></i></span></a>
                         <ul
-                            class="dash-submenu <?php echo e(Request::route()->getName() == 'index.ip' || Request::route()->getName() == 'users.create' || Request::route()->getName() == 'user.edit' || Request::route()->getName() == 'lastlogin' ? ' active' : ''); ?> ">
-                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage User')): ?>
+                            class="dash-submenu <?php echo e(Request::route()->getName() == 'index.ip' ? ' active' : ''); ?> ">
+
                                 <li class="dash-item <?php echo e(Request::segment(1) == 'lastlogin' ? 'active' : ''); ?> ">
                                     <a class="dash-link" href="<?php echo e(route('index.ip')); ?>"><?php echo e(__('Devices Ip')); ?></a>
                                 </li>
-                            <?php endif; ?>
 
                         </ul>
                     </li>
-                <?php endif; ?>
+                    <?php endif; ?>
             <?php endif; ?>
             <!-- user-->
 
@@ -179,7 +190,7 @@
                         <?php
                             $employee = App\Models\Employee::where('user_id', \Auth::user()->id)->first();
                         ?>
-                        <li class="dash-item <?php echo e(Request::segment(1) == 'employee' ? 'active' : ''); ?>">
+                        <li class="dash-item <?php echo e(Request::segment(1) == 'employee' && Request::segment(2) != ''? 'active' : ''); ?>">
                             <a href="<?php echo e(route('employee.show', \Illuminate\Support\Facades\Crypt::encrypt($employee->id))); ?>"
                                 class="dash-link"><span class="dash-micon"><i class="ti ti-user"></i></span><span
                                     class="dash-mtext"><?php echo e(__('Employee Profile')); ?></span></a>
