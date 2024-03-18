@@ -38,12 +38,13 @@
     </div>
 </div>
 
-<?php if(Auth::user()->type == 'company' || Auth::user()->type == 'hr' || Auth::user()->type == 'manager'): ?>
-    <div class="modal-footer">
-        <input type="submit" value="<?php echo e(__('Approved')); ?>" class="btn btn-success rounded" name="status">
-        <input type="submit" value="<?php echo e(__('Reject')); ?>" class="btn btn-danger rounded" name="status">
-    </div>
+<?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Leave')): ?>
+<div class="modal-footer">
+    <input type="submit" value="<?php echo e(__('Approved')); ?>" class="btn btn-success rounded" name="status">
+    <input type="submit" value="<?php echo e(__('Reject')); ?>" class="btn btn-danger rounded" name="status">
+</div>
 <?php endif; ?>
+
 
 <?php echo e(Form::close()); ?>
 

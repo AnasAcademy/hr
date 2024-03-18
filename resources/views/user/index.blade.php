@@ -60,10 +60,10 @@
                         <div class="card  text-center">
                             <div class="card-header border-0 pb-0">
                                 <div class="col-md-4 text-end">
-                                    <a href="#" data-url="{{ route('plan.upgrade', $user->id) }}"
+                                    {{-- <a href="#" data-url="{{ route('plan.upgrade', $user->id) }}"
                                         class="btn btn-sm btn-primary btn-icon" data-size="lg" data-ajax-popup="true"
                                         data-title="{{ __('Upgrade Plan') }}">{{ __('Upgrade Plan') }}
-                                    </a>
+                                    </a> --}}
                                 </div>
                                 <div class="card-header-right">
                                     <div class="btn-group card-option">
@@ -146,12 +146,12 @@
                                     <div class=" mb-0 mt-3">
                                         <div class=" p-3">
                                             <div class="row">
-                                                <div class="col-5 text-start">
+                                                {{-- <div class="col-5 text-start">
                                                     <h6 class="mb-0 px-2 mt-1">
                                                         {{ !empty($user->currentPlan) ? $user->currentPlan->name : '' }}
                                                     </h6>
-                                                </div>
-                                                <div class="col-7 text-center Id ">
+                                                </div> --}}
+                                                <div class="col-12 text-center Id ">
                                                     <a href="#" data-url="{{ route('company.info', $user->id) }}"
                                                         data-size="lg" data-ajax-popup="true"
                                                         class="btn btn-outline-primary"
@@ -168,12 +168,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="mt-2 mb-0">
+                                    {{-- <p class="mt-2 mb-0">
                                         <button class="btn btn-sm btn-neutral mt-3 font-weight-500">
                                             <a>{{ __('Plan Expire : ') }}
                                                 {{ !empty($user->plan_expire_date) ? \Auth::user()->dateFormat($user->plan_expire_date) : 'Lifetime' }}</a>
                                         </button>
-                                    </p>
+                                    </p> --}}
                                 @endif
                             </div>
                         </div>

@@ -20,7 +20,7 @@ class LeaveController extends Controller
     public function index()
     {
 
-        if (\Auth::user()->can('Manage Leave')) {
+        if (\Auth::user()->can('View Leave')) {
             $user     = \Auth::user();
             if (\Auth::user()->type == 'employee') {
                 $employee = Employee::where('user_id', '=', $user->id)->first();
@@ -30,7 +30,7 @@ class LeaveController extends Controller
                 // $leaves = LocalLeave::where('employee_id', '=', $user->employee->id)->get();
                 // Get the leave records of employees in the managed department
                 $departmentId = $user->managedDepartment->id ?? "";
-                
+
                 $leaves = LocalLeave::whereHas('employees', function ($query) use ($departmentId) {
                     $user     = \Auth::user();
                     $query->where('department_id', $departmentId)->where("user_id", "!=", $user->id);

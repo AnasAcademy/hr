@@ -262,7 +262,7 @@
             @endif --}}
 
             <!-- timesheet-->
-            @if (Gate::check('Manage Attendance') || Gate::check('Manage Leave') || Gate::check('Manage TimeSheet'))
+            @if (Gate::check('Manage Attendance') || Gate::check('View Leave') || Gate::check('Manage TimeSheet'))
                 <li
                     class="dash-item dash-hasmenu {{ Request::segment(1) == 'calender' && Request::segment(2) == 'leave' ? 'dash-trigger active' : '' }}">
                     <a href="#!" class="dash-link"><span class="dash-micon"><i
@@ -275,7 +275,7 @@
                                 <a class="dash-link" href="{{ route('timesheet.index') }}">{{ __('Timesheet') }}</a>
                             </li>
                         @endcan --}}
-                        @can('Manage Leave')
+                        @can('View Leave')
 
                             <li class="dash-item {{ Request::segment(1) == 'calender' ? ' active' : '' }}">
                                 <a class="dash-link" href="{{ route('leave.index') }}">{{ __('Manage Leave') }}</a>

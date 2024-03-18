@@ -75,7 +75,7 @@ class AttendanceEmployeeController extends Controller
             } else {
                 if(\Auth::user()->type == 'manager'){
                     $user = \Auth::user();
-                    
+
                     $employee = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('department', function ($query) use ($user) {
                         $query->where('manager_id', $user->id);
                     });

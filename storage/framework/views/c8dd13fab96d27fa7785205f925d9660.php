@@ -15,17 +15,24 @@
 
     </div>
 
+    <?php
+            $clockInTime = \Carbon\Carbon::parse(\Auth::user()->timeFormat($attendanceEmployee['clock_in']))->format('H:i:s');
+            $clockOutTime = \Carbon\Carbon::parse(\Auth::user()->timeFormat($attendanceEmployee['clock_out']))->format('H:i:s');
+        ?>
+
     <div class="form-group col-lg-6 col-md-6">
         <?php echo e(Form::label('clock_in', __('Clock In'), ['class' => 'col-form-label'])); ?>
 
-        <?php echo e(Form::time('clock_in', null, ['class' => 'form-control pc-timepicker-2','id'=>'clock_in'])); ?>
+        <?php echo e(Form::time('clock_in', $clockInTime, ['class' => 'form-control pc-timepicker-2','id'=>'clock_in'])); ?>
 
     </div>
 
     <div class="form-group col-lg-6 col-md-6">
         <?php echo e(Form::label('clock_out', __('Clock Out'), ['class' => 'col-form-label'])); ?>
 
-        <?php echo e(Form::time('clock_out', null, ['class' => 'form-control pc-timepicker-2 ','id'=>'clock_out'])); ?>
+
+
+        <?php echo e(Form::time('clock_out', $clockOutTime, ['class' => 'form-control pc-timepicker-2 ','id'=>'clock_out'])); ?>
 
     </div>
 </div>

@@ -246,7 +246,7 @@
             
 
             <!-- timesheet-->
-            <?php if(Gate::check('Manage Attendance') || Gate::check('Manage Leave') || Gate::check('Manage TimeSheet')): ?>
+            <?php if(Gate::check('Manage Attendance') || Gate::check('View Leave') || Gate::check('Manage TimeSheet')): ?>
                 <li
                     class="dash-item dash-hasmenu <?php echo e(Request::segment(1) == 'calender' && Request::segment(2) == 'leave' ? 'dash-trigger active' : ''); ?>">
                     <a href="#!" class="dash-link"><span class="dash-micon"><i
@@ -255,7 +255,7 @@
                                 data-feather="chevron-right"></i></span></a>
                     <ul class="dash-submenu">
                         
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Leave')): ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('View Leave')): ?>
 
                             <li class="dash-item <?php echo e(Request::segment(1) == 'calender' ? ' active' : ''); ?>">
                                 <a class="dash-link" href="<?php echo e(route('leave.index')); ?>"><?php echo e(__('Manage Leave')); ?></a>

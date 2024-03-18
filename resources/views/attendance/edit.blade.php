@@ -10,14 +10,21 @@
         {{ Form::date('date', null, ['class' => 'form-control d_week','autocomplete'=>'off']) }}
     </div>
 
+    @php
+            $clockInTime = \Carbon\Carbon::parse(\Auth::user()->timeFormat($attendanceEmployee['clock_in']))->format('H:i:s');
+            $clockOutTime = \Carbon\Carbon::parse(\Auth::user()->timeFormat($attendanceEmployee['clock_out']))->format('H:i:s');
+        @endphp
+
     <div class="form-group col-lg-6 col-md-6">
         {{ Form::label('clock_in', __('Clock In'), ['class' => 'col-form-label']) }}
-        {{ Form::time('clock_in', null, ['class' => 'form-control pc-timepicker-2','id'=>'clock_in']) }}
+        {{ Form::time('clock_in', $clockInTime, ['class' => 'form-control pc-timepicker-2','id'=>'clock_in']) }}
     </div>
 
     <div class="form-group col-lg-6 col-md-6">
         {{ Form::label('clock_out', __('Clock Out'), ['class' => 'col-form-label']) }}
-        {{ Form::time('clock_out', null, ['class' => 'form-control pc-timepicker-2 ','id'=>'clock_out']) }}
+
+
+        {{ Form::time('clock_out', $clockOutTime, ['class' => 'form-control pc-timepicker-2 ','id'=>'clock_out']) }}
     </div>
 </div>
 </div>
