@@ -20,11 +20,9 @@
         class="btn btn-sm btn-primary" data-bs-original-title="{{ __('Import') }}">
         <i class="ti ti-file"></i>
     </a>
-    @can('Create Employee')
-        <a href="#" data-title="{{ __('Create New Device') }}" data-bs-toggle="tooltip"
-            title="" class="btn btn-sm btn-primary"
-            data-url="{{ URL::to('create/ip')}}"
-            data-ajax-popup="true" data-size="md"
+    @can('Create Device')
+        <a href="#" data-title="{{ __('Create New Device') }}" data-bs-toggle="tooltip" title=""
+            class="btn btn-sm btn-primary" data-url="{{ URL::to('create/ip') }}" data-ajax-popup="true" data-size="md"
             data-bs-original-title="{{ __('Add Device') }}">
             <i class="ti ti-plus"></i>
         </a>
@@ -46,19 +44,19 @@
                                     <th>{{ __('Device User') }}</th>
                                     <th>{{ __('Status') }}</th>
                                     <th>{{ __('Approved_by') }}</th>
-                                    @if (Gate::check('Edit Employee') || Gate::check('Delete Employee'))
+                                    @can('Manage Device')
                                         <th width="200px">{{ __('Action') }}</th>
-                                    @endif
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
                                 @php
-                                    $index=1;
+                                    $index = 1;
                                 @endphp
                                 @foreach ($devices as $device)
                                     <tr>
                                         <td>
-                                            {{$index++;}}
+                                            {{ $index++ }}
                                             {{-- @can('Show Employee')
                                                 <a class="btn btn-outline-primary"
                                                     href="{{ route('employee.show', \Illuminate\Support\Facades\Crypt::encrypt($device->id)) }}">{{ \Auth::user()->employeeIdFormat($device->id) }}</a>
@@ -81,28 +79,27 @@
                                                     {{ $device->status }}</div>
                                             @endif
                                         </td>
-                                        <td>{{ ($device->admin)? $device->admin->name : ""}}</td>
+                                        <td>{{ $device->admin ? $device->admin->name : '' }}</td>
 
 
-                                        <td class="Action">
+                                        @can('Manage Device')
+                                            <td class="Action">
 
-                                            <span>
-                                                @if (\Auth::user()->type != 'employee')
+                                                <span>
                                                     <div class="action-btn bg-success ms-2">
                                                         <a href="#" class="mx-3 btn btn-sm  align-items-center"
                                                             data-size="lg"
-                                                            data-url="{{ URL::to('ip/' . $device->id).'/action' }}"
+                                                            data-url="{{ URL::to('ip/' . $device->id) . '/action' }}"
                                                             data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
                                                             title="" data-title="{{ __('Device Adding Action') }}"
                                                             data-bs-original-title="{{ __('Manage Device') }}">
                                                             <i class="ti ti-caret-right text-white"></i>
                                                         </a>
                                                     </div>
-                                                    @can('Edit Leave')
+                                                    @can('Edit Device')
                                                         <div class="action-btn bg-info ms-2">
                                                             <a href="#" class="mx-3 btn btn-sm  align-items-center"
-                                                                data-size="lg"
-                                                                data-url="{{ URL::to('edit/ip/' . $device->id) }}"
+                                                                data-size="lg" data-url="{{ URL::to('edit/ip/' . $device->id) }}"
                                                                 data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
                                                                 title="" data-title="{{ __('Edit Device Ip') }}"
                                                                 data-bs-original-title="{{ __('Edit') }}">
@@ -110,7 +107,7 @@
                                                             </a>
                                                         </div>
                                                     @endcan
-                                                    @can('Delete Leave')
+                                                    @can('Delete Device')
                                                         @if (\Auth::user()->type != 'employee')
                                                             <div class="action-btn bg-danger ms-2">
                                                                 {!! Form::open([
@@ -127,21 +124,10 @@
                                                             </div>
                                                         @endif
                                                     @endcan
-                                                @else
-                                                    <div class="action-btn bg-success ms-2">
-                                                        <a href="#" class="mx-3 btn btn-sm  align-items-center"
-                                                            data-size="lg"
-                                                            data-url="{{ URL::to('leave/' . $device->id . '/action') }}"
-                                                            data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
-                                                            title="" data-title="{{ __('Leave Action') }}"
-                                                            data-bs-original-title="{{ __('Manage Leave') }}">
-                                                            <i class="ti ti-caret-right text-white"></i>
-                                                        </a>
-                                                    </div>
-                                                @endif
 
-                                            </span>
-                                        </td>
+                                                </span>
+                                            </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>

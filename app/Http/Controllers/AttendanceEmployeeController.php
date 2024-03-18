@@ -20,6 +20,7 @@ class AttendanceEmployeeController extends Controller
 {
     public function index(Request $request)
     {
+        $user = \Auth::user();
         if (\Auth::user()->can('Manage Attendance')) {
             $branch = Branch::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $branch->prepend('All', '');
@@ -72,7 +73,15 @@ class AttendanceEmployeeController extends Controller
 
                 $attendanceEmployee = $attendanceEmployee->get();
             } else {
-                $employee = Employee::select('id')->where('created_by', \Auth::user()->creatorId());
+                if(\Auth::user()->type == 'manager'){
+                    $user = \Auth::user();
+                    
+                    $employee = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('department', function ($query) use ($user) {
+                        $query->where('manager_id', $user->id);
+                    });
+                }else{
+                    $employee = Employee::select('id')->where('created_by', \Auth::user()->creatorId());
+                }
                 if (!empty($request->branch)) {
                     $employee->where('branch_id', $request->branch);
                 }
@@ -656,7 +665,6 @@ class AttendanceEmployeeController extends Controller
 
 
             $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
-
             if (empty($ip) || $ip->status != "approved") {
                 return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
             }

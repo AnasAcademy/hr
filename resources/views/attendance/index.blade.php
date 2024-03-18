@@ -197,7 +197,7 @@
                                     <th>{{ __('Late') }}</th>
                                     <th>{{ __('Early Leaving') }}</th>
                                     <th>{{ __('Overtime') }}</th>
-                                    @if (Gate::check('Edit Attendance') || Gate::check('Delete Attendance') || \Auth::user()->type ="manager")
+                                    @if (Gate::check('Edit Attendance') || Gate::check('Delete Attendance'))
                                         <th width="200px">{{ __('Action') }}</th>
                                     @endif
                                 </tr>

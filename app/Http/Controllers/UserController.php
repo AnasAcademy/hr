@@ -35,7 +35,7 @@ class UserController extends Controller
                 $users = User::where('created_by', '=', $user->creatorId())->where('type', '=', 'company')->with('currentPlan')->get();
                 $CountUser = User::where('created_by')->get();
             } else {
-                $users = User::where('created_by', '=', $user->creatorId())->where('type', '!=', 'employee')->get();
+                $users = User::where('created_by', '=', $user->creatorId())->get();
             }
 
             return view('user.index', compact('users'));
@@ -49,7 +49,9 @@ class UserController extends Controller
         if (\Auth::user()->can('Create User')) {
             $user  = \Auth::user();
             $roles = Role::where('created_by', '=', $user->creatorId())->where('name', '!=', 'employee')->get()->pluck('name', 'id');
-            return view('user.create', compact('roles'));
+            $timezones = config('timezones');
+            $settings = Utility::settings();
+            return view('user.create', compact('roles', 'timezones', 'settings'));
         } else {
             return response()->json(['error' => __('Permission denied.')], 401);
         }
@@ -70,6 +72,7 @@ class UserController extends Controller
                 [
                     'name' => 'required',
                     'email' => 'required|unique:users',
+                    'timezone' => 'required',
                     // 'password' => 'required',
                 ]
             );
@@ -97,6 +100,7 @@ class UserController extends Controller
                     [
                         'name' => $request['name'],
                         'email' => $request['email'],
+                        'timezone' => $request['timezone'],
                         'is_login_enable' => !empty($request->password_switch) && $request->password_switch == 'on' ? 1 : 0,
                         'password' => !empty($userpassword) ? Hash::make($userpassword) : null,
                         'type' => 'company',
@@ -121,33 +125,33 @@ class UserController extends Controller
                 Utility::MakeRole($user->id);
             } else {
                 $objUser    = \Auth::user()->creatorId();
-                $objUser = User::find($objUser);
-                $total_user = $objUser->countUsers();
-                $plan       = Plan::find($objUser->plan);
+                // $objUser = User::find($objUser);
+                // $total_user = $objUser->countUsers();
+                // $plan       = Plan::find($objUser->plan);
                 $userpassword = $request->input('password');
 
-                if ($total_user < $plan->max_users || $plan->max_users == -1) {
+                // if ($total_user < $plan->max_users || $plan->max_users == -1) {
 
-                    $role_r = Role::findById($request->role);
-                    $date = date("Y-m-d H:i:s");
-                    $user   = User::create(
-                        [
-                            'name' => $request['name'],
-                            'email' => $request['email'],
-                            'is_login_enable' => !empty($request->password_switch) && $request->password_switch == 'on' ? 1 : 0,
-                            'password' => !empty($userpassword) ? Hash::make($userpassword) : null,
-                            'type' => $role_r->name,
-                            'lang' => !empty($default_language) ? $default_language->value : 'en',
-                            'created_by' => \Auth::user()->creatorId(),
-                            'email_verified_at' => $date,
-                        ]
-                    );
-                    $user->assignRole($role_r);
-                } else {
-                    return redirect()->back()->with('error', __('Your user limit is over, Please upgrade plan.'));
-                }
+                $role_r = Role::findById($request->role);
+                $date = date("Y-m-d H:i:s");
+                $user   = User::create(
+                    [
+                        'name' => $request['name'],
+                        'email' => $request['email'],
+                        'timezone' => $request['timezone'],
+                        'is_login_enable' => !empty($request->password_switch) && $request->password_switch == 'on' ? 1 : 0,
+                        'password' => !empty($userpassword) ? Hash::make($userpassword) : null,
+                        'type' => $role_r->name,
+                        'lang' => !empty($default_language) ? $default_language->value : 'en',
+                        'created_by' => \Auth::user()->creatorId(),
+                        'email_verified_at' => $date,
+                    ]
+                );
+                $user->assignRole($role_r);
+                // } else {
+                //     return redirect()->back()->with('error', __('Your user limit is over, Please upgrade plan.'));
+                // }
             }
-
             $setings = Utility::settings();
 
 
@@ -177,7 +181,7 @@ class UserController extends Controller
     {
         if (\Auth::user()->can('Edit User')) {
             $user  = User::find($id);
-            $roles = Role::where('created_by', '=', $user->creatorId())->where('name', '!=', 'employee')->get()->pluck('name', 'id');
+            $roles = Role::where('created_by', '=', $user->creatorId())->get()->pluck('name', 'id');
 
             return view('user.edit', compact('user', 'roles'));
         } else {
@@ -208,10 +212,12 @@ class UserController extends Controller
             $user = User::findOrFail($id);
 
             $role          = Role::findById($request->role);
+            $oldRole       = Role::where('name', $user->type)->first();
             $input         = $request->all();
             $input['type'] = $role->name;
             $user->fill($input)->save();
 
+            $user->removeRole($oldRole);
             $user->assignRole($role);
         }
 
@@ -225,6 +231,7 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $sub_employee = Employee::where('created_by', $user->id)->delete();
             $sub_user = User::where('created_by', $user->id)->delete();
+            $employee = Employee::where('user_id', $user->id)->delete();
             $user->delete();
 
             return redirect()->route('user.index')->with('success', 'User successfully deleted.');

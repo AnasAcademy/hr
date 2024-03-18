@@ -19,11 +19,9 @@
         class="btn btn-sm btn-primary" data-bs-original-title="<?php echo e(__('Import')); ?>">
         <i class="ti ti-file"></i>
     </a>
-    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Create Employee')): ?>
-        <a href="#" data-title="<?php echo e(__('Create New Device')); ?>" data-bs-toggle="tooltip"
-            title="" class="btn btn-sm btn-primary"
-            data-url="<?php echo e(URL::to('create/ip')); ?>"
-            data-ajax-popup="true" data-size="md"
+    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Create Device')): ?>
+        <a href="#" data-title="<?php echo e(__('Create New Device')); ?>" data-bs-toggle="tooltip" title=""
+            class="btn btn-sm btn-primary" data-url="<?php echo e(URL::to('create/ip')); ?>" data-ajax-popup="true" data-size="md"
             data-bs-original-title="<?php echo e(__('Add Device')); ?>">
             <i class="ti ti-plus"></i>
         </a>
@@ -45,14 +43,14 @@
                                     <th><?php echo e(__('Device User')); ?></th>
                                     <th><?php echo e(__('Status')); ?></th>
                                     <th><?php echo e(__('Approved_by')); ?></th>
-                                    <?php if(Gate::check('Edit Employee') || Gate::check('Delete Employee')): ?>
+                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Device')): ?>
                                         <th width="200px"><?php echo e(__('Action')); ?></th>
                                     <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                    $index=1;
+                                    $index = 1;
                                 ?>
                                 <?php $__currentLoopData = $devices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $device): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
@@ -75,28 +73,27 @@
                                                     <?php echo e($device->status); ?></div>
                                             <?php endif; ?>
                                         </td>
-                                        <td><?php echo e(($device->admin)? $device->admin->name : ""); ?></td>
+                                        <td><?php echo e($device->admin ? $device->admin->name : ''); ?></td>
 
 
-                                        <td class="Action">
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Device')): ?>
+                                            <td class="Action">
 
-                                            <span>
-                                                <?php if(\Auth::user()->type != 'employee'): ?>
+                                                <span>
                                                     <div class="action-btn bg-success ms-2">
                                                         <a href="#" class="mx-3 btn btn-sm  align-items-center"
                                                             data-size="lg"
-                                                            data-url="<?php echo e(URL::to('ip/' . $device->id).'/action'); ?>"
+                                                            data-url="<?php echo e(URL::to('ip/' . $device->id) . '/action'); ?>"
                                                             data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
                                                             title="" data-title="<?php echo e(__('Device Adding Action')); ?>"
                                                             data-bs-original-title="<?php echo e(__('Manage Device')); ?>">
                                                             <i class="ti ti-caret-right text-white"></i>
                                                         </a>
                                                     </div>
-                                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Edit Leave')): ?>
+                                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Edit Device')): ?>
                                                         <div class="action-btn bg-info ms-2">
                                                             <a href="#" class="mx-3 btn btn-sm  align-items-center"
-                                                                data-size="lg"
-                                                                data-url="<?php echo e(URL::to('edit/ip/' . $device->id)); ?>"
+                                                                data-size="lg" data-url="<?php echo e(URL::to('edit/ip/' . $device->id)); ?>"
                                                                 data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
                                                                 title="" data-title="<?php echo e(__('Edit Device Ip')); ?>"
                                                                 data-bs-original-title="<?php echo e(__('Edit')); ?>">
@@ -104,7 +101,7 @@
                                                             </a>
                                                         </div>
                                                     <?php endif; ?>
-                                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Delete Leave')): ?>
+                                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Delete Device')): ?>
                                                         <?php if(\Auth::user()->type != 'employee'): ?>
                                                             <div class="action-btn bg-danger ms-2">
                                                                 <?php echo Form::open([
@@ -122,21 +119,10 @@
                                                             </div>
                                                         <?php endif; ?>
                                                     <?php endif; ?>
-                                                <?php else: ?>
-                                                    <div class="action-btn bg-success ms-2">
-                                                        <a href="#" class="mx-3 btn btn-sm  align-items-center"
-                                                            data-size="lg"
-                                                            data-url="<?php echo e(URL::to('leave/' . $device->id . '/action')); ?>"
-                                                            data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
-                                                            title="" data-title="<?php echo e(__('Leave Action')); ?>"
-                                                            data-bs-original-title="<?php echo e(__('Manage Leave')); ?>">
-                                                            <i class="ti ti-caret-right text-white"></i>
-                                                        </a>
-                                                    </div>
-                                                <?php endif; ?>
 
-                                            </span>
-                                        </td>
+                                                </span>
+                                            </td>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>

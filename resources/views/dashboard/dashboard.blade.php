@@ -84,7 +84,7 @@
                     <div class="card-body">
                         <div class="d-flex gap-5 align-items-baseline flex-wrap mb-5">
                             <p class="text-muted pb-0-5">
-                                {{ __('My Office Time: ' . $officeTime['startTime'] . ' to ' . $officeTime['endTime']) }}
+                                {{ __('My Office Time: ' . \Auth::user()->TimeFormat($officeTime['startTime']) . ' to ' . \Auth::user()->TimeFormat($officeTime['endTime']) ) }}
                             </p>
                             <div id="countdown" class="btn btn-info text-center d-none"></div>
                         </div>

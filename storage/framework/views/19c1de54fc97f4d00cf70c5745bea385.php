@@ -1,4 +1,3 @@
-
 <div class="modal-body">
     <div class="row">
         <div class="col-12">
@@ -24,19 +23,18 @@
     </div>
 </div>
 
-<?php if(Auth::user()->type == 'company' || Auth::user()->type == 'hr'): ?>
+<?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Device')): ?>
     <div class="modal-footer">
-        <?php echo e(Form::open(['url' => 'ip/'.$device->id.'/approve', 'method' => 'post'])); ?>
+        <?php echo e(Form::open(['url' => 'ip/' . $device->id . '/approve', 'method' => 'post'])); ?>
 
         <input type="submit" value="<?php echo e(__('Approved')); ?>" class="btn btn-success rounded" name="status">
         <?php echo e(Form::close()); ?>
 
-        <?php echo e(Form::open(['url' => 'ip/'.$device->id.'/reject', 'method' => 'post'])); ?>
+        <?php echo e(Form::open(['url' => 'ip/' . $device->id . '/reject', 'method' => 'post'])); ?>
 
         <input type="submit" value="<?php echo e(__('Reject')); ?>" class="btn btn-danger rounded" name="status">
         <?php echo e(Form::close()); ?>
 
     </div>
 <?php endif; ?>
-
 <?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/restrict_ip/action.blade.php ENDPATH**/ ?>

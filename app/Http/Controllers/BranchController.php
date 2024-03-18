@@ -7,7 +7,7 @@ use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
 use Illuminate\Http\Request;
-
+use App\Models\Utility;
 class BranchController extends Controller
 {
     public function index()
@@ -24,7 +24,9 @@ class BranchController extends Controller
     public function create()
     {
         if (\Auth::user()->can('Create Branch')) {
-            return view('branch.create');
+            $timezones = config('timezones');
+            $settings = Utility::settings();
+            return view('branch.create', compact('settings', 'timezones'));
         } else {
             return response()->json(['error' => __('Permission denied.')], 401);
         }
@@ -38,6 +40,7 @@ class BranchController extends Controller
                 $request->all(),
                 [
                     'name' => 'required',
+                    'timezone' => 'required',
                 ]
             );
             if ($validator->fails()) {
@@ -48,6 +51,7 @@ class BranchController extends Controller
 
             $branch             = new Branch();
             $branch->name       = $request->name;
+            $branch->timezone       = $request->timezone;
             $branch->created_by = \Auth::user()->creatorId();
             $branch->save();
 
@@ -66,8 +70,9 @@ class BranchController extends Controller
     {
         if (\Auth::user()->can('Edit Branch')) {
             if ($branch->created_by == \Auth::user()->creatorId()) {
-
-                return view('branch.edit', compact('branch'));
+                $timezones = config('timezones');
+                $settings = Utility::settings();
+                return view('branch.edit', compact('branch', 'settings', 'timezones'));
             } else {
                 return response()->json(['error' => __('Permission denied.')], 401);
             }
@@ -84,6 +89,7 @@ class BranchController extends Controller
                     $request->all(),
                     [
                         'name' => 'required',
+                        'timezone' => 'required',
                     ]
                 );
                 if ($validator->fails()) {
@@ -93,6 +99,7 @@ class BranchController extends Controller
                 }
 
                 $branch->name = $request->name;
+                $branch->timezone = $request->timezone;
                 $branch->save();
 
                 return redirect()->route('branch.index')->with('success', __('Branch successfully updated.'));

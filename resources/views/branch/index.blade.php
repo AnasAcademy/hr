@@ -33,6 +33,7 @@
                             <thead>
                             <tr>
                                 <th>{{__('Branch')}}</th>
+                                <th>{{__('TimeZone')}}</th>
                                 <th width="200px">{{__('Action')}}</th>
                             </tr>
                             </thead>
@@ -40,6 +41,7 @@
                             @foreach ($branches as $branch)
                                 <tr>
                                     <td>{{ $branch->name }}</td>
+                                    <td>{{ $branch->timezone }}</td>
                                     <td class="Action">
                                         <span>
                                             @can('Edit Branch')

@@ -50,7 +50,7 @@ class EmployeeController extends Controller
             } else if($user->type == 'manager'){
                 // $employees = Employee::where('department_id', '=', Auth::user()->managedDepartment->id ?? null)->with(['branch', 'department', 'designation', 'user'])->get();
 
-                $employees = Employee::whereHas('department', function ($query) use ($user) {
+                $employees = Employee::where("user_id", "!=", $user->id)->whereHas('department', function ($query) use ($user) {
                     $query->where('manager_id', $user->id);
                 })->get();
 
@@ -75,8 +75,9 @@ class EmployeeController extends Controller
             $designations     = Designation::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $employees        = User::where('created_by', \Auth::user()->creatorId())->get();
             $employeesId      = \Auth::user()->employeeIdFormat($this->employeeNumber());
-
-            return view('employee.create', compact('employees', 'employeesId', 'departments', 'designations', 'documents', 'branches', 'company_settings'));
+            $timezones = config('timezones');
+            $settings = Utility::settings();
+            return view('employee.create', compact('employees', 'employeesId', 'departments', 'designations', 'documents', 'branches', 'company_settings', 'timezones', 'settings'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -99,6 +100,7 @@ class EmployeeController extends Controller
                     'department_id' => 'required',
                     'designation_id' => 'required',
                     'document.*' => 'required',
+                    'timezone' => 'required',
                 ]
             );
             if ($validator->fails()) {
@@ -152,6 +154,7 @@ class EmployeeController extends Controller
                     [
                         'name' => $request['name'],
                         'email' => $request['email'],
+                        'timezone' => $request['timezone'],
                         'password' => Hash::make($request['password']),
                         'type' => 'employee',
                         'lang' => !empty($default_language) ? $default_language->value : 'en',
@@ -268,8 +271,9 @@ class EmployeeController extends Controller
             $designations = Designation::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $employee     = Employee::find($id);
             $employeesId  = \Auth::user()->employeeIdFormat($employee->employee_id);
-
-            return view('employee.edit', compact('employee', 'employeesId', 'branches', 'departments', 'designations', 'documents'));
+            $timezones = config('timezones');
+            $settings = Utility::settings();
+            return view('employee.edit', compact('employee', 'employeesId', 'branches', 'departments', 'designations', 'documents', 'timezones', 'settings'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }

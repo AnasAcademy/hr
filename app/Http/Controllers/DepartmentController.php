@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
@@ -26,7 +27,9 @@ class DepartmentController extends Controller
         if (\Auth::user()->can('Create Department')) {
             $branch = Branch::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
 
-            return view('department.create', compact('branch'));
+            $managers = User::where('type', 'manager')->get()->pluck('name', 'id');
+
+            return view('department.create', compact('branch', 'managers'));
         } else {
             return response()->json(['error' => __('Permission denied.')], 401);
         }
@@ -40,7 +43,7 @@ class DepartmentController extends Controller
                 $request->all(),
                 [
                     'branch_id' => 'required',
-                    'name' => 'required|max:20',
+                    'name' => 'required|max:20'
                 ]
             );
             if ($validator->fails()) {
@@ -53,6 +56,7 @@ class DepartmentController extends Controller
             $department->branch_id  = $request->branch_id;
             $department->name       = $request->name;
             $department->created_by = \Auth::user()->creatorId();
+            $department->manager_id = $request->manager_id ?? null;
             $department->save();
 
             return redirect()->route('department.index')->with('success', __('Department  successfully created.'));
@@ -72,7 +76,9 @@ class DepartmentController extends Controller
             if ($department->created_by == \Auth::user()->creatorId()) {
                 $branch = Branch::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
 
-                return view('department.edit', compact('department', 'branch'));
+                $managers = User::where('type', 'manager')->get()->pluck('name', 'id');
+
+                return view('department.edit', compact('department', 'branch', 'managers'));
             } else {
                 return response()->json(['error' => __('Permission denied.')], 401);
             }
@@ -100,6 +106,7 @@ class DepartmentController extends Controller
 
                 $department->branch_id = $request->branch_id;
                 $department->name      = $request->name;
+                $department->manager_id = $request->manager_id ?? null;
                 $department->save();
 
                 return redirect()->route('department.index')->with('success', __('Department successfully updated.'));

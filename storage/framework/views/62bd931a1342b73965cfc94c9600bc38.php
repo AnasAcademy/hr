@@ -1,4 +1,5 @@
-<?php echo e(Form::open(['url' => 'branch', 'method' => 'post'])); ?>
+
+<?php echo e(Form::model($branch, ['route' => ['branch.update', $branch->id], 'method' => 'PUT'])); ?>
 
 <div class="modal-body">
 
@@ -8,6 +9,7 @@
                 <?php echo e(Form::label('name', __('Name'), ['class' => 'form-label'])); ?>
 
                 <div class="form-icon-user">
+                  
                     <?php echo e(Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Enter Branch Name')])); ?>
 
                 </div>
@@ -37,7 +39,7 @@ unset($__errorArgs, $__bag); ?>
                     <?php if(!empty($timezones)): ?>
                         <?php $__currentLoopData = $timezones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $timezone): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <option value="<?php echo e($k); ?>"
-                                <?php echo e($settings['timezone'] == $k ? 'selected' : ''); ?>>
+                                <?php echo e($branch['timezone'] == $k ? 'selected' : ''); ?>>
                                 <?php echo e($timezone); ?></option>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endif; ?>
@@ -61,8 +63,8 @@ unset($__errorArgs, $__bag); ?>
 </div>
 <div class="modal-footer">
     <input type="button" value="Cancel" class="btn btn-light" data-bs-dismiss="modal">
-    <input type="submit" value="<?php echo e(__('Create')); ?>" class="btn btn-primary">
+    <input type="submit" value="<?php echo e(__('Update')); ?>" class="btn btn-primary">
 </div>
 <?php echo e(Form::close()); ?>
 
-<?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/branch/create.blade.php ENDPATH**/ ?>
+<?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/branch/edit.blade.php ENDPATH**/ ?>

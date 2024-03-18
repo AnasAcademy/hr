@@ -1,4 +1,5 @@
-<?php echo e(Form::open(['url' => 'department', 'method' => 'post'])); ?>
+
+<?php echo e(Form::model($department, ['route' => ['department.update', $department->id], 'method' => 'PUT'])); ?>
 
 <div class="modal-body">
 
@@ -42,7 +43,7 @@ unset($__errorArgs, $__bag); ?>
                 <?php echo e(Form::label('manager_id', __('Manager'), ['class' => 'form-label'])); ?>
 
                 <div class="form-icon-user">
-                    <?php echo e(Form::select('manager_id', $managers, null, ['class' => 'form-control select2 ','placeholder' => __('Assign a manager to the department')])); ?>
+                    <?php echo e(Form::select('manager_id', $managers, $department->manager_id, ['class' => 'form-control select2 ','placeholder' => __('Assign a manager to the department')])); ?>
 
                 </div>
                 <?php $__errorArgs = ['manager_id'];
@@ -59,13 +60,12 @@ endif;
 unset($__errorArgs, $__bag); ?>
             </div>
         </div>
-
     </div>
 </div>
 <div class="modal-footer">
     <input type="button" value="Cancel" class="btn btn-light" data-bs-dismiss="modal">
-    <input type="submit" value="<?php echo e(__('Create')); ?>" class="btn btn-primary">
+    <input type="submit" value="<?php echo e(__('Update')); ?>" class="btn btn-primary">
 </div>
 <?php echo e(Form::close()); ?>
 
-<?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/department/create.blade.php ENDPATH**/ ?>
+<?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/department/edit.blade.php ENDPATH**/ ?>

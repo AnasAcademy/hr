@@ -136,45 +136,46 @@
                                         href="{{ route('employee.profile') }}">{{ __('Employee Profile') }}</a>
                                 </li>
                             @endcan
-                            {{-- @can('Manage Employee Last Login')
+                            @can('Manage Employee Last Login')
                                 <li class="dash-item">
                                     <a class="dash-link" href="{{ route('lastlogin') }}">{{ __('Last Login') }}</a>
                                 </li>
-                            @endcan --}}
+                            @endcan
 
                         </ul>
                     </li>
-                    {{-- permissions --}}
-                    <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'permissions' ? ' active dash-trigger'
-                    : '' }} ">
+                @endif
 
-                        <a href="{{route("permissions.index")}}" class="dash-link"><span class="dash-micon"><i
-                            class="fas fa-lock"></i></span><span
-                        class="dash-mtext">{{ __('Manage Permissions') }}</span>
-                        {{-- <span class="dash-arrow"><i data-feather="chevron-right"></i></span> --}}
+                {{-- permissions --}}
+                @can('Manage Permissions')
+                    <li
+                        class="dash-item dash-hasmenu {{ Request::segment(1) == 'permissions' ? ' active dash-trigger' : '' }} ">
+
+                        <a href="{{ route('permissions.index') }}" class="dash-link"><span class="dash-micon"><i
+                                    class="fas fa-lock"></i></span><span
+                                class="dash-mtext">{{ __('Manage Permissions') }}</span>
+                            {{-- <span class="dash-arrow"><i data-feather="chevron-right"></i></span> --}}
                         </a>
                     </li>
+                @endcan
 
-                @endif
                 {{-- devices Ip --}}
-                    @can('Manage Device')
+                @can('Manage Device')
                     <li
-                        class="dash-item dash-hasmenu {{ Request::segment(1) == 'devices' ? ' active dash-trigger'
-                            : '' }} ">
+                        class="dash-item dash-hasmenu {{ Request::segment(1) == 'devices' ? ' active dash-trigger' : '' }} ">
                         <a href="#!" class="dash-link"><span class="dash-micon"><i
                                     class="fas fa-desktop"></i></span><span
                                 class="dash-mtext">{{ __('Device') }}</span><span class="dash-arrow"><i
                                     data-feather="chevron-right"></i></span></a>
-                        <ul
-                            class="dash-submenu {{ Request::route()->getName() == 'index.ip' ? ' active' : '' }} ">
+                        <ul class="dash-submenu {{ Request::route()->getName() == 'index.ip' ? ' active' : '' }} ">
 
-                                <li class="dash-item {{ Request::segment(1) == 'lastlogin' ? 'active' : '' }} ">
-                                    <a class="dash-link" href="{{ route('index.ip') }}">{{ __('Devices Ip') }}</a>
-                                </li>
+                            <li class="dash-item {{ Request::segment(1) == 'devices' ? 'active' : '' }} ">
+                                <a class="dash-link" href="{{ route('index.ip') }}">{{ __('Devices Ip') }}</a>
+                            </li>
 
                         </ul>
                     </li>
-                    @endcan
+                @endcan
             @endif
             <!-- user-->
 
@@ -194,14 +195,16 @@
                         @php
                             $employee = App\Models\Employee::where('user_id', \Auth::user()->id)->first();
                         @endphp
-                        <li class="dash-item {{ Request::segment(1) == 'employee' && Request::segment(2) != ''? 'active' : '' }}">
+                        <li
+                            class="dash-item {{ Request::segment(1) == 'employee' && Request::segment(2) != '' ? 'active' : '' }}">
                             <a href="{{ route('employee.show', \Illuminate\Support\Facades\Crypt::encrypt($employee->id)) }}"
                                 class="dash-link"><span class="dash-micon"><i class="ti ti-user"></i></span><span
                                     class="dash-mtext">{{ __('Employee Profile') }}</span></a>
                         </li>
                     @endif
 
-                    <li class="dash-item {{ Request::segment(1) == 'employee' && Request::segment(2) == ''? 'active' : '' }}">
+                    <li
+                        class="dash-item {{ Request::segment(1) == 'employee' && Request::segment(2) == '' ? 'active' : '' }}">
                         <a href="{{ route('employee.index') }}" class="dash-link"><span class="dash-micon"><i
                                     class="ti ti-user"></i></span><span
                                 class="dash-mtext">{{ __('Employee') }}</span></a>
@@ -395,7 +398,7 @@
             <!-- fianance-->
 
             <!--trainning-->
-            @if (Gate::check('Manage Trainer') || Gate::check('Manage Training'))
+            {{-- @if (Gate::check('Manage Trainer') || Gate::check('Manage Training'))
                 <li
                     class="dash-item dash-hasmenu {{ Request::segment(1) == 'training' ? 'dash-trigger active' : '' }}">
                     <a href="#!" class="dash-link "><span class="dash-micon"><i
@@ -416,7 +419,7 @@
                         @endcan
                     </ul>
                 </li>
-            @endif
+            @endif --}}
 
             <!-- tranning-->
 
@@ -641,7 +644,7 @@
                 </li>
             @endif
 
-            @if (\Auth::user()->type == 'super admin')
+            {{-- @if (\Auth::user()->type == 'super admin')
                 @if (Gate::check('Manage Plan'))
                     <li class="dash-item ">
                         <a href="{{ route('plans.index') }}" class="dash-link"><span class="dash-micon"><i
@@ -650,18 +653,18 @@
 
                     </li>
                 @endif
-            @endif
-            @if (\Auth::user()->type == 'super admin')
+            @endif --}}
+            {{-- @if (\Auth::user()->type == 'super admin')
                 <li class="dash-item ">
                     <a href="{{ route('plan_request.index') }}" class="dash-link"><span class="dash-micon"><i
                                 class="ti ti-arrow-down-right-circle"></i></span><span
                             class="dash-mtext">{{ __('Plan Request') }}</span></a>
 
                 </li>
-            @endif
+            @endif --}}
 
 
-            @if (Auth::user()->type == 'super admin')
+            {{-- @if (Auth::user()->type == 'super admin')
                 @if (Gate::check('manage coupon'))
                     <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'coupons' ? 'active' : '' }}">
                         <a href="{{ route('coupons.index') }}" class="dash-link"><span class="dash-micon"><i
@@ -670,9 +673,10 @@
 
                     </li>
                 @endif
-            @endif
-            @if (\Auth::user()->type == 'super admin')
-                {{-- @if (Gate::check('Manage Order')) --}}
+            @endif --}}
+
+            {{-- @if (\Auth::user()->type == 'super admin')
+                @if (Gate::check('Manage Order'))
                 <li class="dash-item ">
                     <a href="{{ route('order.index') }}"
                         class="dash-link {{ request()->is('orders*') ? 'active' : '' }}"><span
@@ -680,8 +684,8 @@
                             class="dash-mtext">{{ __('Order') }}</span></a>
 
                 </li>
-                {{-- @endif --}}
-            @endif
+                @endif
+            @endif --}}
 
             @if (\Auth::user()->type == 'super admin')
                 <li

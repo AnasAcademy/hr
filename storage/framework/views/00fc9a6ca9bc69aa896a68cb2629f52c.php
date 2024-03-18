@@ -49,6 +49,37 @@ endif;
 unset($__errorArgs, $__bag); ?>
             </div>
         <?php endif; ?>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+                <?php echo e(Form::label('timezone', __('Timezone'), ['class' => 'col-form-label'])); ?>
+
+                
+                <select type="text" name="timezone" class="form-control select2"
+                    id="timezone">
+                    <option value=""><?php echo e(__('Select Timezone')); ?></option>
+                    <?php if(!empty($timezones)): ?>
+                        <?php $__currentLoopData = $timezones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $timezone): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($k); ?>"
+                                <?php echo e($settings['timezone'] == $k ? 'selected' : ''); ?>>
+                                <?php echo e($timezone); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endif; ?>
+                </select>
+                <?php $__errorArgs = ['timezone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <span class="invalid-timezone" role="alert">
+                        <small class="text-danger"><?php echo e($message); ?></small>
+                    </span>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+
+            </div>
+        </div>
         <div class="col-md-5 mb-3">
             <label for="password_switch"><?php echo e(__('Login is enable')); ?></label>
             <div class="form-check form-switch custom-switch-v1 float-end">

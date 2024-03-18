@@ -1,8 +1,3 @@
-
-
-
-
-
 <?php $__env->startSection('page-title'); ?>
    <?php echo e(__("Manage Department")); ?>
 
@@ -38,6 +33,7 @@
                             <tr>
                                 <th><?php echo e(__('Branch')); ?></th>
                                 <th><?php echo e(__('Department')); ?></th>
+                                <th><?php echo e(__('Manager')); ?></th>
                                 <th width="200px"><?php echo e(__('Action')); ?></th>
                             </tr>
                         </thead>
@@ -46,6 +42,7 @@
                                 <tr>
                                     <td><?php echo e(!empty($department->branch) ? $department->branch->name : ''); ?></td>
                                     <td><?php echo e($department->name); ?></td>
+                                    <td><?php echo e($department->manager->name ?? "-"); ?></td>
 
                                     <td class="Action">
                                         <span>
@@ -60,7 +57,7 @@
                                                     </a>
                                                 </div>
                                             <?php endif; ?>
-                                        
+
 
                                             <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Delete Department')): ?>
                                                 <div class="action-btn bg-danger ms-2">
@@ -85,4 +82,5 @@
         </div>
 </div>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.admin', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/department/index.blade.php ENDPATH**/ ?>

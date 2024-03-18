@@ -103,6 +103,36 @@
                                     ]); ?>
 
                                 </div>
+
+                                
+                                    <div class="form-group">
+                                        <?php echo e(Form::label('timezone', __('Timezone'), ['class' => 'col-form-label'])); ?>
+
+
+                                        <select type="text" name="timezone" class="form-control select2" id="timezone">
+                                            <option value=""><?php echo e(__('Select Timezone')); ?></option>
+                                            <?php if(!empty($timezones)): ?>
+                                                <?php $__currentLoopData = $timezones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $timezone): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($k); ?>"
+                                                        <?php echo e($settings['timezone'] == $k ? 'selected' : ''); ?>>
+                                                        <?php echo e($timezone); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php endif; ?>
+                                        </select>
+                                        <?php $__errorArgs = ['timezone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <span class="invalid-timezone" role="alert">
+                                                <small class="text-danger"><?php echo e($message); ?></small>
+                                            </span>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+
+                                    </div>
                             </div>
                         </div>
                     </div>
@@ -152,12 +182,14 @@
 
                                         </div>
                                     </div>
+
                                     <div class="form-group">
                                         <?php echo Form::label('company_doj', __('Company Date Of Joining'), ['class' => '  form-label']); ?>
 
                                         <?php echo e(Form::date('company_doj', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select company date of joining'])); ?>
 
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -300,16 +332,16 @@ unset($__errorArgs, $__bag); ?>"
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('script-page'); ?>
-<script>
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var latitude = position.coords.latitude;
-      var longitude = position.coords.longitude;
-      console.log("Latitude: " + latitude + "\nLongitude: " + longitude);
-      var mapUrl = 'https://www.google.com/maps?q=' + latitude + ',' + longitude;
-      console.log(mapUrl);
-      window.open(mapUrl, '_self');
-    })
-  </script>
+    <script>
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            console.log("Latitude: " + latitude + "\nLongitude: " + longitude);
+            var mapUrl = 'https://www.google.com/maps?q=' + latitude + ',' + longitude;
+            console.log(mapUrl);
+            window.open(mapUrl, '_self');
+        })
+    </script>
     <script>
         $('input[type="file"]').change(function(e) {
             var file = e.target.files[0].name;
@@ -410,9 +442,7 @@ unset($__errorArgs, $__bag); ?>"
             var today = now.getFullYear() + '-' + month + '-' + day;
             $('.current_date').val(today);
         });
-        </script>
-
-
+    </script>
 <?php $__env->stopPush(); ?>
 
 <?php echo $__env->make('layouts.admin', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/employee/create.blade.php ENDPATH**/ ?>

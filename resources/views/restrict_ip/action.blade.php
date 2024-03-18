@@ -1,4 +1,3 @@
-
 <div class="modal-body">
     <div class="row">
         <div class="col-12">
@@ -24,14 +23,13 @@
     </div>
 </div>
 
-@if (Auth::user()->type == 'company' || Auth::user()->type == 'hr')
+@can('Manage Device')
     <div class="modal-footer">
-        {{ Form::open(['url' => 'ip/'.$device->id.'/approve', 'method' => 'post']) }}
+        {{ Form::open(['url' => 'ip/' . $device->id . '/approve', 'method' => 'post']) }}
         <input type="submit" value="{{ __('Approved') }}" class="btn btn-success rounded" name="status">
         {{ Form::close() }}
-        {{ Form::open(['url' => 'ip/'.$device->id.'/reject', 'method' => 'post']) }}
+        {{ Form::open(['url' => 'ip/' . $device->id . '/reject', 'method' => 'post']) }}
         <input type="submit" value="{{ __('Reject') }}" class="btn btn-danger rounded" name="status">
         {{ Form::close() }}
     </div>
-@endif
-
+@endcan
