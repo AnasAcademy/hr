@@ -213,8 +213,17 @@
             @endif
             <!-- employee-->
 
+            {{-- manager --}}
+            @can('View Manager')
+                <li class="dash-item {{ Request::segment(1) == 'manager' && Request::segment(2) == '' ? 'active' : '' }}">
+                    <a href="{{ route('manager.index') }}" class="dash-link"><span class="dash-micon"><i
+                                class="fas fa-user-tie"></i></span><span
+                            class="dash-mtext">{{ __('Manager') }}</span></a>
+                </li>
+            @endcan
+
             <!-- payroll-->
-            @if (Gate::check('Manage Set Salary') || Gate::check('Manage Pay Slip'))
+            {{-- @if (Gate::check('Manage Set Salary') || Gate::check('Manage Pay Slip'))
                 <li
                     class="dash-item dash-hasmenu  {{ Request::segment(1) == 'setsalary' ? 'dash-trigger active' : '' }}">
                     <a href="#!" class="dash-link">
@@ -239,7 +248,7 @@
 
                     </ul>
                 </li>
-            @endif
+            @endif --}}
             <!-- payroll-->
 
             {{-- @if (\Auth::user()->type == 'employee')
@@ -276,11 +285,9 @@
                             </li>
                         @endcan --}}
                         @can('View Leave')
-
                             <li class="dash-item {{ Request::segment(1) == 'calender' ? ' active' : '' }}">
                                 <a class="dash-link" href="{{ route('leave.index') }}">{{ __('Manage Leave') }}</a>
                             </li>
-
                         @endcan
                         @can('Manage Attendance')
                             <li class="dash-item dash-hasmenu">
@@ -307,7 +314,7 @@
             <!--timesheet-->
 
             <!-- performance-->
-            @if (Gate::check('Manage Indicator') || Gate::check('Manage Appraisal') || Gate::check('Manage Goal Tracking'))
+            {{-- @if (Gate::check('Manage Indicator') || Gate::check('Manage Appraisal') || Gate::check('Manage Goal Tracking'))
                 <li class="dash-item dash-hasmenu">
                     <a href="#!" class="dash-link"><span class="dash-micon"><i
                                 class="ti ti-3d-cube-sphere"></i></span><span
@@ -334,16 +341,11 @@
                         @endcan
                     </ul>
                 </li>
-            @endif
+            @endif --}}
             <!--performance-->
 
             <!--fianance-->
-            @if (Gate::check('Manage Account List') ||
-                    Gate::check('Manage Payee') ||
-                    Gate::check('Manage Payer') ||
-                    Gate::check('Manage Deposit') ||
-                    Gate::check('Manage Expense') ||
-                    Gate::check('Manage Transfer Balance'))
+            {{-- @if (Gate::check('Manage Account List') || Gate::check('Manage Payee') || Gate::check('Manage Payer') || Gate::check('Manage Deposit') || Gate::check('Manage Expense') || Gate::check('Manage Transfer Balance'))
                 <li class="dash-item dash-hasmenu">
                     <a href="#!" class="dash-link"><span class="dash-micon"><i
                                 class="ti ti-wallet"></i></span><span
@@ -394,7 +396,7 @@
                         @endcan
                     </ul>
                 </li>
-            @endif
+            @endif --}}
             <!-- fianance-->
 
             <!--trainning-->
@@ -619,13 +621,13 @@
 
 
 
-            @if (Gate::check('Manage Company Policy'))
+            {{-- @if (Gate::check('Manage Company Policy'))
                 <li class="dash-item">
                     <a href="{{ route('company-policy.index') }}" class="dash-link"><span class="dash-micon"><i
                                 class="ti ti-pray"></i></span><span
                             class="dash-mtext">{{ __('Company Policy') }}</span></a>
                 </li>
-            @endcan
+            @endcan --}}
             <!--chats-->
             {{-- @if (\Auth::user()->type != 'super admin')
                 <li class="dash-item {{ Request::segment(1) == 'chats' ? 'active' : '' }}">
@@ -704,33 +706,33 @@ class="dash-mtext">{{ __('Report') }}</span><span
 class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
 <ul class="dash-submenu">
 @can('Manage Report')
-<li class="dash-item">
-<a class="dash-link"
-href="{{ route('report.income-expense') }}">{{ __('Income Vs Expense') }}</a>
-</li>
+    <li class="dash-item">
+    <a class="dash-link"
+    href="{{ route('report.income-expense') }}">{{ __('Income Vs Expense') }}</a>
+    </li>
 
-<li class="dash-item">
-<a class="dash-link"
-href="{{ route('report.monthly.attendance') }}">{{ __('Monthly Attendance') }}</a>
-</li>
+    <li class="dash-item">
+    <a class="dash-link"
+    href="{{ route('report.monthly.attendance') }}">{{ __('Monthly Attendance') }}</a>
+    </li>
 
-<li class="dash-item">
-<a class="dash-link"
-href="{{ route('report.leave') }}">{{ __('Leave') }}</a>
-</li>
-
-
-<li class="dash-item">
-<a class="dash-link"
-href="{{ route('report.account.statement') }}">{{ __('Account Statement') }}</a>
-</li>
+    <li class="dash-item">
+    <a class="dash-link"
+    href="{{ route('report.leave') }}">{{ __('Leave') }}</a>
+    </li>
 
 
+    <li class="dash-item">
+    <a class="dash-link"
+    href="{{ route('report.account.statement') }}">{{ __('Account Statement') }}</a>
+    </li>
 
-<li class="dash-item">
-<a class="dash-link"
-href="{{ route('report.timesheet') }}">{{ __('Timesheet') }}</a>
-</li>
+
+
+    <li class="dash-item">
+    <a class="dash-link"
+    href="{{ route('report.timesheet') }}">{{ __('Timesheet') }}</a>
+    </li>
 @endcan
 
 
@@ -765,130 +767,130 @@ href="{{ route('report.timesheet') }}">{{ __('Timesheet') }}</a>
                 </li>
                 <!-- <ul class="dash-submenu">
 @can('Manage Branch')
-<li class="dash-item {{ request()->is('branch*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('branch.index') }}">{{ __('Branch') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('branch*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('branch.index') }}">{{ __('Branch') }}</a>
+    </li>
 @endcan
 @can('Manage Department')
-<li class="dash-item {{ request()->is('department*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('department.index') }}">{{ __('Department') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('department*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('department.index') }}">{{ __('Department') }}</a>
+    </li>
 @endcan
 @can('Manage Designation')
-<li class="dash-item {{ request()->is('designation*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('designation.index') }}">{{ __('Designation') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('designation*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('designation.index') }}">{{ __('Designation') }}</a>
+    </li>
 @endcan
 @can('Manage Document Type')
-<li class="dash-item {{ request()->is('document*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('document.index') }}">{{ __('Document Type') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('document*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('document.index') }}">{{ __('Document Type') }}</a>
+    </li>
 @endcan
 
 @can('Manage Award Type')
-<li class="dash-item {{ request()->is('awardtype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('awardtype.index') }}">{{ __('Award Type') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('awardtype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('awardtype.index') }}">{{ __('Award Type') }}</a>
+    </li>
 @endcan
 @can('Manage Termination Types')
-<li
-class="dash-item {{ request()->is('terminationtype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('terminationtype.index') }}">{{ __('Termination Type') }}</a>
-</li>
+    <li
+    class="dash-item {{ request()->is('terminationtype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('terminationtype.index') }}">{{ __('Termination Type') }}</a>
+    </li>
 @endcan
 @can('Manage Payslip Type')
-<li class="dash-item {{ request()->is('paysliptype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('paysliptype.index') }}">{{ __('Payslip Type') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('paysliptype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('paysliptype.index') }}">{{ __('Payslip Type') }}</a>
+    </li>
 @endcan
 @can('Manage Allowance Option')
-<li
-class="dash-item {{ request()->is('allowanceoption*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('allowanceoption.index') }}">{{ __('Allowance Option') }}</a>
-</li>
+    <li
+    class="dash-item {{ request()->is('allowanceoption*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('allowanceoption.index') }}">{{ __('Allowance Option') }}</a>
+    </li>
 @endcan
 @can('Manage Loan Option')
-<li class="dash-item {{ request()->is('loanoption*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('loanoption.index') }}">{{ __('Loan Option') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('loanoption*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('loanoption.index') }}">{{ __('Loan Option') }}</a>
+    </li>
 @endcan
 @can('Manage Deduction Option')
-<li
-class="dash-item {{ request()->is('deductionoption*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('deductionoption.index') }}">{{ __('Deduction Option') }}</a>
-</li>
+    <li
+    class="dash-item {{ request()->is('deductionoption*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('deductionoption.index') }}">{{ __('Deduction Option') }}</a>
+    </li>
 @endcan
 @can('Manage Expense Type')
-<li class="dash-item {{ request()->is('expensetype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('expensetype.index') }}">{{ __('Expense Type') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('expensetype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('expensetype.index') }}">{{ __('Expense Type') }}</a>
+    </li>
 @endcan
 @can('Manage Income Type')
-<li class="dash-item {{ request()->is('incometype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('incometype.index') }}">{{ __('Income Type') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('incometype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('incometype.index') }}">{{ __('Income Type') }}</a>
+    </li>
 @endcan
 @can('Manage Payment Type')
-<li class="dash-item {{ request()->is('paymenttype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('paymenttype.index') }}">{{ __('Payment Type') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('paymenttype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('paymenttype.index') }}">{{ __('Payment Type') }}</a>
+    </li>
 @endcan
 @can('Manage Leave Type')
-<li class="dash-item {{ request()->is('leavetype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('leavetype.index') }}">{{ __('Leave Type') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('leavetype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('leavetype.index') }}">{{ __('Leave Type') }}</a>
+    </li>
 @endcan
 @can('Manage Termination Type')
-<li
-class="dash-item {{ request()->is('terminationtype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('terminationtype.index') }}">{{ __('Termination Type') }}</a>
-</li>
+    <li
+    class="dash-item {{ request()->is('terminationtype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('terminationtype.index') }}">{{ __('Termination Type') }}</a>
+    </li>
 @endcan
 @can('Manage Goal Type')
-<li class="dash-item {{ request()->is('goaltype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('goaltype.index') }}">{{ __('Goal Type') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('goaltype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('goaltype.index') }}">{{ __('Goal Type') }}</a>
+    </li>
 @endcan
 @can('Manage Training Type')
-<li class="dash-item {{ request()->is('trainingtype*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('trainingtype.index') }}">{{ __('Training Type') }}</a>
-</li>
+    <li class="dash-item {{ request()->is('trainingtype*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('trainingtype.index') }}">{{ __('Training Type') }}</a>
+    </li>
 @endcan
 
 @if (\Auth::user()->type !== 'hr')
 @can('Manage Job Category')
-<li
-class="dash-item {{ request()->is('job-category*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('job-category.index') }}">{{ __('Job Category') }}</a>
-</li>
+    <li
+    class="dash-item {{ request()->is('job-category*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('job-category.index') }}">{{ __('Job Category') }}</a>
+    </li>
 @endcan
 @endif
 
 @if (\Auth::user()->type !== 'hr')
 @can('Manage Job Stage')
-<li
-class="dash-item {{ request()->is('job-stage*') ? 'active' : '' }}">
-<a class="dash-link"
-href="{{ route('job-stage.index') }}">{{ __('Job Stage') }}</a>
-</li>
+    <li
+    class="dash-item {{ request()->is('job-stage*') ? 'active' : '' }}">
+    <a class="dash-link"
+    href="{{ route('job-stage.index') }}">{{ __('Job Stage') }}</a>
+    </li>
 @endcan
 @endif
 
@@ -899,11 +901,11 @@ href="{{ route('performanceType.index') }}">{{ __('Performance Type') }}</a>
 </li>
 
 @can('Manage Competencies')
-<li class="dash-item {{ request()->is('competencies*') ? 'active' : '' }}">
+    <li class="dash-item {{ request()->is('competencies*') ? 'active' : '' }}">
 
-<a class="dash-link"
-href="{{ route('competencies.index') }}">{{ __('Competencies') }}</a>
-</li>
+    <a class="dash-link"
+    href="{{ route('competencies.index') }}">{{ __('Competencies') }}</a>
+    </li>
 @endcan
 </ul> -->
             @endif
@@ -948,8 +950,7 @@ href="{{ route('competencies.index') }}">{{ __('Competencies') }}</a>
                             @endif
                             @if (\Auth::user()->type == 'super admin' || \Auth::user()->type == 'company')
                                 <li class="dash-item {{ Request::segment(1) == 'order' ? 'active' : '' }}">
-                                    <a href="{{ route('order.index') }}"
-                                        class="dash-link">{{ __('Order') }}</a>
+                                    <a href="{{ route('order.index') }}" class="dash-link">{{ __('Order') }}</a>
                                 </li>
                             @endif
                         </ul>
@@ -958,8 +959,8 @@ href="{{ route('competencies.index') }}">{{ __('Competencies') }}</a>
             @endif
 
             <!--------------------- End System Setup ----------------------------------->
-    </ul>
+        </ul>
 
-</div>
+    </div>
 </div>
 </nav>

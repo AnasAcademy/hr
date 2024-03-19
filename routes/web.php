@@ -109,6 +109,7 @@ use App\Http\Controllers\XenditPaymentController;
 use App\Http\Controllers\YooKassaController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\DeviceIpController;
+use App\Http\Controllers\ManagerController;
 
 // use App\Http\Controllers\PlanRequestController;
 
@@ -368,6 +369,13 @@ Route::group(['middleware' => ['verified']], function () {
     );
 
     Route::resource('employee', EmployeeController::class)->middleware(
+        [
+            'auth',
+            'XSS',
+        ]
+    );
+
+    Route::resource('manager', ManagerController::class)->middleware(
         [
             'auth',
             'XSS',

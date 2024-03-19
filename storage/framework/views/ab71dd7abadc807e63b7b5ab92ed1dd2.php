@@ -213,34 +213,17 @@
             <?php endif; ?>
             <!-- employee-->
 
-            <!-- payroll-->
-            <?php if(Gate::check('Manage Set Salary') || Gate::check('Manage Pay Slip')): ?>
-                <li
-                    class="dash-item dash-hasmenu  <?php echo e(Request::segment(1) == 'setsalary' ? 'dash-trigger active' : ''); ?>">
-                    <a href="#!" class="dash-link">
-                        <span class="dash-micon">
-                            <i class="ti ti-receipt">
-                            </i>
-                        </span>
-                        <span class="dash-mtext">
-                            <?php echo e(__('Payroll')); ?>
-
-                        </span>
-                        <span class="dash-arrow"><i data-feather="chevron-right">
-                            </i>
-                        </span>
-                    </a>
-                    <ul class="dash-submenu ">
-                        <li class="dash-item <?php echo e(Request::segment(1) == 'setsalary' ? 'active' : '-'); ?>">
-                            <a class="dash-link" href="<?php echo e(route('setsalary.index')); ?>"><?php echo e(__('Set Salary')); ?></a>
-                        </li>
-                        <li class="dash-item">
-                            <a class="dash-link" href="<?php echo e(route('payslip.index')); ?>"><?php echo e(__('Payslip')); ?></a>
-                        </li>
-
-                    </ul>
+            
+            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('View Manager')): ?>
+                <li class="dash-item <?php echo e(Request::segment(1) == 'manager' && Request::segment(2) == '' ? 'active' : ''); ?>">
+                    <a href="<?php echo e(route('manager.index')); ?>" class="dash-link"><span class="dash-micon"><i
+                                class="fas fa-user-tie"></i></span><span
+                            class="dash-mtext"><?php echo e(__('Manager')); ?></span></a>
                 </li>
             <?php endif; ?>
+
+            <!-- payroll-->
+            
             <!-- payroll-->
 
             
@@ -256,11 +239,9 @@
                     <ul class="dash-submenu">
                         
                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('View Leave')): ?>
-
                             <li class="dash-item <?php echo e(Request::segment(1) == 'calender' ? ' active' : ''); ?>">
                                 <a class="dash-link" href="<?php echo e(route('leave.index')); ?>"><?php echo e(__('Manage Leave')); ?></a>
                             </li>
-
                         <?php endif; ?>
                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Attendance')): ?>
                             <li class="dash-item dash-hasmenu">
@@ -287,94 +268,11 @@
             <!--timesheet-->
 
             <!-- performance-->
-            <?php if(Gate::check('Manage Indicator') || Gate::check('Manage Appraisal') || Gate::check('Manage Goal Tracking')): ?>
-                <li class="dash-item dash-hasmenu">
-                    <a href="#!" class="dash-link"><span class="dash-micon"><i
-                                class="ti ti-3d-cube-sphere"></i></span><span
-                            class="dash-mtext"><?php echo e(__('Performance')); ?></span><span class="dash-arrow"><i
-                                data-feather="chevron-right"></i></span></a>
-                    <ul class="dash-submenu">
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Indicator')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link" href="<?php echo e(route('indicator.index')); ?>"><?php echo e(__('Indicator')); ?></a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Appraisal')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link" href="<?php echo e(route('appraisal.index')); ?>"><?php echo e(__('Appraisal')); ?></a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Goal Tracking')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link"
-                                    href="<?php echo e(route('goaltracking.index')); ?>"><?php echo e(__('Goal Tracking')); ?></a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </li>
-            <?php endif; ?>
+            
             <!--performance-->
 
             <!--fianance-->
-            <?php if(Gate::check('Manage Account List') ||
-                    Gate::check('Manage Payee') ||
-                    Gate::check('Manage Payer') ||
-                    Gate::check('Manage Deposit') ||
-                    Gate::check('Manage Expense') ||
-                    Gate::check('Manage Transfer Balance')): ?>
-                <li class="dash-item dash-hasmenu">
-                    <a href="#!" class="dash-link"><span class="dash-micon"><i
-                                class="ti ti-wallet"></i></span><span
-                            class="dash-mtext"><?php echo e(__('Finance')); ?></span><span class="dash-arrow"><i
-                                data-feather="chevron-right"></i></span></a>
-                    <ul class="dash-submenu">
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Account List')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link"
-                                    href="<?php echo e(route('accountlist.index')); ?>"><?php echo e(__('Account List')); ?></a>
-                            </li>
-                        <?php endif; ?>
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('View Balance Account List')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link"
-                                    href="<?php echo e(route('accountbalance')); ?>"><?php echo e(__('Account Balance')); ?></a>
-                            </li>
-                        <?php endif; ?>
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Payee')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link" href="<?php echo e(route('payees.index')); ?>"><?php echo e(__('Payees')); ?></a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Payer')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link" href="<?php echo e(route('payer.index')); ?>"><?php echo e(__('Payers')); ?></a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Deposit')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link" href="<?php echo e(route('deposit.index')); ?>"><?php echo e(__('Deposit')); ?></a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Expense')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link" href="<?php echo e(route('expense.index')); ?>"><?php echo e(__('Expense')); ?></a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Transfer Balance')): ?>
-                            <li class="dash-item">
-                                <a class="dash-link"
-                                    href="<?php echo e(route('transferbalance.index')); ?>"><?php echo e(__('Transfer Balance')); ?></a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </li>
-            <?php endif; ?>
+            
             <!-- fianance-->
 
             <!--trainning-->
@@ -421,13 +319,7 @@
 
 
 
-            <?php if(Gate::check('Manage Company Policy')): ?>
-                <li class="dash-item">
-                    <a href="<?php echo e(route('company-policy.index')); ?>" class="dash-link"><span class="dash-micon"><i
-                                class="ti ti-pray"></i></span><span
-                            class="dash-mtext"><?php echo e(__('Company Policy')); ?></span></a>
-                </li>
-            <?php endif; ?>
+            
             <!--chats-->
             
 
@@ -465,33 +357,33 @@ class="dash-mtext"><?php echo e(__('Report')); ?></span><span
 class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
 <ul class="dash-submenu">
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Report')): ?>
-<li class="dash-item">
-<a class="dash-link"
-href="<?php echo e(route('report.income-expense')); ?>"><?php echo e(__('Income Vs Expense')); ?></a>
-</li>
+    <li class="dash-item">
+    <a class="dash-link"
+    href="<?php echo e(route('report.income-expense')); ?>"><?php echo e(__('Income Vs Expense')); ?></a>
+    </li>
 
-<li class="dash-item">
-<a class="dash-link"
-href="<?php echo e(route('report.monthly.attendance')); ?>"><?php echo e(__('Monthly Attendance')); ?></a>
-</li>
+    <li class="dash-item">
+    <a class="dash-link"
+    href="<?php echo e(route('report.monthly.attendance')); ?>"><?php echo e(__('Monthly Attendance')); ?></a>
+    </li>
 
-<li class="dash-item">
-<a class="dash-link"
-href="<?php echo e(route('report.leave')); ?>"><?php echo e(__('Leave')); ?></a>
-</li>
-
-
-<li class="dash-item">
-<a class="dash-link"
-href="<?php echo e(route('report.account.statement')); ?>"><?php echo e(__('Account Statement')); ?></a>
-</li>
+    <li class="dash-item">
+    <a class="dash-link"
+    href="<?php echo e(route('report.leave')); ?>"><?php echo e(__('Leave')); ?></a>
+    </li>
 
 
+    <li class="dash-item">
+    <a class="dash-link"
+    href="<?php echo e(route('report.account.statement')); ?>"><?php echo e(__('Account Statement')); ?></a>
+    </li>
 
-<li class="dash-item">
-<a class="dash-link"
-href="<?php echo e(route('report.timesheet')); ?>"><?php echo e(__('Timesheet')); ?></a>
-</li>
+
+
+    <li class="dash-item">
+    <a class="dash-link"
+    href="<?php echo e(route('report.timesheet')); ?>"><?php echo e(__('Timesheet')); ?></a>
+    </li>
 <?php endif; ?>
 
 
@@ -526,130 +418,130 @@ href="<?php echo e(route('report.timesheet')); ?>"><?php echo e(__('Timesheet'))
                 </li>
                 <!-- <ul class="dash-submenu">
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Branch')): ?>
-<li class="dash-item <?php echo e(request()->is('branch*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('branch.index')); ?>"><?php echo e(__('Branch')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('branch*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('branch.index')); ?>"><?php echo e(__('Branch')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Department')): ?>
-<li class="dash-item <?php echo e(request()->is('department*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('department.index')); ?>"><?php echo e(__('Department')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('department*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('department.index')); ?>"><?php echo e(__('Department')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Designation')): ?>
-<li class="dash-item <?php echo e(request()->is('designation*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('designation.index')); ?>"><?php echo e(__('Designation')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('designation*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('designation.index')); ?>"><?php echo e(__('Designation')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Document Type')): ?>
-<li class="dash-item <?php echo e(request()->is('document*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('document.index')); ?>"><?php echo e(__('Document Type')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('document*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('document.index')); ?>"><?php echo e(__('Document Type')); ?></a>
+    </li>
 <?php endif; ?>
 
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Award Type')): ?>
-<li class="dash-item <?php echo e(request()->is('awardtype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('awardtype.index')); ?>"><?php echo e(__('Award Type')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('awardtype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('awardtype.index')); ?>"><?php echo e(__('Award Type')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Termination Types')): ?>
-<li
-class="dash-item <?php echo e(request()->is('terminationtype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('terminationtype.index')); ?>"><?php echo e(__('Termination Type')); ?></a>
-</li>
+    <li
+    class="dash-item <?php echo e(request()->is('terminationtype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('terminationtype.index')); ?>"><?php echo e(__('Termination Type')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Payslip Type')): ?>
-<li class="dash-item <?php echo e(request()->is('paysliptype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('paysliptype.index')); ?>"><?php echo e(__('Payslip Type')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('paysliptype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('paysliptype.index')); ?>"><?php echo e(__('Payslip Type')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Allowance Option')): ?>
-<li
-class="dash-item <?php echo e(request()->is('allowanceoption*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('allowanceoption.index')); ?>"><?php echo e(__('Allowance Option')); ?></a>
-</li>
+    <li
+    class="dash-item <?php echo e(request()->is('allowanceoption*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('allowanceoption.index')); ?>"><?php echo e(__('Allowance Option')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Loan Option')): ?>
-<li class="dash-item <?php echo e(request()->is('loanoption*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('loanoption.index')); ?>"><?php echo e(__('Loan Option')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('loanoption*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('loanoption.index')); ?>"><?php echo e(__('Loan Option')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Deduction Option')): ?>
-<li
-class="dash-item <?php echo e(request()->is('deductionoption*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('deductionoption.index')); ?>"><?php echo e(__('Deduction Option')); ?></a>
-</li>
+    <li
+    class="dash-item <?php echo e(request()->is('deductionoption*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('deductionoption.index')); ?>"><?php echo e(__('Deduction Option')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Expense Type')): ?>
-<li class="dash-item <?php echo e(request()->is('expensetype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('expensetype.index')); ?>"><?php echo e(__('Expense Type')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('expensetype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('expensetype.index')); ?>"><?php echo e(__('Expense Type')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Income Type')): ?>
-<li class="dash-item <?php echo e(request()->is('incometype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('incometype.index')); ?>"><?php echo e(__('Income Type')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('incometype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('incometype.index')); ?>"><?php echo e(__('Income Type')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Payment Type')): ?>
-<li class="dash-item <?php echo e(request()->is('paymenttype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('paymenttype.index')); ?>"><?php echo e(__('Payment Type')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('paymenttype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('paymenttype.index')); ?>"><?php echo e(__('Payment Type')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Leave Type')): ?>
-<li class="dash-item <?php echo e(request()->is('leavetype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('leavetype.index')); ?>"><?php echo e(__('Leave Type')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('leavetype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('leavetype.index')); ?>"><?php echo e(__('Leave Type')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Termination Type')): ?>
-<li
-class="dash-item <?php echo e(request()->is('terminationtype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('terminationtype.index')); ?>"><?php echo e(__('Termination Type')); ?></a>
-</li>
+    <li
+    class="dash-item <?php echo e(request()->is('terminationtype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('terminationtype.index')); ?>"><?php echo e(__('Termination Type')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Goal Type')): ?>
-<li class="dash-item <?php echo e(request()->is('goaltype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('goaltype.index')); ?>"><?php echo e(__('Goal Type')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('goaltype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('goaltype.index')); ?>"><?php echo e(__('Goal Type')); ?></a>
+    </li>
 <?php endif; ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Training Type')): ?>
-<li class="dash-item <?php echo e(request()->is('trainingtype*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('trainingtype.index')); ?>"><?php echo e(__('Training Type')); ?></a>
-</li>
+    <li class="dash-item <?php echo e(request()->is('trainingtype*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('trainingtype.index')); ?>"><?php echo e(__('Training Type')); ?></a>
+    </li>
 <?php endif; ?>
 
 <?php if(\Auth::user()->type !== 'hr'): ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Job Category')): ?>
-<li
-class="dash-item <?php echo e(request()->is('job-category*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('job-category.index')); ?>"><?php echo e(__('Job Category')); ?></a>
-</li>
+    <li
+    class="dash-item <?php echo e(request()->is('job-category*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('job-category.index')); ?>"><?php echo e(__('Job Category')); ?></a>
+    </li>
 <?php endif; ?>
 <?php endif; ?>
 
 <?php if(\Auth::user()->type !== 'hr'): ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Job Stage')): ?>
-<li
-class="dash-item <?php echo e(request()->is('job-stage*') ? 'active' : ''); ?>">
-<a class="dash-link"
-href="<?php echo e(route('job-stage.index')); ?>"><?php echo e(__('Job Stage')); ?></a>
-</li>
+    <li
+    class="dash-item <?php echo e(request()->is('job-stage*') ? 'active' : ''); ?>">
+    <a class="dash-link"
+    href="<?php echo e(route('job-stage.index')); ?>"><?php echo e(__('Job Stage')); ?></a>
+    </li>
 <?php endif; ?>
 <?php endif; ?>
 
@@ -660,11 +552,11 @@ href="<?php echo e(route('performanceType.index')); ?>"><?php echo e(__('Perform
 </li>
 
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Competencies')): ?>
-<li class="dash-item <?php echo e(request()->is('competencies*') ? 'active' : ''); ?>">
+    <li class="dash-item <?php echo e(request()->is('competencies*') ? 'active' : ''); ?>">
 
-<a class="dash-link"
-href="<?php echo e(route('competencies.index')); ?>"><?php echo e(__('Competencies')); ?></a>
-</li>
+    <a class="dash-link"
+    href="<?php echo e(route('competencies.index')); ?>"><?php echo e(__('Competencies')); ?></a>
+    </li>
 <?php endif; ?>
 </ul> -->
             <?php endif; ?>
@@ -709,8 +601,7 @@ href="<?php echo e(route('competencies.index')); ?>"><?php echo e(__('Competenci
                             <?php endif; ?>
                             <?php if(\Auth::user()->type == 'super admin' || \Auth::user()->type == 'company'): ?>
                                 <li class="dash-item <?php echo e(Request::segment(1) == 'order' ? 'active' : ''); ?>">
-                                    <a href="<?php echo e(route('order.index')); ?>"
-                                        class="dash-link"><?php echo e(__('Order')); ?></a>
+                                    <a href="<?php echo e(route('order.index')); ?>" class="dash-link"><?php echo e(__('Order')); ?></a>
                                 </li>
                             <?php endif; ?>
                         </ul>
@@ -719,9 +610,9 @@ href="<?php echo e(route('competencies.index')); ?>"><?php echo e(__('Competenci
             <?php endif; ?>
 
             <!--------------------- End System Setup ----------------------------------->
-    </ul>
+        </ul>
 
-</div>
+    </div>
 </div>
 </nav>
 <?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/partial/Admin/menu.blade.php ENDPATH**/ ?>
