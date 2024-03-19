@@ -35,6 +35,12 @@ class LeaveController extends Controller
                     $user     = \Auth::user();
                     $query->where('department_id', $departmentId)->where("user_id", "!=", $user->id);
                 })->get();
+            } else if (\Auth::user()->type == 'leadership') {
+                $userType = "manager";
+                $leaves = LocalLeave::whereHas('employees.user', function ($query) use ($userType) {
+                    $user  = \Auth::user();
+                    $query->where('type', $userType)->where("user_id", "!=", $user->id);
+                })->get();
             } else {
                 $leaves = LocalLeave::where('created_by', '=', \Auth::user()->creatorId())->with(['employees', 'leaveType'])->get();
             }

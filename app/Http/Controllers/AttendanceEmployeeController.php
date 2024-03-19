@@ -79,7 +79,15 @@ class AttendanceEmployeeController extends Controller
                     $employee = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('department', function ($query) use ($user) {
                         $query->where('manager_id', $user->id);
                     });
-                }else{
+                }
+                else if(\Auth::user()->type == 'leadership'){
+                    $user = \Auth::user();
+
+                    $employee = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('user', function ($query) use ($user) {
+                        $query->where('type', 'manager');
+                    });
+                }
+                else{
                     $employee = Employee::select('id')->where('created_by', \Auth::user()->creatorId());
                 }
                 if (!empty($request->branch)) {
