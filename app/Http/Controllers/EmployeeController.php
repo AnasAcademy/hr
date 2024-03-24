@@ -101,6 +101,7 @@ class EmployeeController extends Controller
                     'designation_id' => 'required',
                     'document.*' => 'required',
                     'timezone' => 'required',
+                    'leave_balance' => 'required|integer'
                 ]
             );
             if ($validator->fails()) {
@@ -199,6 +200,7 @@ class EmployeeController extends Controller
                     'branch_location' => $request['branch_location'],
                     'tax_payer_id' => $request['tax_payer_id'],
                     'created_by' => \Auth::user()->creatorId(),
+                    'leave_balance' => $request['leave_balance'],
                 ]
 
             );
@@ -368,7 +370,11 @@ class EmployeeController extends Controller
 
             $employee = Employee::findOrFail($id);
             $input    = $request->all();
+            // dd($input);
             $employee->fill($input)->save();
+            if($request->timezone){
+                $employee->user->update(['timezone' => $request->timezone]);
+            }
             if ($request->salary) {
                 return redirect()->route('setsalary.index')->with('success', 'Employee successfully updated.');
             }

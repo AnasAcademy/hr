@@ -97,26 +97,26 @@
                                 </div>
 
                                 {{-- timezone --}}
-                                    <div class="form-group">
-                                        {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}
+                                <div class="form-group">
+                                    {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}
 
-                                        <select type="text" name="timezone" class="form-control select2" id="timezone">
-                                            <option value="">{{ __('Select Timezone') }}</option>
-                                            @if (!empty($timezones))
-                                                @foreach ($timezones as $k => $timezone)
-                                                    <option value="{{ $k }}"
-                                                        {{ $settings['timezone'] == $k ? 'selected' : '' }}>
-                                                        {{ $timezone }}</option>
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                        @error('timezone')
-                                            <span class="invalid-timezone" role="alert">
-                                                <small class="text-danger">{{ $message }}</small>
-                                            </span>
-                                        @enderror
+                                    <select type="text" name="timezone" class="form-control select2" id="timezone">
+                                        <option value="">{{ __('Select Timezone') }}</option>
+                                        @if (!empty($timezones))
+                                            @foreach ($timezones as $k => $timezone)
+                                                <option value="{{ $k }}"
+                                                    {{ $settings['timezone'] == $k ? 'selected' : '' }}>
+                                                    {{ $timezone }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    @error('timezone')
+                                        <span class="invalid-timezone" role="alert">
+                                            <small class="text-danger">{{ $message }}</small>
+                                        </span>
+                                    @enderror
 
-                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -166,6 +166,14 @@
                                     <div class="form-group">
                                         {!! Form::label('company_doj', __('Company Date Of Joining'), ['class' => '  form-label']) !!}
                                         {{ Form::date('company_doj', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select company date of joining']) }}
+                                    </div>
+                                    <div class="form-group ">
+                                        {!! Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']) !!}
+                                        {!! Form::number('leave_balance', null, [
+                                            'class' => 'form-control',
+                                            'min' => 0,
+                                            'placeholder' => 'Enter the Limit Number of Holidays',
+                                        ]) !!}
                                     </div>
 
                                 </div>

@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Edit Employee')); ?>
 
@@ -77,6 +75,27 @@
                                     <?php echo Form::textarea('address', null, ['class' => 'form-control', 'rows' => 3]); ?>
 
                                 </div>
+
+                                
+                                <div class="form-group">
+                                    <?php echo e(Form::label('timezone', __('Timezone'), ['class' => 'col-form-label'])); ?>
+
+
+                                    <select type="text" name="timezone" class="form-control select2" id="timezone">
+                                        <option value=""><?php echo e(__('Select Timezone')); ?></option>
+                                        <?php if(!empty($timezones)): ?>
+                                            <?php $__currentLoopData = $timezones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $timezone): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($k); ?>"
+                                                    <?php echo e($employee->user->timezone == $k ? 'selected' : ''); ?>>
+                                                    <?php echo e($timezone); ?>
+
+                                                </option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
+                                    </select>
+
+                                </div>
+
                                 <?php if(\Auth::user()->type == 'employee'): ?>
                                     <div class="float-end">
                                         <?php echo Form::submit('Update', ['class' => 'btn btn-primary']); ?>
@@ -86,6 +105,8 @@
                             </div>
                         </div>
                     </div>
+
+                    
                     <?php if(\Auth::user()->type != 'employee'): ?>
                         <div class="col-md-6 ">
                             <div class="card em-card">
@@ -140,6 +161,17 @@
 
                                         </div>
 
+                                        <div class="form-group ">
+                                            <?php echo Form::label('leave_balance', __('Holiday Balance'), ['class' => 'form-label']); ?>
+
+                                            <?php echo Form::number('leave_balance', $employee->leave_balance, [
+                                                'class' => 'form-control',
+                                                'min' => 0,
+                                                'placeholder' => 'Enter the Limit Number of Holidays',
+                                            ]); ?>
+
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -177,6 +209,7 @@
                                                     <span><?php echo e(\Auth::user()->dateFormat($employee->company_doj)); ?></span>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -184,6 +217,8 @@
                         </div>
                     <?php endif; ?>
                 </div>
+
+                
                 <?php if(\Auth::user()->type != 'employee'): ?>
                     <div class="row">
                         <div class="col-md-6 ">
@@ -193,7 +228,9 @@
                                 </div>
                                 <div class="card-body">
                                     <?php
-                                        $employeedoc = $employee->documents()->pluck('document_value', __('document_id'));
+                                        $employeedoc = $employee
+                                            ->documents()
+                                            ->pluck('document_value', __('document_id'));
                                     ?>
 
                                     <?php $__currentLoopData = $documents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $document): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -212,7 +249,11 @@
                                                         id="" value="<?php echo e($document->id); ?>">
 
                                                     <?php
-                                                        $employeedoc = !empty($employee->documents) ? $employee->documents()->pluck('document_value', __('document_id')) : [];
+                                                        $employeedoc = !empty($employee->documents)
+                                                            ? $employee
+                                                                ->documents()
+                                                                ->pluck('document_value', __('document_id'))
+                                                            : [];
                                                     ?>
                                                     <div class="choose-files ">
                                                         <label for="document[<?php echo e($document->id); ?>]">
@@ -237,7 +278,7 @@ unset($__errorArgs, $__bag); ?>"
                                                         </label>
                                                         <?php
                                                             $logo = \App\Models\Utility::get_file('uploads/document/');
-                                                            
+
                                                         ?>
                                                         
                                                         <img id="<?php echo e('blah' . $key); ?>"
@@ -322,9 +363,11 @@ unset($__errorArgs, $__bag); ?>"
                                     <div class="card-body">
                                         <div class="row">
                                             <?php
-                                                $employeedoc = $employee->documents()->pluck('document_value', __('document_id'));
+                                                $employeedoc = $employee
+                                                    ->documents()
+                                                    ->pluck('document_value', __('document_id'));
                                                 $logo = \App\Models\Utility::get_file('uploads/document/');
-                                                
+
                                             ?>
                                             <?php $__currentLoopData = $documents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $document): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <div class="col-md-12">

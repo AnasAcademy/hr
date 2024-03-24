@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Employee')); ?>
 
@@ -140,6 +138,12 @@
                                         <span><?php echo e($employee->salary); ?></span>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
+                                        <strong class="font-bold"><?php echo e(__('TimeZone')); ?> :</strong>
+                                        <span><?php echo e($employee->user->timezone); ?></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -175,6 +179,12 @@
                                     <div class="info text-sm">
                                         <strong class="font-bold"><?php echo e(__('Date Of Joining')); ?> :</strong>
                                         <span><?php echo e(\Auth::user()->dateFormat($employee->company_doj)); ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
+                                        <strong class="font-bold"><?php echo e(__('Holidays Balance')); ?> :</strong>
+                                        <span><?php echo e($employee->leave_balance); ?> Days</span>
                                     </div>
                                 </div>
 

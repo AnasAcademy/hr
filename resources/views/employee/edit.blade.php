@@ -71,6 +71,25 @@
                                     {!! Form::label('address', __('Address'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
                                     {!! Form::textarea('address', null, ['class' => 'form-control', 'rows' => 3]) !!}
                                 </div>
+
+                                {{-- timezone --}}
+                                <div class="form-group">
+                                    {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}
+
+                                    <select type="text" name="timezone" class="form-control select2" id="timezone">
+                                        <option value="">{{ __('Select Timezone') }}</option>
+                                        @if (!empty($timezones))
+                                            @foreach ($timezones as $k => $timezone)
+                                                <option value="{{ $k }}"
+                                                    {{ $employee->user->timezone == $k ? 'selected' : '' }}>
+                                                    {{ $timezone }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+
+                                </div>
+
                                 @if (\Auth::user()->type == 'employee')
                                     <div class="float-end">
                                         {!! Form::submit('Update', ['class' => 'btn btn-primary']) !!}
@@ -79,6 +98,8 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- company details section --}}
                     @if (\Auth::user()->type != 'employee')
                         <div class="col-md-6 ">
                             <div class="card em-card">
@@ -124,6 +145,15 @@
                                             ]) !!}
                                         </div>
 
+                                        <div class="form-group ">
+                                            {!! Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']) !!}
+                                            {!! Form::number('leave_balance', $employee->leave_balance, [
+                                                'class' => 'form-control',
+                                                'min' => 0,
+                                                'placeholder' => 'Enter the Limit Number of Holidays',
+                                            ]) !!}
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -161,6 +191,7 @@
                                                     <span>{{ \Auth::user()->dateFormat($employee->company_doj) }}</span>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -168,6 +199,8 @@
                         </div>
                     @endif
                 </div>
+
+                {{-- document section --}}
                 @if (\Auth::user()->type != 'employee')
                     <div class="row">
                         <div class="col-md-6 ">
@@ -177,7 +210,9 @@
                                 </div>
                                 <div class="card-body">
                                     @php
-                                        $employeedoc = $employee->documents()->pluck('document_value', __('document_id'));
+                                        $employeedoc = $employee
+                                            ->documents()
+                                            ->pluck('document_value', __('document_id'));
                                     @endphp
 
                                     @foreach ($documents as $key => $document)
@@ -195,7 +230,11 @@
                                                         id="" value="{{ $document->id }}">
 
                                                     @php
-                                                        $employeedoc = !empty($employee->documents) ? $employee->documents()->pluck('document_value', __('document_id')) : [];
+                                                        $employeedoc = !empty($employee->documents)
+                                                            ? $employee
+                                                                ->documents()
+                                                                ->pluck('document_value', __('document_id'))
+                                                            : [];
                                                     @endphp
                                                     <div class="choose-files ">
                                                         <label for="document[{{ $document->id }}]">
@@ -212,7 +251,7 @@
                                                         </label>
                                                         @php
                                                             $logo = \App\Models\Utility::get_file('uploads/document/');
-                                                            
+
                                                         @endphp
                                                         {{-- <a href="#"><p class="{{ $document->id . '_filename' }} "></p></a> --}}
                                                         <img id="{{ 'blah' . $key }}"
@@ -285,9 +324,11 @@
                                     <div class="card-body">
                                         <div class="row">
                                             @php
-                                                $employeedoc = $employee->documents()->pluck('document_value', __('document_id'));
+                                                $employeedoc = $employee
+                                                    ->documents()
+                                                    ->pluck('document_value', __('document_id'));
                                                 $logo = \App\Models\Utility::get_file('uploads/document/');
-                                                
+
                                             @endphp
                                             @foreach ($documents as $key => $document)
                                                 <div class="col-md-12">

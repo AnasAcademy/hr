@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Create Employee')); ?>
 
@@ -105,34 +103,34 @@
                                 </div>
 
                                 
-                                    <div class="form-group">
-                                        <?php echo e(Form::label('timezone', __('Timezone'), ['class' => 'col-form-label'])); ?>
+                                <div class="form-group">
+                                    <?php echo e(Form::label('timezone', __('Timezone'), ['class' => 'col-form-label'])); ?>
 
 
-                                        <select type="text" name="timezone" class="form-control select2" id="timezone">
-                                            <option value=""><?php echo e(__('Select Timezone')); ?></option>
-                                            <?php if(!empty($timezones)): ?>
-                                                <?php $__currentLoopData = $timezones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $timezone): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option value="<?php echo e($k); ?>"
-                                                        <?php echo e($settings['timezone'] == $k ? 'selected' : ''); ?>>
-                                                        <?php echo e($timezone); ?></option>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            <?php endif; ?>
-                                        </select>
-                                        <?php $__errorArgs = ['timezone'];
+                                    <select type="text" name="timezone" class="form-control select2" id="timezone">
+                                        <option value=""><?php echo e(__('Select Timezone')); ?></option>
+                                        <?php if(!empty($timezones)): ?>
+                                            <?php $__currentLoopData = $timezones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $timezone): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($k); ?>"
+                                                    <?php echo e($settings['timezone'] == $k ? 'selected' : ''); ?>>
+                                                    <?php echo e($timezone); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
+                                    </select>
+                                    <?php $__errorArgs = ['timezone'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                                            <span class="invalid-timezone" role="alert">
-                                                <small class="text-danger"><?php echo e($message); ?></small>
-                                            </span>
-                                        <?php unset($message);
+                                        <span class="invalid-timezone" role="alert">
+                                            <small class="text-danger"><?php echo e($message); ?></small>
+                                        </span>
+                                    <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
 
-                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -187,6 +185,16 @@ unset($__errorArgs, $__bag); ?>
                                         <?php echo Form::label('company_doj', __('Company Date Of Joining'), ['class' => '  form-label']); ?>
 
                                         <?php echo e(Form::date('company_doj', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select company date of joining'])); ?>
+
+                                    </div>
+                                    <div class="form-group ">
+                                        <?php echo Form::label('leave_balance', __('Holiday Balance'), ['class' => 'form-label']); ?>
+
+                                        <?php echo Form::number('leave_balance', null, [
+                                            'class' => 'form-control',
+                                            'min' => 0,
+                                            'placeholder' => 'Enter the Limit Number of Holidays',
+                                        ]); ?>
 
                                     </div>
 
