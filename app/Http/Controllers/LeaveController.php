@@ -111,9 +111,11 @@ class LeaveController extends Controller
 
             $total_leave_days = !empty($startDate->diff($endDate)) ? $startDate->diff($endDate)->days : 0;
 
+            $employee = Employee::find($request->employee_id);
             $return = $leave_type->days - $leaves_used;
-            if ($total_leave_days > $return) {
-                return redirect()->back()->with('error', __('You are not eligible for leave.'));
+            if ($total_leave_days > $return || $total_leave_days > $employee->leave_balance) {
+                return redirect()->back()->with('error', __('You reach the limit of holidays.'));
+                // return redirect()->back()->with('error', __('You are not eligible for leave.'));
             }
 
             if (!empty($leaves_pending) && $leaves_pending + $total_leave_days > $return) {
@@ -233,10 +235,14 @@ class LeaveController extends Controller
 
                 $total_leave_days = !empty($startDate->diff($endDate)) ? $startDate->diff($endDate)->days : 0;
 
+
+                $employee = Employee::find($request->employee_id);
                 $return = $leave_type->days - $leaves_used;
-                if ($total_leave_days > $return) {
-                    return redirect()->back()->with('error', __('You are not eligible for leave.'));
+                if ($total_leave_days > $return || $total_leave_days > $employee->leave_balance) {
+                    return redirect()->back()->with('error', __('You reach the limit of holidays.'));
+                    // return redirect()->back()->with('error', __('You are not eligible for leave.'));
                 }
+
 
                 if (!empty($leaves_pending) && $leaves_pending + $total_leave_days > $return) {
                     return redirect()->back()->with('error', __('Multiple leave entry is pending.'));
@@ -307,16 +313,31 @@ class LeaveController extends Controller
     public function changeaction(Request $request)
     {
         $leave = LocalLeave::find($request->leave_id);
+        $employee = $leave->employees;
 
-        $leave->status = $request->status;
-        if ($leave->status == 'Approved') {
-            $startDate               = new \DateTime($leave->start_date);
-            $endDate                 = new \DateTime($leave->end_date);
-            $endDate->add(new \DateInterval('P1D'));
-            // $total_leave_days        = $startDate->diff($endDate)->days;
-            $total_leave_days        = !empty($startDate->diff($endDate)) ? $startDate->diff($endDate)->days : 0;
+        $startDate               = new \DateTime($leave->start_date);
+        $endDate                 = new \DateTime($leave->end_date);
+        $endDate->add(new \DateInterval('P1D'));
+        // $total_leave_days        = $startDate->diff($endDate)->days;
+        $total_leave_days        = !empty($startDate->diff($endDate)) ? $startDate->diff($endDate)->days : 0;
+
+
+        if ($request->status == 'Approved' && $leave->status != "Approved") {
             $leave->total_leave_days = $total_leave_days;
-            $leave->status           = 'Approved';
+
+            if ($employee->leave_balance >= $total_leave_days) {
+                $employee->leave_balance = $employee->leave_balance - $total_leave_days;
+                $employee->save();
+                $leave->status  = 'Approved';
+            } else {
+                return redirect()->route('leave.index')->with('error', __('can not leave because the employee reach the limit of leaves'));
+            }
+        } else if ($request->status != 'Approved' && $leave->status == "Approved") {
+            $employee->leave_balance = $employee->leave_balance + $total_leave_days;
+            $employee->save();
+            $leave->status  = $request->status;
+        } else {
+            $leave->status = $request->status;
         }
 
         $leave->save();
@@ -325,7 +346,7 @@ class LeaveController extends Controller
         $setting = Utility::settings(\Auth::user()->creatorId());
         $emp = Employee::find($leave->employee_id);
         if (isset($setting['twilio_leave_approve_notification']) && $setting['twilio_leave_approve_notification'] == 1) {
-            // $msg = __("Your leave has been") . ' ' . $leave->status . '.';
+            $msg = __("Your leave has been") . ' ' . $leave->status . '.';
 
             $uArr = [
                 'leave_status' => $leave->status,

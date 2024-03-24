@@ -25,6 +25,14 @@
                     <td><?php echo e(\Auth::user()->dateFormat($leave->end_date)); ?></td>
                 </tr>
                 <tr>
+                    <th><?php echo e(__('Total Days')); ?></th>
+                    <td><?php echo e($leave->total_leave_days); ?></td>
+                </tr>
+                <tr>
+                    <th><?php echo e(__('Holidays Balance')); ?></th>
+                    <td><?php echo e($leave->employees->leave_balance); ?> Days</td>
+                </tr>
+                <tr>
                     <th><?php echo e(__('Leave Reason')); ?></th>
                     <td><?php echo e(!empty($leave->leave_reason) ? $leave->leave_reason : ''); ?></td>
                 </tr>
