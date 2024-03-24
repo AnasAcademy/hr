@@ -188,7 +188,7 @@ unset($__errorArgs, $__bag); ?>
 
                                     </div>
                                     <div class="form-group ">
-                                        <?php echo Form::label('leave_balance', __('Holiday Balance'), ['class' => 'form-label']); ?>
+                                        <?php echo Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']); ?>
 
                                         <?php echo Form::number('leave_balance', null, [
                                             'class' => 'form-control',

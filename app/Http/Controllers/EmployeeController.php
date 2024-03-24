@@ -92,7 +92,7 @@ class EmployeeController extends Controller
                     'name' => 'required',
                     'dob' => 'required',
                     'gender' => 'required',
-                    'phone' => 'required',
+                    'phone' => 'required|numeric',
                     'address' => 'required',
                     'email' => 'required|unique:users',
                     'password' => 'required',
