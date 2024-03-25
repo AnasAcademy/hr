@@ -15,6 +15,8 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\Exports\AttendanceExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceEmployeeController extends Controller
 {
@@ -997,5 +999,14 @@ class AttendanceEmployeeController extends Controller
                 return redirect()->back()->with($data['status'], $data['msg']);
             }
         }
+    }
+
+
+    public function export()
+    {
+        $name = 'attendance_' . date('Y-m-d i:h:s');
+        $data = Excel::download(new AttendanceExport(), $name . '.xlsx');
+
+        return $data;
     }
 }

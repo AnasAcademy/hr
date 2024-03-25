@@ -893,6 +893,11 @@ Route::group(['middleware' => ['verified']], function () {
     Route::get('import/attendance/file', [AttendanceEmployeeController::class, 'importFile'])->name('attendance.file.import');
     Route::post('import/attendance', [AttendanceEmployeeController::class, 'import'])->name('attendance.import');
 
+    // export attendance
+    Route::get('export/attendance', [AttendanceEmployeeController::class, 'export'])->name('attendance.export');
+
+
+    
     Route::resource('timesheet', TimeSheetController::class)->middleware(
         [
             'auth',

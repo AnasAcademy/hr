@@ -72,6 +72,10 @@
     </script>
 <?php $__env->stopPush(); ?>
 <?php $__env->startSection('action-button'); ?>
+<a href="<?php echo e(route('attendance.export')); ?>" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
+        data-bs-original-title="<?php echo e(__('Export')); ?>">
+        <i class="ti ti-file-export"></i>
+    </a>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
     <?php if(session('status')): ?>

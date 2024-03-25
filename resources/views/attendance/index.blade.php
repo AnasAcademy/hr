@@ -72,6 +72,10 @@
     </script>
 @endpush
 @section('action-button')
+<a href="{{ route('attendance.export') }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
+        data-bs-original-title="{{ __('Export') }}">
+        <i class="ti ti-file-export"></i>
+    </a>
 @endsection
 @section('content')
     @if (session('status'))
