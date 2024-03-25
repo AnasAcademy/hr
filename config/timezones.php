@@ -400,5 +400,6 @@ return [
 	'Antarctica/McMurdo' => '(GMT+12:00) Antarctica/McMurdo (New Zealand Standard Time)',
 	'Antarctica/South_Pole' => '(GMT+12:00) Antarctica/South_Pole (New Zealand Standard Time)',
 	'Asia/Anadyr' => '(GMT+12:00) Asia/Anadyr (Anadyr Time)',
-	'Asia/Kamchatka' => '(GMT+12:00) Asia/Kamchatka (Petropavlovsk-Kamchatski Time)'
+	'Asia/Kamchatka' => '(GMT+12:00) Asia/Kamchatka (Petropavlovsk-Kamchatski Time)',
+    'Asia/Riyadh' => '(GMT+03:00) Asia/Riyadh (Arabian Standard Time)'
 ];

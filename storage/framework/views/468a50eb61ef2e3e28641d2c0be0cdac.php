@@ -34,6 +34,7 @@
                             <thead>
                             <tr>
                                 <th><?php echo e(__('Branch')); ?></th>
+                                <th><?php echo e(__('TimeZone')); ?></th>
                                 <th width="200px"><?php echo e(__('Action')); ?></th>
                             </tr>
                             </thead>
@@ -41,6 +42,7 @@
                             <?php $__currentLoopData = $branches; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $branch): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
                                     <td><?php echo e($branch->name); ?></td>
+                                    <td><?php echo e($branch->timezone); ?></td>
                                     <td class="Action">
                                         <span>
                                             <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Edit Branch')): ?>

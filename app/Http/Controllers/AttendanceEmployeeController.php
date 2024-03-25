@@ -22,6 +22,7 @@ class AttendanceEmployeeController extends Controller
 {
     public function index(Request $request)
     {
+        $user = \Auth::user();
         if (\Auth::user()->can('Manage Attendance')) {
             $branch = Branch::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $branch->prepend('All', '');
@@ -74,7 +75,23 @@ class AttendanceEmployeeController extends Controller
 
                 $attendanceEmployee = $attendanceEmployee->get();
             } else {
-                $employee = Employee::select('id')->where('created_by', \Auth::user()->creatorId());
+                if(\Auth::user()->type == 'manager'){
+                    $user = \Auth::user();
+
+                    $employee = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('department', function ($query) use ($user) {
+                        $query->where('manager_id', $user->id);
+                    });
+                }
+                else if(\Auth::user()->type == 'leadership'){
+                    $user = \Auth::user();
+
+                    $employee = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('user', function ($query) use ($user) {
+                        $query->where('type', 'manager');
+                    });
+                }
+                else{
+                    $employee = Employee::select('id')->where('created_by', \Auth::user()->creatorId());
+                }
                 if (!empty($request->branch)) {
                     $employee->where('branch_id', $request->branch);
                 }
@@ -245,9 +262,9 @@ class AttendanceEmployeeController extends Controller
     //         $clockOut = $request->clock_out;
 
     //         if ($clockIn) {
-    //             $status = "present";
+    //             $status = "Present";
     //         } else {
-    //             $status = "leave";
+    //             $status = "Leave";
     //         }
 
     //         $totalLateSeconds = strtotime($clockIn) - strtotime($startTime);
@@ -392,8 +409,8 @@ class AttendanceEmployeeController extends Controller
 
         $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
 
-        if (empty($ip)) {
-            return redirect()->back()->with('error', __('This ip is not allowed to clock in & clock out.'));
+        if (empty($ip) || $ip->status != "approved") {
+            return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
         }
 
         if (\Auth::user()->type == 'company' || \Auth::user()->type == 'hr') {
@@ -407,9 +424,9 @@ class AttendanceEmployeeController extends Controller
             $clockOut = $request->clock_out;
 
             if ($clockIn) {
-                $status = "present";
+                $status = "Present";
             } else {
-                $status = "leave";
+                $status = "Leave";
             }
 
             $totalLateSeconds = strtotime($clockIn) - strtotime($startTime);
@@ -482,7 +499,7 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee['clock_out']     = $time;
             $attendanceEmployee['early_leaving'] = $earlyLeaving;
             $attendanceEmployee['overtime']      = $overtime;
-            $attendanceEmployee['status']      = "leave";
+            $attendanceEmployee['status']      = "Leave";
             $attendanceEmployee['clock_out_ip'] = $ip->id;
 
             if (!empty($request->date)) {
@@ -528,8 +545,8 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee->early_leaving = $earlyLeaving;
             $attendanceEmployee->overtime      = $overtime;
             $attendanceEmployee->total_rest    = '00:00:00';
-            $attendanceEmployee->clock_out_ip    = $ip;
-            $attendanceEmployee->status    = "leave";
+            $attendanceEmployee->clock_out_ip    = $ip->id;
+            $attendanceEmployee->status    = "Leave";
 
 
             $attendanceEmployee->save();
@@ -658,9 +675,8 @@ class AttendanceEmployeeController extends Controller
 
 
             $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
-
-            if (empty($ip)) {
-                return redirect()->back()->with('error', __('This ip is not allowed to clock in & clock out.'));
+            if (empty($ip) || $ip->status != "approved") {
+                return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
             }
         }
 
@@ -713,7 +729,7 @@ class AttendanceEmployeeController extends Controller
             $lastClockOutEntry->total_rest = $sum->format('H:i:s');
             $lastClockOutEntry->clock_out = '00:00:00';
             $lastClockOutEntry->early_leaving = '00:00:00';
-            $lastClockOutEntry->status = 'present';
+            $lastClockOutEntry->status = 'Present';
             $lastClockOutEntry->save();
         } else {
             // If there is no previous clock-out entry, assume no lateness
@@ -733,7 +749,7 @@ class AttendanceEmployeeController extends Controller
             $employeeAttendance                = new AttendanceEmployee();
             $employeeAttendance->employee_id   = $employeeId;
             $employeeAttendance->date          = $date;
-            $employeeAttendance->status        = 'present';
+            $employeeAttendance->status        = 'Present';
             $employeeAttendance->clock_in      = $time;
             $employeeAttendance->clock_out     = '00:00:00';
             $employeeAttendance->late          = $late;
@@ -921,9 +937,9 @@ class AttendanceEmployeeController extends Controller
                         $clockOut = $value[3];
 
                         if ($clockIn) {
-                            $status = "present";
+                            $status = "Present";
                         } else {
-                            $status = "leave";
+                            $status = "Leave";
                         }
 
                         $totalLateSeconds = strtotime($clockIn) - strtotime($startTime);

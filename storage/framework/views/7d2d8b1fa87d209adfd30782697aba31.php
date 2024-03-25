@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('page-title'); ?>
     <?php if(\Auth::user()->type == 'super admin'): ?>
         <?php echo e(__('Manage Companies')); ?>
@@ -62,11 +60,7 @@
                         <div class="card  text-center">
                             <div class="card-header border-0 pb-0">
                                 <div class="col-md-4 text-end">
-                                    <a href="#" data-url="<?php echo e(route('plan.upgrade', $user->id)); ?>"
-                                        class="btn btn-sm btn-primary btn-icon" data-size="lg" data-ajax-popup="true"
-                                        data-title="<?php echo e(__('Upgrade Plan')); ?>"><?php echo e(__('Upgrade Plan')); ?>
-
-                                    </a>
+                                    
                                 </div>
                                 <div class="card-header-right">
                                     <div class="btn-group card-option">
@@ -153,13 +147,8 @@
                                     <div class=" mb-0 mt-3">
                                         <div class=" p-3">
                                             <div class="row">
-                                                <div class="col-5 text-start">
-                                                    <h6 class="mb-0 px-2 mt-1">
-                                                        <?php echo e(!empty($user->currentPlan) ? $user->currentPlan->name : ''); ?>
-
-                                                    </h6>
-                                                </div>
-                                                <div class="col-7 text-center Id ">
+                                                
+                                                <div class="col-12 text-center Id ">
                                                     <a href="#" data-url="<?php echo e(route('company.info', $user->id)); ?>"
                                                         data-size="lg" data-ajax-popup="true"
                                                         class="btn btn-outline-primary"
@@ -176,13 +165,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="mt-2 mb-0">
-                                        <button class="btn btn-sm btn-neutral mt-3 font-weight-500">
-                                            <a><?php echo e(__('Plan Expire : ')); ?>
-
-                                                <?php echo e(!empty($user->plan_expire_date) ? \Auth::user()->dateFormat($user->plan_expire_date) : 'Lifetime'); ?></a>
-                                        </button>
-                                    </p>
+                                    
                                 <?php endif; ?>
                             </div>
                         </div>

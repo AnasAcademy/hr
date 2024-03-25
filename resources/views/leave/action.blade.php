@@ -24,6 +24,14 @@
                     <td>{{ \Auth::user()->dateFormat($leave->end_date) }}</td>
                 </tr>
                 <tr>
+                    <th>{{ __('Total Days') }}</th>
+                    <td>{{ $leave->total_leave_days }}</td>
+                </tr>
+                <tr>
+                    <th>{{ __('Holidays Balance') }}</th>
+                    <td>{{ $leave->employees->leave_balance}} Days</td>
+                </tr>
+                <tr>
                     <th>{{ __('Leave Reason') }}</th>
                     <td>{{ !empty($leave->leave_reason) ? $leave->leave_reason : '' }}</td>
                 </tr>
@@ -37,11 +45,12 @@
     </div>
 </div>
 
-@if (Auth::user()->type == 'company' || Auth::user()->type == 'hr')
-    <div class="modal-footer">
-        <input type="submit" value="{{ __('Approved') }}" class="btn btn-success rounded" name="status">
-        <input type="submit" value="{{ __('Reject') }}" class="btn btn-danger rounded" name="status">
-    </div>
-@endif
+@can('Manage Leave')
+<div class="modal-footer">
+    <input type="submit" value="{{ __('Approved') }}" class="btn btn-success rounded" name="status">
+    <input type="submit" value="{{ __('Reject') }}" class="btn btn-danger rounded" name="status">
+</div>
+@endcan
+
 
 {{ Form::close() }}

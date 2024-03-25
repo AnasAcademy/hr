@@ -16,7 +16,38 @@
         @endif
 
 
-        @if (\Auth::user()->type == 'employee')
+        @if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager')
+            {{-- add device section --}}
+            <div class="d-flex justify-content-end mb-5">
+                <form action="create/ip" method="post" id="deviceIpIdentifier">
+                    @csrf
+                    <input type="hidden" name="deviceIp" id="deviceIp">
+
+                    @php
+                        $exist = false;
+                    @endphp
+                    @if (isset($_COOKIE['device_fingerprint']))
+                        @php
+                            $identifier = $_COOKIE['device_fingerprint'];
+                            $devices = \Auth::user()->devices;
+                        @endphp
+                        @foreach ($devices as $device)
+                            @if ($device->ip == $identifier)
+                                @php
+                                    $exist = true;
+                                @endphp
+                                @break
+                            @endif
+                        @endforeach
+                    @endif
+                    @if ($exist)
+                        <button class="btn btn-success disabled" disabled type="submit">Add My Device</button>
+                    @else
+                        <button class="btn btn-success" type="submit">Add My Device</button>
+                    @endif
+                </form>
+
+            </div>
             <div class="col-xxl-6">
                 <div class="card">
                     <div class="card-header">
@@ -53,7 +84,7 @@
                     <div class="card-body">
                         <div class="d-flex gap-5 align-items-baseline flex-wrap mb-5">
                             <p class="text-muted pb-0-5">
-                                {{ __('My Office Time: ' . $officeTime['startTime'] . ' to ' . $officeTime['endTime']) }}
+                                {{ __('My Office Time: ' . \Auth::user()->TimeFormat($officeTime['startTime']) . ' to ' . \Auth::user()->TimeFormat($officeTime['endTime']) ) }}
                             </p>
                             <div id="countdown" class="btn btn-info text-center d-none"></div>
                         </div>
@@ -658,7 +689,28 @@
 
 
 
-    @if (\Auth::user()->type == 'employee')
+    @if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager')
+        {{-- finger print script link --}}
+        <script src="{{ asset('js/userfingerprint.js') }}"></script>
+
+        {{-- add device script --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('deviceIpIdentifier').onsubmit = function(event) {
+                    event.preventDefault();
+                    getFingerPrint(function(fingerprintValue) {
+                        document.getElementById("deviceIp").value = fingerprintValue;
+                        let form = event.target;
+                        let device = fingerprintValue;
+                        // document.cookie = "device_fingerprint=" + fingerprintValue;
+                        // Submit the form
+                        form.submit();
+                    });
+                }
+            });
+        </script>
+
+        {{-- timeDown script --}}
         <script>
             function timeDown() {
                 @php
@@ -700,37 +752,38 @@
                 timeDown();
             }
         </script>
+
+
+        {{-- clock in and out script --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                document.getElementById('clockInForm').onsubmit = function(event) {
+                    event.preventDefault();
+                    getFingerPrint(function(fingerprintValue) {
+                        // Set the fingerprint value in the hidden input field
+                        document.getElementById("lockInFingerprint").value = fingerprintValue;
+                        let form = event.target;
+                        // Submit the form
+                        form.submit();
+                    });
+                }
+
+                document.getElementById('clockOutForm').onsubmit = function(event) {
+                    event.preventDefault();
+                    getFingerPrint(function(fingerprintValue) {
+                        // Set the fingerprint value in the hidden input field
+                        document.getElementById("lockOutFingerprint").value = fingerprintValue;
+                        let form = event.target;
+                        // Submit the form
+                        form.submit();
+                    });
+                }
+            });
+        </script>
     @endif
 
 
-    <script src="{{ asset('js/userfingerprint.js') }}"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-
-            document.getElementById('clockInForm').onsubmit = function(event) {
-                event.preventDefault();
-                getFingerPrint(function(fingerprintValue) {
-                    // Set the fingerprint value in the hidden input field
-                    document.getElementById("lockInFingerprint").value = fingerprintValue;
-                    let form = event.target;
-                    // Submit the form
-                    form.submit();
-                });
-            }
-
-            document.getElementById('clockOutForm').onsubmit = function(event) {
-                event.preventDefault();
-                getFingerPrint(function(fingerprintValue) {
-                    // Set the fingerprint value in the hidden input field
-                    document.getElementById("lockOutFingerprint").value = fingerprintValue;
-                    let form = event.target;
-                    // Submit the form
-                    form.submit();
-                });
-            }
-        });
-    </script>
 
 
 @endpush

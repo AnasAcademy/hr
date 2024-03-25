@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Manage Employee')); ?>
 
@@ -57,7 +55,7 @@
                                         <td>
                                             <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Show Employee')): ?>
                                                 <a class="btn btn-outline-primary"
-                                                    href="<?php echo e(route('employee.show', \Illuminate\Support\Facades\Crypt::encrypt($employee->id))); ?>"><?php echo e(\Auth::user()->employeeIdFormat($employee->employee_id)); ?></a>
+                                                    href="<?php echo e(route('show.employee.profile', \Illuminate\Support\Facades\Crypt::encrypt($employee->id))); ?>"><?php echo e(\Auth::user()->employeeIdFormat($employee->employee_id)); ?></a>
                                             <?php else: ?>
                                                 <a href="#"
                                                     class="btn btn-outline-primary"><?php echo e(\Auth::user()->employeeIdFormat($employee->employee_id)); ?></a>

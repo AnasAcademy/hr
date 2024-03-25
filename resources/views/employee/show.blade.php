@@ -136,6 +136,12 @@
                                         <span>{{ $employee->salary }}</span>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
+                                        <strong class="font-bold">{{ __('TimeZone') }} :</strong>
+                                        <span>{{ $employee->user->timezone }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -171,6 +177,12 @@
                                     <div class="info text-sm">
                                         <strong class="font-bold">{{ __('Date Of Joining') }} :</strong>
                                         <span>{{ \Auth::user()->dateFormat($employee->company_doj) }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
+                                        <strong class="font-bold">{{ __('Holidays Balance') }} :</strong>
+                                        <span>{{ $employee->leave_balance }} Days</span>
                                     </div>
                                 </div>
 

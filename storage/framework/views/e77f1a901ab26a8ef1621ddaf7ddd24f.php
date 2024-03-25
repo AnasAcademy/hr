@@ -1,12 +1,10 @@
-
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Dashboard')); ?>
 
 <?php $__env->stopSection(); ?>
 <?php
     $setting = App\Models\Utility::settings();
-    
+
 ?>
 <?php $__env->startSection('content'); ?>
     <div class="row">
@@ -18,7 +16,38 @@
         <?php endif; ?>
 
 
-        <?php if(\Auth::user()->type == 'employee'): ?>
+        <?php if(\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager'): ?>
+            
+            <div class="d-flex justify-content-end mb-5">
+                <form action="create/ip" method="post" id="deviceIpIdentifier">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="deviceIp" id="deviceIp">
+
+                    <?php
+                        $exist = false;
+                    ?>
+                    <?php if(isset($_COOKIE['device_fingerprint'])): ?>
+                        <?php
+                            $identifier = $_COOKIE['device_fingerprint'];
+                            $devices = \Auth::user()->devices;
+                        ?>
+                        <?php $__currentLoopData = $devices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $device): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php if($device->ip == $identifier): ?>
+                                <?php
+                                    $exist = true;
+                                ?>
+                                <?php break; ?>
+                            <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endif; ?>
+                    <?php if($exist): ?>
+                        <button class="btn btn-success disabled" disabled type="submit">Add My Device</button>
+                    <?php else: ?>
+                        <button class="btn btn-success" type="submit">Add My Device</button>
+                    <?php endif; ?>
+                </form>
+
+            </div>
             <div class="col-xxl-6">
                 <div class="card">
                     <div class="card-header">
@@ -48,17 +77,23 @@
                 </div>
             </div>
             <div class="col-xxl-6">
-                <div class="card" style="height: 230px;">
+                <div class="card" style="min-height: 230px;">
                     <div class="card-header">
                         <h5><?php echo e(__('Mark Attandance')); ?></h5>
                     </div>
                     <div class="card-body">
-                        <p class="text-muted pb-0-5">
-                            <?php echo e(__('My Office Time: ' . $officeTime['startTime'] . ' to ' . $officeTime['endTime'])); ?></p>
+                        <div class="d-flex gap-5 align-items-baseline flex-wrap mb-5">
+                            <p class="text-muted pb-0-5">
+                                <?php echo e(__('My Office Time: ' . \Auth::user()->TimeFormat($officeTime['startTime']) . ' to ' . \Auth::user()->TimeFormat($officeTime['endTime']) )); ?>
+
+                            </p>
+                            <div id="countdown" class="btn btn-info text-center d-none"></div>
+                        </div>
                         <div class="row">
                             <div class="col-md-6 float-right border-right">
-                                <?php echo e(Form::open(['url' => 'attendanceemployee/attendance', 'method' => 'post'])); ?>
+                                <?php echo e(Form::open(['url' => 'attendanceemployee/attendance', 'method' => 'post', 'id' => 'clockInForm'])); ?>
 
+                                <input type="hidden" name="fingerprint" id="lockInFingerprint">
                                 <?php if(empty($employeeAttendance) || $employeeAttendance->clock_out != '00:00:00'): ?>
                                     <button type="submit" value="0" name="in" id="clock_in"
                                         class="btn btn-primary"><?php echo e(__('CLOCK IN')); ?></button>
@@ -71,8 +106,9 @@
                             </div>
                             <div class="col-md-6 float-left">
                                 <?php if(!empty($employeeAttendance) && $employeeAttendance->clock_out == '00:00:00'): ?>
-                                    <?php echo e(Form::model($employeeAttendance, ['route' => ['attendanceemployee.update', $employeeAttendance->id], 'method' => 'PUT'])); ?>
+                                    <?php echo e(Form::model($employeeAttendance, ['route' => ['attendanceemployee.update', $employeeAttendance->id], 'method' => 'PUT', 'id' => 'clockOutForm'])); ?>
 
+                                    <input type="hidden" name="fingerprint" id="lockOutFingerprint">
                                     <button type="submit" value="1" name="out" id="clock_out"
                                         class="btn btn-danger"><?php echo e(__('CLOCK OUT')); ?></button>
                                 <?php else: ?>
@@ -614,7 +650,7 @@
         <script>
             (function() {
                 var options = {
-                    series: [<?php echo e(round($storage_limit,2)); ?>],
+                    series: [<?php echo e(round($storage_limit, 2)); ?>],
                     chart: {
                         height: 350,
                         type: 'radialBar',
@@ -656,6 +692,105 @@
             })();
         </script>
     <?php endif; ?>
+
+
+
+    <?php if(\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager'): ?>
+        
+        <script src="<?php echo e(asset('js/userfingerprint.js')); ?>"></script>
+
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('deviceIpIdentifier').onsubmit = function(event) {
+                    event.preventDefault();
+                    getFingerPrint(function(fingerprintValue) {
+                        document.getElementById("deviceIp").value = fingerprintValue;
+                        let form = event.target;
+                        let device = fingerprintValue;
+                        // document.cookie = "device_fingerprint=" + fingerprintValue;
+                        // Submit the form
+                        form.submit();
+                    });
+                }
+            });
+        </script>
+
+        
+        <script>
+            function timeDown() {
+                <?php
+                    [$hours, $minutes] = explode(':', $officeTime['endTime']);
+                ?>
+
+                var targetTime = new Date();
+                targetTime.setHours(<?php echo e($hours); ?>, <?php echo e($minutes); ?>, 0, 0);
+
+
+                // Update the countdown every 1 second
+                var x = setInterval(function() {
+
+                    // Get the current date and time
+                    var now = new Date().getTime();
+
+                    // Calculate the distance between now and the countdown date
+                    var distance = targetTime - now;
+
+                    // Calculate the days, hours, minutes, and seconds remaining
+                    // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    // Display the countdown timer
+                    document.getElementById("countdown").innerHTML = hours + "h " +
+                        minutes + "m " + seconds + "s ";
+                    document.getElementById("countdown").classList.remove("d-none");
+                    // If the countdown is over, display a message
+                    if (distance < 0) {
+                        clearInterval(x);
+                        document.getElementById("countdown").innerHTML = "EXPIRED";
+                    }
+                }, 1000);
+            }
+
+            if (clock_in.disabled) {
+                timeDown();
+            }
+        </script>
+
+
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                document.getElementById('clockInForm').onsubmit = function(event) {
+                    event.preventDefault();
+                    getFingerPrint(function(fingerprintValue) {
+                        // Set the fingerprint value in the hidden input field
+                        document.getElementById("lockInFingerprint").value = fingerprintValue;
+                        let form = event.target;
+                        // Submit the form
+                        form.submit();
+                    });
+                }
+
+                document.getElementById('clockOutForm').onsubmit = function(event) {
+                    event.preventDefault();
+                    getFingerPrint(function(fingerprintValue) {
+                        // Set the fingerprint value in the hidden input field
+                        document.getElementById("lockOutFingerprint").value = fingerprintValue;
+                        let form = event.target;
+                        // Submit the form
+                        form.submit();
+                    });
+                }
+            });
+        </script>
+    <?php endif; ?>
+
+
+
 
 <?php $__env->stopPush(); ?>
 

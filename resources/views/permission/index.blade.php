@@ -54,7 +54,7 @@
                                             <div class="row">
                                                 <div class="col-sm-12 card-body">
                                                     <div class="table-responsive">
-                                                        <table class="table table-striped dataTable">
+                                                        <table class="table table-striped dataTable" id="pc-dt-simple">
                                                             <thead class="">
                                                                 <tr>
                                                                     <th scope="col" style="width: 88%;">
@@ -86,7 +86,7 @@
                                                                                     data-ajax-popup="true" data-size="md"
                                                                                     data-bs-toggle="tooltip"
                                                                                     title="{{ __('Edit') }}"
-                                                                                    data-title="{{ __('Update Designation') }}"
+                                                                                    data-title="{{ __('Update Permission') }}"
                                                                                     data-bs-original-title="{{ __('Edit') }}">
                                                                                     <i class="ti ti-pencil text-white"></i>
                                                                                 </a>

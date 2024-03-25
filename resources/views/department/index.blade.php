@@ -37,6 +37,7 @@
                             <tr>
                                 <th>{{ __('Branch') }}</th>
                                 <th>{{ __('Department') }}</th>
+                                <th>{{ __('Manager') }}</th>
                                 <th width="200px">{{ __('Action') }}</th>
                             </tr>
                         </thead>
@@ -45,6 +46,7 @@
                                 <tr>
                                     <td>{{ !empty($department->branch) ? $department->branch->name : '' }}</td>
                                     <td>{{ $department->name }}</td>
+                                    <td>{{ $department->manager->name ?? "-"}}</td>
 
                                     <td class="Action">
                                         <span>
@@ -59,7 +61,7 @@
                                                     </a>
                                                 </div>
                                             @endcan
-                                        
+
 
                                             @can('Delete Department')
                                                 <div class="action-btn bg-danger ms-2">

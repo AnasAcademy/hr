@@ -44,9 +44,18 @@ class EmployeeController extends Controller
     {
 
         if (\Auth::user()->can('Manage Employee')) {
-            if (Auth::user()->type == 'employee') {
+            $user = \Auth::user();
+            if ($user->type == 'employee') {
                 $employees = Employee::where('user_id', '=', Auth::user()->id)->get();
-            } else {
+            } else if($user->type == 'manager'){
+                // $employees = Employee::where('department_id', '=', Auth::user()->managedDepartment->id ?? null)->with(['branch', 'department', 'designation', 'user'])->get();
+
+                $employees = Employee::where("user_id", "!=", $user->id)->whereHas('department', function ($query) use ($user) {
+                    $query->where('manager_id', $user->id);
+                })->get();
+
+            }
+            else{
                 $employees = Employee::where('created_by', \Auth::user()->creatorId())->with(['branch', 'department', 'designation', 'user'])->get();
             }
 
@@ -66,8 +75,9 @@ class EmployeeController extends Controller
             $designations     = Designation::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $employees        = User::where('created_by', \Auth::user()->creatorId())->get();
             $employeesId      = \Auth::user()->employeeIdFormat($this->employeeNumber());
-
-            return view('employee.create', compact('employees', 'employeesId', 'departments', 'designations', 'documents', 'branches', 'company_settings'));
+            $timezones = config('timezones');
+            $settings = Utility::settings();
+            return view('employee.create', compact('employees', 'employeesId', 'departments', 'designations', 'documents', 'branches', 'company_settings', 'timezones', 'settings'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -82,7 +92,7 @@ class EmployeeController extends Controller
                     'name' => 'required',
                     'dob' => 'required',
                     'gender' => 'required',
-                    'phone' => 'required',
+                    'phone' => 'required|numeric',
                     'address' => 'required',
                     'email' => 'required|unique:users',
                     'password' => 'required',
@@ -90,6 +100,8 @@ class EmployeeController extends Controller
                     'department_id' => 'required',
                     'designation_id' => 'required',
                     'document.*' => 'required',
+                    'timezone' => 'required',
+                    'leave_balance' => 'required|integer'
                 ]
             );
             if ($validator->fails()) {
@@ -143,6 +155,7 @@ class EmployeeController extends Controller
                     [
                         'name' => $request['name'],
                         'email' => $request['email'],
+                        'timezone' => $request['timezone'],
                         'password' => Hash::make($request['password']),
                         'type' => 'employee',
                         'lang' => !empty($default_language) ? $default_language->value : 'en',
@@ -187,6 +200,7 @@ class EmployeeController extends Controller
                     'branch_location' => $request['branch_location'],
                     'tax_payer_id' => $request['tax_payer_id'],
                     'created_by' => \Auth::user()->creatorId(),
+                    'leave_balance' => $request['leave_balance'],
                 ]
 
             );
@@ -259,8 +273,9 @@ class EmployeeController extends Controller
             $designations = Designation::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $employee     = Employee::find($id);
             $employeesId  = \Auth::user()->employeeIdFormat($employee->employee_id);
-
-            return view('employee.edit', compact('employee', 'employeesId', 'branches', 'departments', 'designations', 'documents'));
+            $timezones = config('timezones');
+            $settings = Utility::settings();
+            return view('employee.edit', compact('employee', 'employeesId', 'branches', 'departments', 'designations', 'documents', 'timezones', 'settings'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -355,7 +370,11 @@ class EmployeeController extends Controller
 
             $employee = Employee::findOrFail($id);
             $input    = $request->all();
+            // dd($input);
             $employee->fill($input)->save();
+            if($request->timezone){
+                $employee->user->update(['timezone' => $request->timezone]);
+            }
             if ($request->salary) {
                 return redirect()->route('setsalary.index')->with('success', 'Employee successfully updated.');
             }

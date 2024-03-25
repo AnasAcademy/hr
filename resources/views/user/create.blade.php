@@ -40,6 +40,31 @@
                 @enderror
             </div>
         @endif
+        {{-- timezone --}}
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+                {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}
+                
+                <select type="text" name="timezone" class="form-control select2"
+                    id="timezone">
+                    <option value="">{{ __('Select Timezone') }}</option>
+                    @if (!empty($timezones))
+                        @foreach ($timezones as $k => $timezone)
+                            <option value="{{ $k }}"
+                                {{ $settings['timezone'] == $k ? 'selected' : '' }}>
+                                {{ $timezone }}</option>
+                        @endforeach
+                    @endif
+                </select>
+                @error('timezone')
+                    <span class="invalid-timezone" role="alert">
+                        <small class="text-danger">{{ $message }}</small>
+                    </span>
+                @enderror
+
+            </div>
+        </div>
+        
         <div class="col-md-5 mb-3">
             <label for="password_switch">{{ __('Login is enable') }}</label>
             <div class="form-check form-switch custom-switch-v1 float-end">

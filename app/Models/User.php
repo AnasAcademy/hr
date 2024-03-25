@@ -10,6 +10,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Employee;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Lab404\Impersonate\Models\Impersonate;
+use App\Models\IpRestrict;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -40,6 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_login_enable',
         'created_by',
         'email_verified_at',
+        'timezone'
     ];
 
     /**
@@ -2459,13 +2461,15 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $settings = Utility::settings();
 
+        $date = $this->convertDateToUserTimezone($date);
+
         return date($settings['site_date_format'], strtotime($date));
     }
 
     public function timeFormat($time)
     {
         $settings = Utility::settings();
-
+        $time = $this->convertTimeToUserTimezone($time);
         return date($settings['site_time_format'], strtotime($time));
     }
 
@@ -2616,6 +2620,24 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne('App\Models\Employee', 'user_id', 'id');
     }
+
+    public function managedDepartment()
+    {
+        return $this->hasOne('App\Models\Department', 'manager_id');
+    }
+
+    function convertTimeToUserTimezone($time, $format = 'H:i:s')
+    {
+        $timezone = auth()->user()->timezone ?? config('app.timezone');
+        $dateTimeString = date('Y-m-d') . ' ' . $time; // Prepend a date to the time
+        $convertedTime = Carbon::parse($dateTimeString)->timezone($timezone)->format($format);
+        return $convertedTime;
+    }
+    function convertDateToUserTimezone($date, $format = 'Y-m-d H:i:s')
+    {
+        $timezone = auth()->user()->timezone ?? config('app.timezone');
+        return Carbon::parse($date)->timezone($timezone)->format($format);
+    }
     public static function userDefaultData()
     {
 
@@ -2662,5 +2684,8 @@ class User extends Authenticatable implements MustVerifyEmail
     //     );
     // }
 
-
+    public function devices()
+    {
+        return $this->hasMany(IpRestrict::class, 'belongs_to');
+    }
 }

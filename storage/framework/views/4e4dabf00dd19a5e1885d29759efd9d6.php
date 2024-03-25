@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Settings')); ?>
 
@@ -380,10 +381,9 @@
                                                     <div class="card-body pt-0">
                                                         <div class=" setting-card">
                                                             <div class="logo-content mt-4">
-
-                                                                <a href="<?php echo e(Storage::url($logo . 'logo-dark.png')); ?>" target="_blank">
+                                                                <a href="<?php echo e($logo . 'logo-dark.png'); ?>" target="_blank">
                                                                     <img id="image" alt="your image"
-                                                                        src="<?php echo e(Storage::url($logo . 'logo-dark.png')); ?>"
+                                                                        src="<?php echo e($logo . 'logo-dark.png' . '?' . time()); ?>"
                                                                         width="150px" class="big-logo">
                                                                 </a>
 
