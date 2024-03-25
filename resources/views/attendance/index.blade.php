@@ -72,7 +72,13 @@
     </script>
 @endpush
 @section('action-button')
-<a href="{{ route('attendance.export') }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
+    <a href="#" data-url="{{ route('attendance.file.import') }}" data-ajax-popup="true"
+        data-title="{{ __('Import  Attendance CSV File') }}" data-bs-toggle="tooltip" title=""
+        class="btn btn-sm btn-primary" data-bs-original-title="{{ __('Import') }}">
+        <i class="ti ti-file"></i>
+    </a>
+    
+    <a href="{{ route('attendance.export') }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
         data-bs-original-title="{{ __('Export') }}">
         <i class="ti ti-file-export"></i>
     </a>
@@ -167,12 +173,7 @@
                                                     class="ti ti-trash-off text-white-off "></i></span>
                                         </a>
 
-                                        <a href="#" data-url="{{ route('attendance.file.import') }}"
-                                            data-ajax-popup="true" data-title="{{ __('Import  Attendance CSV File') }}"
-                                            data-bs-toggle="tooltip" title="" class="btn btn-sm btn-primary"
-                                            data-bs-original-title="{{ __('Import') }}">
-                                            <i class="ti ti-file"></i>
-                                        </a>
+
                                     </div>
 
                                 </div>

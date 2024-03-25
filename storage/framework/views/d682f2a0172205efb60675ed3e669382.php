@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Permission')); ?>
 
@@ -48,7 +50,7 @@
                                             <div class="row">
                                                 <div class="col-sm-12 card-body">
                                                     <div class="table-responsive">
-                                                        <table class="table table-striped dataTable">
+                                                        <table class="table table-striped dataTable" id="pc-dt-simple">
                                                             <thead class="">
                                                                 <tr>
                                                                     <th scope="col" style="width: 88%;">
@@ -72,7 +74,7 @@
                                                                                     data-ajax-popup="true" data-size="md"
                                                                                     data-bs-toggle="tooltip"
                                                                                     title="<?php echo e(__('Edit')); ?>"
-                                                                                    data-title="<?php echo e(__('Update Designation')); ?>"
+                                                                                    data-title="<?php echo e(__('Update Permission')); ?>"
                                                                                     data-bs-original-title="<?php echo e(__('Edit')); ?>">
                                                                                     <i class="ti ti-pencil text-white"></i>
                                                                                 </a>

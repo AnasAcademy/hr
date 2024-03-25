@@ -16,32 +16,44 @@ class AttendanceExport implements FromCollection, WithHeadings
     public function collection()
     {
         $user     = \Auth::user();
-        $data = AttendanceEmployee::where('created_by', \Auth::user()->creatorId())->get();
-        if (\Auth::user()->type == 'employee') {
+        // $attendanceEmployee = AttendanceEmployee::get();
+        if ($user->type == 'employee') {
             $employee = $user->employee;
+            $attendanceEmployee = AttendanceEmployee::where('employee_id', $employee->id)->get();
+        } else {
+            if ($user->type == 'manager') {
 
-            $data = AttendanceEmployee::where('employee_id', '=', $employee->id)->where('created_by', \Auth::user()->creatorId())->get();
-        }
-        // else{
-        //     $data= AttendanceEmployee::where('created_by', \Auth::user()->creatorId())->get();
-        //     foreach($data as $k=>$attendance)
-        //     {
-        //         $data[$k]["employee_id"]=Employee::employee_name($attendance->employee_id);
-        //         $data[$k]["leave_type_id"]= !empty(\Auth::user()->getLeaveType($attendance->leave_type_id))?\Auth::user()->getLeaveType($attendance->leave_type_id)->title:'';
-        //         unset($attendance->created_at,$attendance->updated_at);
-        //     }
-        //     return $data;
+                $employees = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('department', function ($query) use ($user) {
+                    $query->where('manager_id', $user->id);
+                });
+            } else if ($user->type == 'leadership') {
 
-        // }
-        foreach ($data as $k => $attendance) {
-            $data[$k]["employee_id"] = Employee::employee_name($attendance->employee_id);
-            $data[$k]["clock_in_ip"] = IpRestrict::find($attendance->clock_in_ip)->ip;
-            $data[$k]["clock_out_ip"] = IpRestrict::find($attendance->clock_out_ip)->ip;
+                $employees = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('user', function ($query) use ($user) {
+                    $query->where('type', 'manager');
+                });
+            } else {
+                $employees = Employee::select('id')->where('created_by',$user->creatorId());
+            }
 
-            unset($attendance->created_at, $attendance->updated_at, $attendance->created_by);
+            $attendanceEmployee = AttendanceEmployee::whereIn('employee_id', $employees)->get();
         }
 
-        return $data;
+        // dd($attendanceEmployee);
+        foreach ($attendanceEmployee as $k => $attendance) {
+            $singleEmployee = Employee::find($attendance->employee_id);
+           $attendance["employee_id"] = $singleEmployee->name;
+           $attendance["department"] = $singleEmployee->department->name ?? null;
+           $attendance["employee_role"] = $singleEmployee->user->type;
+           $attendance["clock_in_ip"] = IpRestrict::find($attendance->clock_in_ip)->ip ?? null;
+           $attendance["clock_out_ip"] = IpRestrict::find($attendance->clock_out_ip)->ip ?? null;
+           $attendance["clock_in"] = $user->timeFormat($attendance["clock_in"]);
+           $attendance["clock_out"] = $user->timeFormat($attendance["clock_out"]);
+
+
+            unset($attendance->created_at, $attendance->updated_at, $attendance->created_by,  $attendance->total_rest);
+        }
+
+        return $attendanceEmployee;
     }
 
     public function headings(): array
@@ -55,7 +67,11 @@ class AttendanceExport implements FromCollection, WithHeadings
             "Clock Out Time",
             "Late Hours",
             "Ealry Leaving Hours",
-            "OverTime"
+            "OverTime",
+            "Clock In Device FingerPrint",
+            "Clock Out Device FingerPrint",
+            "Department",
+            "Employee Role"
         ];
     }
 }
