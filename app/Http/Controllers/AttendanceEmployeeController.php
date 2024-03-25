@@ -442,6 +442,10 @@ class AttendanceEmployeeController extends Controller
             $secs                     = floor($totalEarlyLeavingSeconds % 60);
             $earlyLeaving             = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 
+            if ($totalEarlyLeavingSeconds < 0) {
+                $earlyLeaving= "00:00:00";
+            }
+
             if (strtotime($clockOut) > strtotime($endTime)) {
                 //Overtime
                 $totalOvertimeSeconds = strtotime($clockOut) - strtotime($endTime);
