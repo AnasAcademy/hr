@@ -33,12 +33,12 @@
                 class="btn btn-sm btn-primary" data-bs-original-title="{{ __('Create') }}">
                 <i class="ti ti-plus"></i>
             </a>
-        @else
+        {{-- @else
             <a href="#" data-url="{{ route('user.create') }}" data-ajax-popup="true"
                 data-title="{{ __('Create New User') }}" data-bs-toggle="tooltip" title="" class="btn btn-sm btn-primary"
                 data-bs-original-title="{{ __('Create') }}">
                 <i class="ti ti-plus"></i>
-            </a>
+            </a> --}}
         @endif
     @endcan
 
@@ -288,7 +288,7 @@
                         </div>
                     </div>
                 @endforeach
-                <div class="col-xl-3 col-lg-4 col-sm-6">
+                {{-- <div class="col-xl-3 col-lg-4 col-sm-6">
                     <a href="#" class="btn-addnew-project " data-ajax-popup="true"
                         data-url="{{ route('user.create') }}" data-title="{{ __('Create New User') }}"
                         data-bs-toggle="tooltip" title="" class="btn btn-sm btn-primary"
@@ -299,7 +299,7 @@
                         <h6 class="mt-4 mb-2">{{ __('New User') }}</h6>
                         <p class="text-muted text-center">{{ __('Click here to add new user') }}</p>
                     </a>
-                </div>
+                </div> --}}
             @endif
         </div>
     </div>
