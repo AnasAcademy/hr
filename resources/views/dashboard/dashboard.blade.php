@@ -16,7 +16,7 @@
         @endif
 
 
-        @if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager')
+        @if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager' || \Auth::user()->type == 'hr')
             {{-- add device section --}}
             <div class="d-flex justify-content-end mb-5">
                 <form action="create/ip" method="post" id="deviceIpIdentifier">
@@ -689,7 +689,7 @@
 
 
 
-    @if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager')
+    @if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager' || \Auth::user()->type == 'hr')
         {{-- finger print script link --}}
         <script src="{{ asset('js/userfingerprint.js') }}"></script>
 

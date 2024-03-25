@@ -191,7 +191,7 @@
                                 class="dash-mtext"><?php echo e(__('Employee Profile')); ?></span></a>
                     </li>
                 <?php else: ?>
-                    <?php if(\Auth::user()->type == 'manager'): ?>
+                    <?php if(\Auth::user()->type == 'manager' || \Auth::user()->type == 'hr'): ?>
                         <?php
                             $employee = App\Models\Employee::where('user_id', \Auth::user()->id)->first();
                         ?>
