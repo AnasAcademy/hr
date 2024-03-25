@@ -30,6 +30,7 @@ use App\Models\PaySlip;
 use App\Models\Termination;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 
 //use Faker\Provider\File;
 
@@ -77,7 +78,8 @@ class EmployeeController extends Controller
             $employeesId      = \Auth::user()->employeeIdFormat($this->employeeNumber());
             $timezones = config('timezones');
             $settings = Utility::settings();
-            return view('employee.create', compact('employees', 'employeesId', 'departments', 'designations', 'documents', 'branches', 'company_settings', 'timezones', 'settings'));
+            $roles = Role::whereNotIn('name', ['company', 'super admin'])->get()->pluck('name', 'id');
+            return view('employee.create', compact('employees', 'employeesId', 'departments', 'designations', 'documents', 'branches', 'company_settings', 'timezones', 'settings', 'roles'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -96,12 +98,13 @@ class EmployeeController extends Controller
                     'address' => 'required',
                     'email' => 'required|unique:users',
                     'password' => 'required',
-                    'branch_id' => 'required',
-                    'department_id' => 'required',
-                    'designation_id' => 'required',
+                    'branch_id' => 'required|exists:branches,id',
+                    'department_id' => 'required|exists:departments,id',
+                    'designation_id' => 'required|exists:designations,id',
                     'document.*' => 'required',
                     'timezone' => 'required',
-                    'leave_balance' => 'required|integer'
+                    'leave_balance' => 'required|integer',
+                    'role' => 'required|exists:roles,id',
                 ]
             );
             if ($validator->fails()) {
@@ -149,7 +152,12 @@ class EmployeeController extends Controller
             }
 
 
-            if ($total_employee < $plan->max_employees || $plan->max_employees == -1) {
+            // if ($total_employee < $plan->max_employees || $plan->max_employees == -1)
+
+                $role = Role::findById($request->role);
+                if(!$role){
+                    $role = Role::where('name','employee')->first();
+                }
 
                 $user = User::create(
                     [
@@ -157,17 +165,17 @@ class EmployeeController extends Controller
                         'email' => $request['email'],
                         'timezone' => $request['timezone'],
                         'password' => Hash::make($request['password']),
-                        'type' => 'employee',
+                        'type' => $role->name ?? 'employee',
                         'lang' => !empty($default_language) ? $default_language->value : 'en',
                         'created_by' => \Auth::user()->creatorId(),
                         'email_verified_at' => $date,
                     ]
                 );
                 $user->save();
-                $user->assignRole('Employee');
-            } else {
-                return redirect()->back()->with('error', __('Your employee limit is over, Please upgrade plan.'));
-            }
+                $user->assignRole($role);
+            // } else {
+            //     return redirect()->back()->with('error', __('Your employee limit is over, Please upgrade plan.'));
+            // }
 
 
             if (!empty($request->document) && !is_null($request->document)) {
@@ -204,6 +212,10 @@ class EmployeeController extends Controller
                 ]
 
             );
+
+            if($employee->user->type == 'manager'){
+                Department::where("id", $request['department_id'])->update(["manager_id"=> $employee->user->id]);
+            }
 
             if ($request->hasFile('document')) {
                 foreach ($request->document as $key => $document) {
@@ -275,7 +287,9 @@ class EmployeeController extends Controller
             $employeesId  = \Auth::user()->employeeIdFormat($employee->employee_id);
             $timezones = config('timezones');
             $settings = Utility::settings();
-            return view('employee.edit', compact('employee', 'employeesId', 'branches', 'departments', 'designations', 'documents', 'timezones', 'settings'));
+            $roles = Role::whereNotIn('name', ['company', 'super admin'])->get()->pluck('name', 'id');
+            $myRole = Role::where('name',$employee->user->type)->first();
+            return view('employee.edit', compact('employee', 'employeesId', 'branches', 'departments', 'designations', 'documents', 'timezones', 'settings', 'roles', 'myRole'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -302,6 +316,7 @@ class EmployeeController extends Controller
             }
 
             $employee = Employee::findOrFail($id);
+            $oldType = $employee->user->type;
 
             if ($request->document) {
 
@@ -375,6 +390,33 @@ class EmployeeController extends Controller
             if($request->timezone){
                 $employee->user->update(['timezone' => $request->timezone]);
             }
+
+            $empUser = $employee->user;
+            $reqRole = $request->role ?? 0;
+
+            $role          = Role::findById($reqRole);
+            $oldRole       = Role::where('name', $empUser->type)->first();
+            $input         = $request->all();
+            $role = $role ?? $oldRole;
+            $input['type'] = $role->name;
+            $empUser->fill($input)->save();
+
+            $empUser->removeRole($oldRole);
+            $empUser->assignRole($role);
+
+            // $oldDepartment = Department::where("manager_id", $empUser->id)->get();
+
+            if($employee->user->type != 'manager'){
+                $oldDepartment = Department::where("manager_id", $empUser->id)->first();
+                $oldDepartment->update(["manager_id"=> null]);
+            }
+            else if($employee->user->type == 'manager'){
+                $oldDepartment = Department::where("manager_id", $empUser->id)->first();
+                $oldDepartment->update(["manager_id"=> null]);
+                Department::find($request['department_id'])->update(["manager_id"=> $empUser->id]);
+
+            }
+
             if ($request->salary) {
                 return redirect()->route('setsalary.index')->with('success', 'Employee successfully updated.');
             }

@@ -10,6 +10,7 @@ class Department extends Model
         'name',
         'branch_id',
         'created_by',
+        'manager_id'
     ];
 
     public function branch(){

@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('page-title'); ?>
     <?php if(\Auth::user()->type == 'super admin'): ?>
         <?php echo e(__('Manage Companies')); ?>

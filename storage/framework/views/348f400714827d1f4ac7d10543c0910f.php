@@ -1,17 +1,16 @@
-@extends('layouts.admin')
+<?php $__env->startSection('page-title'); ?>
+    <?php echo e(__('Create Employee')); ?>
 
-@section('page-title')
-    {{ __('Create Employee') }}
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Home') }}</a></li>
-    <li class="breadcrumb-item"><a href="{{ url('employee') }}">{{ __('Employee') }}</a></li>
-    <li class="breadcrumb-item">{{ __('Create Employee') }}</li>
-@endsection
+<?php $__env->startSection('breadcrumb'); ?>
+    <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>"><?php echo e(__('Home')); ?></a></li>
+    <li class="breadcrumb-item"><a href="<?php echo e(url('employee')); ?>"><?php echo e(__('Employee')); ?></a></li>
+    <li class="breadcrumb-item"><?php echo e(__('Create Employee')); ?></li>
+<?php $__env->stopSection(); ?>
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         .cursor-pointer {
             cursor: pointer;
@@ -24,97 +23,112 @@
                 <div class="row">
 
                 </div>
-                {{ Form::open(['route' => ['employee.store'], 'method' => 'post', 'enctype' => 'multipart/form-data']) }}
+                <?php echo e(Form::open(['route' => ['employee.store'], 'method' => 'post', 'enctype' => 'multipart/form-data'])); ?>
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card em-card">
                             <div class="card-header">
-                                <h5>{{ __('Personal Detail') }}</h5>
+                                <h5><?php echo e(__('Personal Detail')); ?></h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('name', __('Name'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
-                                        {!! Form::text('name', old('name'), [
+                                        <?php echo Form::label('name', __('Name'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                        <?php echo Form::text('name', old('name'), [
                                             'class' => 'form-control',
                                             'required' => 'required',
                                             'placeholder' => 'Enter employee name',
-                                        ]) !!}
+                                        ]); ?>
+
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('phone', __('Phone'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
-                                        {!! Form::text('phone', old('phone'), ['class' => 'form-control', 'placeholder' => 'Enter employee phone']) !!}
+                                        <?php echo Form::label('phone', __('Phone'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                        <?php echo Form::text('phone', old('phone'), ['class' => 'form-control', 'placeholder' => 'Enter employee phone']); ?>
+
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            {!! Form::label('dob', __('Date of Birth'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
-                                            {{ Form::date('dob', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select Date of Birth']) }}
+                                            <?php echo Form::label('dob', __('Date of Birth'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                            <?php echo e(Form::date('dob', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select Date of Birth'])); ?>
+
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            {!! Form::label('gender', __('Gender'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
+                                            <?php echo Form::label('gender', __('Gender'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
                                             <div class="d-flex radio-check">
                                                 <div class="custom-control custom-radio custom-control-inline">
                                                     <input type="radio" id="g_male" value="Male" name="gender"
                                                         class="form-check-input">
                                                     <label class="form-check-label "
-                                                        for="g_male">{{ __('Male') }}</label>
+                                                        for="g_male"><?php echo e(__('Male')); ?></label>
                                                 </div>
                                                 <div class="custom-control custom-radio ms-1 custom-control-inline">
                                                     <input type="radio" id="g_female" value="Female" name="gender"
                                                         class="form-check-input">
                                                     <label class="form-check-label "
-                                                        for="g_female">{{ __('Female') }}</label>
+                                                        for="g_female"><?php echo e(__('Female')); ?></label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('email', __('Email'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
-                                        {!! Form::email('email', old('email'), [
+                                        <?php echo Form::label('email', __('Email'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                        <?php echo Form::email('email', old('email'), [
                                             'class' => 'form-control',
                                             'required' => 'required',
                                             'placeholder' => 'Enter employee email',
-                                        ]) !!}
+                                        ]); ?>
+
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('password', __('Password'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
-                                        {!! Form::password('password', [
+                                        <?php echo Form::label('password', __('Password'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                        <?php echo Form::password('password', [
                                             'class' => 'form-control',
                                             'required' => 'required',
                                             'placeholder' => 'Enter employee password',
-                                        ]) !!}
+                                        ]); ?>
+
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    {!! Form::label('address', __('Address'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
-                                    {!! Form::textarea('address', old('address'), [
+                                    <?php echo Form::label('address', __('Address'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                    <?php echo Form::textarea('address', old('address'), [
                                         'class' => 'form-control',
                                         'rows' => 3,
                                         'placeholder' => 'Enter employee address',
-                                    ]) !!}
+                                    ]); ?>
+
                                 </div>
 
-                                {{-- timezone --}}
+                                
                                 <div class="form-group">
-                                    {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}
+                                    <?php echo e(Form::label('timezone', __('Timezone'), ['class' => 'col-form-label'])); ?>
+
 
                                     <select type="text" name="timezone" class="form-control select2" id="timezone">
-                                        <option value="">{{ __('Select Timezone') }}</option>
-                                        @if (!empty($timezones))
-                                            @foreach ($timezones as $k => $timezone)
-                                                <option value="{{ $k }}"
-                                                    {{ $settings['timezone'] == $k ? 'selected' : '' }}>
-                                                    {{ $timezone }}</option>
-                                            @endforeach
-                                        @endif
+                                        <option value=""><?php echo e(__('Select Timezone')); ?></option>
+                                        <?php if(!empty($timezones)): ?>
+                                            <?php $__currentLoopData = $timezones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $timezone): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($k); ?>"
+                                                    <?php echo e($settings['timezone'] == $k ? 'selected' : ''); ?>>
+                                                    <?php echo e($timezone); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
                                     </select>
-                                    @error('timezone')
+                                    <?php $__errorArgs = ['timezone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                                         <span class="invalid-timezone" role="alert">
-                                            <small class="text-danger">{{ $message }}</small>
+                                            <small class="text-danger"><?php echo e($message); ?></small>
                                         </span>
-                                    @enderror
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
 
                                 </div>
                             </div>
@@ -123,31 +137,33 @@
                     <div class="col-md-6">
                         <div class="card em-card">
                             <div class="card-header">
-                                <h5>{{ __('Company Detail') }}</h5>
+                                <h5><?php echo e(__('Company Detail')); ?></h5>
                             </div>
                             <div class="card-body employee-detail-create-body">
                                 <div class="row">
-                                    @csrf
+                                    <?php echo csrf_field(); ?>
                                     <div class="form-group ">
-                                        {!! Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']) !!}
-                                        {!! Form::text('employee_id', $employeesId, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+                                        <?php echo Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']); ?>
+
+                                        <?php echo Form::text('employee_id', $employeesId, ['class' => 'form-control', 'disabled' => 'disabled']); ?>
+
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        {{ Form::label('branch_id', __('Select Branch*'), ['class' => 'form-label']) }}
+                                        <?php echo e(Form::label('branch_id', __('Select Branch*'), ['class' => 'form-label'])); ?>
+
                                         <div class="form-icon-user">
-                                            {{ Form::select('branch_id', $branches, null, ['class' => 'form-control branch_id', 'required' => 'required', 'placeholder' => 'Select Branch', 'id' => 'branch_id', 'required' => 'required']) }}
+                                            <?php echo e(Form::select('branch_id', $branches, null, ['class' => 'form-control branch_id', 'required' => 'required', 'placeholder' => 'Select Branch', 'id' => 'branch_id', 'required' => 'required'])); ?>
+
                                         </div>
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        {{-- {{ Form::label('department_id', __('Select Department*'), ['class' => 'form-label']) }}
-                                        <div class="form-icon-user department_div">
-                                            {{ Form::select('department_id', $departments, null, ['class' => 'form-control select2 department_id', 'id' => 'department_id', 'required' => 'required', 'placeholder' => 'Select Department']) }}
-                                        </div> --}}
+                                        
 
                                         <div class="form-icon-user" id="department_id">
-                                            {{ Form::label('department_id', __('Department'), ['class' => 'form-label']) }}
+                                            <?php echo e(Form::label('department_id', __('Department'), ['class' => 'form-label'])); ?>
+
                                             <select class="form-control select department_id" name="department_id"
                                                 id="department_id" placeholder="Select Department" required>
                                             </select>
@@ -155,30 +171,38 @@
                                     </div>
 
                                     <div class="form-group ">
-                                        {{ Form::label('designation_id', __('Select Designation'), ['class' => 'form-label']) }}
+                                        <?php echo e(Form::label('designation_id', __('Select Designation'), ['class' => 'form-label'])); ?>
+
 
                                         <div class="form-icon-user designation_div">
-                                            {{ Form::select('designation_id', $designations, null, ['class' => 'form-control', 'id' => 'designation_id', 'placeholder' => 'Select Designation', 'required' => 'required']) }}
+                                            <?php echo e(Form::select('designation_id', $designations, null, ['class' => 'form-control', 'id' => 'designation_id', 'placeholder' => 'Select Designation', 'required' => 'required'])); ?>
+
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        {!! Form::label('company_doj', __('Company Date Of Joining'), ['class' => '  form-label']) !!}
-                                        {{ Form::date('company_doj', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select company date of joining']) }}
+                                        <?php echo Form::label('company_doj', __('Company Date Of Joining'), ['class' => '  form-label']); ?>
+
+                                        <?php echo e(Form::date('company_doj', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select company date of joining'])); ?>
+
                                     </div>
                                     <div class="form-group ">
-                                        {!! Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']) !!}
-                                        {!! Form::number('leave_balance', null, [
+                                        <?php echo Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']); ?>
+
+                                        <?php echo Form::number('leave_balance', null, [
                                             'class' => 'form-control',
                                             'min' => 0,
                                             'placeholder' => 'Enter the Limit Number of Holidays',
-                                        ]) !!}
+                                        ]); ?>
+
                                     </div>
 
                                     <div class="form-group">
-                                        {{ Form::label('role', __('Role'), ['class' => 'form-label']) }}
+                                        <?php echo e(Form::label('role', __('Role'), ['class' => 'form-label'])); ?>
 
-                                        {{ Form::select('role', $roles, null, ['class' => 'form-control', 'id' => 'role', 'placeholder' => 'Select User Role', 'required' => 'required']) }}
+
+                                        <?php echo e(Form::select('role', $roles, null, ['class' => 'form-control', 'id' => 'role', 'placeholder' => 'Select User Role', 'required' => 'required'])); ?>
+
 
                                     </div>
 
@@ -187,43 +211,51 @@
                         </div>
                     </div>
                 </div>
-                {{-- document --}}
+                
                 <div class="row">
                     <div class="col-md-6 ">
                         <div class="card em-card">
                             <div class="card-header">
-                                <h5>{{ __('Document') }}</h6>
+                                <h5><?php echo e(__('Document')); ?></h6>
                             </div>
                             <div class="card-body employee-detail-create-body">
-                                @foreach ($documents as $key => $document)
+                                <?php $__currentLoopData = $documents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $document): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="row">
                                         <div class="form-group col-12 d-flex">
                                             <div class="float-left col-4">
                                                 <label for="document"
-                                                    class="float-left pt-1 form-label">{{ $document->name }} @if ($document->is_required == 1)
+                                                    class="float-left pt-1 form-label"><?php echo e($document->name); ?> <?php if($document->is_required == 1): ?>
                                                         <span class="text-danger">*</span>
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </label>
                                             </div>
                                             <div class="float-right col-8">
-                                                <input type="hidden" name="emp_doc_id[{{ $document->id }}]" id=""
-                                                    value="{{ $document->id }}">
+                                                <input type="hidden" name="emp_doc_id[<?php echo e($document->id); ?>]" id=""
+                                                    value="<?php echo e($document->id); ?>">
                                                 <div class="choose-files">
-                                                    <label for="document[{{ $document->id }}]">
+                                                    <label for="document[<?php echo e($document->id); ?>]">
                                                         <div class=" bg-primary document cursor-pointer"> <i
-                                                                class="ti ti-upload "></i>{{ __('Choose file here') }}
+                                                                class="ti ti-upload "></i><?php echo e(__('Choose file here')); ?>
+
                                                         </div>
                                                         <input type="file"
-                                                            class="form-control file @error('document') is-invalid @enderror"
-                                                            @if ($document->is_required == 1) required @endif
-                                                            name="document[{{ $document->id }}]"
-                                                            id="document[{{ $document->id }}]"
-                                                            data-filename="{{ $document->id . '_filename' }}"
-                                                            onchange="document.getElementById('{{ 'blah' . $key }}').src = window.URL.createObjectURL(this.files[0])">
+                                                            class="form-control file <?php $__errorArgs = ['document'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                                            <?php if($document->is_required == 1): ?> required <?php endif; ?>
+                                                            name="document[<?php echo e($document->id); ?>]"
+                                                            id="document[<?php echo e($document->id); ?>]"
+                                                            data-filename="<?php echo e($document->id . '_filename'); ?>"
+                                                            onchange="document.getElementById('<?php echo e('blah' . $key); ?>').src = window.URL.createObjectURL(this.files[0])">
                                                     </label>
-                                                    <img id="{{ 'blah' . $key }}" src="" width="50%" />
-                                                    {{-- <a><p class="{{ $document->id . '_filename' }} "></p></a> --}}
-                                                    {{-- <span style="color: black" id="fileName" class="{{ $document->id . '_filename' }} "></span> --}}
+                                                    <img id="<?php echo e('blah' . $key); ?>" src="" width="50%" />
+                                                    
+                                                    
 
                                                 </div>
 
@@ -231,58 +263,70 @@
 
                                         </div>
                                     </div>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 ">
                         <div class="card em-card">
                             <div class="card-header">
-                                <h5>{{ __('Bank Account Detail') }}</h5>
+                                <h5><?php echo e(__('Bank Account Detail')); ?></h5>
                             </div>
                             <div class="card-body employee-detail-create-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('account_holder_name', __('Account Holder Name'), ['class' => 'form-label']) !!}
-                                        {!! Form::text('account_holder_name', old('account_holder_name'), [
+                                        <?php echo Form::label('account_holder_name', __('Account Holder Name'), ['class' => 'form-label']); ?>
+
+                                        <?php echo Form::text('account_holder_name', old('account_holder_name'), [
                                             'class' => 'form-control',
                                             'placeholder' => 'Enter account holder name',
-                                        ]) !!}
+                                        ]); ?>
+
 
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('account_number', __('Account Number'), ['class' => 'form-label']) !!}
-                                        {!! Form::number('account_number', old('account_number'), [
+                                        <?php echo Form::label('account_number', __('Account Number'), ['class' => 'form-label']); ?>
+
+                                        <?php echo Form::number('account_number', old('account_number'), [
                                             'class' => 'form-control',
                                             'placeholder' => 'Enter account number',
-                                        ]) !!}
+                                        ]); ?>
+
 
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('bank_name', __('Bank Name'), ['class' => 'form-label']) !!}
-                                        {!! Form::text('bank_name', old('bank_name'), ['class' => 'form-control', 'placeholder' => 'Enter bank name']) !!}
+                                        <?php echo Form::label('bank_name', __('Bank Name'), ['class' => 'form-label']); ?>
+
+                                        <?php echo Form::text('bank_name', old('bank_name'), ['class' => 'form-control', 'placeholder' => 'Enter bank name']); ?>
+
 
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('bank_identifier_code', __('Bank Identifier Code'), ['class' => 'form-label']) !!}
-                                        {!! Form::text('bank_identifier_code', old('bank_identifier_code'), [
+                                        <?php echo Form::label('bank_identifier_code', __('Bank Identifier Code'), ['class' => 'form-label']); ?>
+
+                                        <?php echo Form::text('bank_identifier_code', old('bank_identifier_code'), [
                                             'class' => 'form-control',
                                             'placeholder' => 'Enter bank identifier code',
-                                        ]) !!}
+                                        ]); ?>
+
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('branch_location', __('Branch Location'), ['class' => 'form-label']) !!}
-                                        {!! Form::text('branch_location', old('branch_location'), [
+                                        <?php echo Form::label('branch_location', __('Branch Location'), ['class' => 'form-label']); ?>
+
+                                        <?php echo Form::text('branch_location', old('branch_location'), [
                                             'class' => 'form-control',
                                             'placeholder' => 'Enter branch location',
-                                        ]) !!}
+                                        ]); ?>
+
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('tax_payer_id', __('Tax Payer Id'), ['class' => 'form-label']) !!}
-                                        {!! Form::text('tax_payer_id', old('tax_payer_id'), [
+                                        <?php echo Form::label('tax_payer_id', __('Tax Payer Id'), ['class' => 'form-label']); ?>
+
+                                        <?php echo Form::text('tax_payer_id', old('tax_payer_id'), [
                                             'class' => 'form-control',
                                             'placeholder' => 'Enter tax payer id',
-                                        ]) !!}
+                                        ]); ?>
+
                                     </div>
                                 </div>
                             </div>
@@ -297,14 +341,14 @@
             </div>
 
             <div class="float-end">
-                <button type="submit" class="btn  btn-primary">{{ 'Create' }}</button>
+                <button type="submit" class="btn  btn-primary"><?php echo e('Create'); ?></button>
             </div>
             </form>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('script-page')
+<?php $__env->startPush('script-page'); ?>
     <script>
         navigator.geolocation.getCurrentPosition(function(position) {
             var latitude = position.coords.latitude;
@@ -336,11 +380,11 @@
         function getDepartment(bid) {
 
             $.ajax({
-                url: '{{ route('monthly.getdepartment') }}',
+                url: '<?php echo e(route('monthly.getdepartment')); ?>',
                 type: 'POST',
                 data: {
                     "branch_id": bid,
-                    "_token": "{{ csrf_token() }}",
+                    "_token": "<?php echo e(csrf_token()); ?>",
                 },
                 success: function(data) {
 
@@ -350,7 +394,7 @@
                                             </select>`;
                     $('.department_div').html(emp_selct);
 
-                    $('.department_id').append('<option value=""> {{ __('Select Department') }} </option>');
+                    $('.department_id').append('<option value=""> <?php echo e(__('Select Department')); ?> </option>');
                     $.each(data, function(key, value) {
                         $('.department_id').append('<option value="' + key + '">' + value +
                             '</option>');
@@ -375,11 +419,11 @@
         function getDesignation(did) {
 
             $.ajax({
-                url: '{{ route('employee.json') }}',
+                url: '<?php echo e(route('employee.json')); ?>',
                 type: 'POST',
                 data: {
                     "department_id": did,
-                    "_token": "{{ csrf_token() }}",
+                    "_token": "<?php echo e(csrf_token()); ?>",
                 },
                 success: function(data) {
 
@@ -392,7 +436,7 @@
                                             </select>`;
                     $('.designation_div').html(emp_selct);
 
-                    $('.designation_id').append('<option value=""> {{ __('Select Designation') }} </option>');
+                    $('.designation_id').append('<option value=""> <?php echo e(__('Select Designation')); ?> </option>');
                     $.each(data, function(key, value) {
                         $('.designation_id').append('<option value="' + key + '">' + value +
                             '</option>');
@@ -416,4 +460,6 @@
             $('.current_date').val(today);
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\User\OneDrive - اكاديمية انس للفنون البصرية\Desktop\hr\resources\views/employee/create.blade.php ENDPATH**/ ?>
