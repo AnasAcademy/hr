@@ -286,7 +286,7 @@
                         @endcan --}}
                         @can('View Leave')
                             <li class="dash-item {{ Request::segment(1) == 'calender' ? ' active' : '' }}">
-                                <a class="dash-link" href="{{ route('leave.index') }}">{{ __('Manage Leave') }}</a>
+                                <a class="dash-link" href="{{ route('leave.index') }}">{{ __('Manage Holidays Request') }}</a>
                             </li>
                         @endcan
                         @can('Manage Attendance')

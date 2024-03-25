@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
 @section('page-title')
-    {{ __('Manage Leave') }}
+    {{ __('Manage Holidays Request') }}
 @endsection
 
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Home') }}</a></li>
-    <li class="breadcrumb-item">{{ __('Leave ') }}</li>
+    <li class="breadcrumb-item">{{ __('Holidays Request ') }}</li>
 @endsection
 
 @section('action-button')
@@ -23,7 +23,7 @@
 
     @can('Create Leave')
         <a href="#" data-url="{{ route('leave.create') }}" data-ajax-popup="true"
-            data-title="{{ __('Create New Leave') }}" data-size="lg" data-bs-toggle="tooltip" title=""
+            data-title="{{ __('Create New Request') }}" data-size="lg" data-bs-toggle="tooltip" title=""
             class="btn btn-sm btn-primary" data-bs-original-title="{{ __('Create') }}">
             <i class="ti ti-plus"></i>
         </a>
@@ -91,8 +91,8 @@
                                                             data-size="lg"
                                                             data-url="{{ URL::to('leave/' . $leave->id . '/action') }}"
                                                             data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
-                                                            title="" data-title="{{ __('Leave Action') }}"
-                                                            data-bs-original-title="{{ __('Manage Leave') }}">
+                                                            title="" data-title="{{ __('Request Action') }}"
+                                                            data-bs-original-title="{{ __('Manage Holidays Request') }}">
                                                             <i class="ti ti-caret-right text-white"></i>
                                                         </a>
                                                     </div>
