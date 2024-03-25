@@ -102,7 +102,7 @@
                                                                 data-size="lg"
                                                                 data-url="{{ URL::to('leave/' . $leave->id . '/edit') }}"
                                                                 data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
-                                                                title="" data-title="{{ __('Edit Leave') }}"
+                                                                title="" data-title="{{ __('Edit Request') }}"
                                                                 data-bs-original-title="{{ __('Edit') }}">
                                                                 <i class="ti ti-pencil text-white"></i>
                                                             </a>
@@ -131,8 +131,8 @@
                                                             data-size="lg"
                                                             data-url="{{ URL::to('leave/' . $leave->id . '/action') }}"
                                                             data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
-                                                            title="" data-title="{{ __('Leave Action') }}"
-                                                            data-bs-original-title="{{ __('Manage Leave') }}">
+                                                            title="" data-title="{{ __('Request Action') }}"
+                                                            data-bs-original-title="{{ __('Manage Holidays Request') }}">
                                                             <i class="ti ti-caret-right text-white"></i>
                                                         </a>
                                                     </div>
