@@ -406,6 +406,7 @@ class AttendanceEmployeeController extends Controller
         // }
 
 
+        $user = \Auth::user();
 
         $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
 
@@ -481,6 +482,8 @@ class AttendanceEmployeeController extends Controller
         if (Auth::user()->type == 'employee') {
             $date = date("Y-m-d");
             $time = date("H:i:s");
+            // $date = $user->convertDateToUserTimezone(date("Y-m-d"));
+            // $time = $user->convertTimeToUserTimezone(date("H:i:s"));
 
             //early Leaving
             $totalEarlyLeavingSeconds = strtotime($date . $endTime) - time();
@@ -488,7 +491,7 @@ class AttendanceEmployeeController extends Controller
             $mins                     = floor($totalEarlyLeavingSeconds / 60 % 60);
             $secs                     = floor($totalEarlyLeavingSeconds % 60);
             $earlyLeaving             = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
-
+            
             if (time() > strtotime($date . $endTime)) {
                 //Overtime
                 $totalOvertimeSeconds = time() - strtotime($date . $endTime);

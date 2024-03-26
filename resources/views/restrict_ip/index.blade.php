@@ -66,7 +66,7 @@
                                             @endcan --}}
                                         </td>
                                         <td>{{ $device->ip }}</td>
-                                        <td>{{ $device->user->name }}</td>
+                                        <td>{{ $device->user->name ?? "" }}</td>
                                         <td>
                                             @if ($device->status == 'pending')
                                                 <div class="badge bg-warning p-2 px-3 rounded status-badge5">

@@ -2461,7 +2461,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $settings = Utility::settings();
 
-        $date = $this->convertDateToUserTimezone($date);
+        // $date = $this->convertDateToUserTimezone($date);
 
         return date($settings['site_date_format'], strtotime($date));
     }
@@ -2469,7 +2469,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function timeFormat($time)
     {
         $settings = Utility::settings();
-        $time = $this->convertTimeToUserTimezone($time);
+        // $time = $this->convertTimeToUserTimezone($time);
         return date($settings['site_time_format'], strtotime($time));
     }
 
@@ -2633,7 +2633,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $convertedTime = Carbon::parse($dateTimeString)->timezone($timezone)->format($format);
         return $convertedTime;
     }
-    function convertDateToUserTimezone($date, $format = 'Y-m-d H:i:s')
+    function convertDateToUserTimezone($date, $format = 'Y-m-d')
     {
         $timezone = auth()->user()->timezone ?? config('app.timezone');
         return Carbon::parse($date)->timezone($timezone)->format($format);
