@@ -75,21 +75,19 @@ class AttendanceEmployeeController extends Controller
 
                 $attendanceEmployee = $attendanceEmployee->get();
             } else {
-                if(\Auth::user()->type == 'manager'){
+                if (\Auth::user()->type == 'manager') {
                     $user = \Auth::user();
 
                     $employee = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('department', function ($query) use ($user) {
                         $query->where('manager_id', $user->id);
                     });
-                }
-                else if(\Auth::user()->type == 'leadership'){
+                } else if (\Auth::user()->type == 'leadership') {
                     $user = \Auth::user();
 
                     $employee = Employee::select('id')->where("user_id", "!=", $user->id)->whereHas('user', function ($query) use ($user) {
                         $query->where('type', 'manager');
                     });
-                }
-                else{
+                } else {
                     $employee = Employee::select('id')->where('created_by', \Auth::user()->creatorId());
                 }
                 if (!empty($request->branch)) {
@@ -444,7 +442,7 @@ class AttendanceEmployeeController extends Controller
             $earlyLeaving             = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 
             if ($totalEarlyLeavingSeconds < 0) {
-                $earlyLeaving= "00:00:00";
+                $earlyLeaving = "00:00:00";
             }
 
             if (strtotime($clockOut) > strtotime($endTime)) {
@@ -485,22 +483,27 @@ class AttendanceEmployeeController extends Controller
             $date = $user->convertDateToUserTimezone(date("Y-m-d"));
             $time = $user->convertTimeToUserTimezone(date("H:i:s"));
 
-            // dd(['af'=>Carbon::now('Africa/Cairo')->timestamp, 'as'=>Carbon::now('Asia/Riyadh')->timestamp, 'time'=>time()]);
+            // get user timeZone
+            $timeZone =$user->timezone ?? config('app.timezone');
+
+            // get current time according to user timezone
+            $currentDateTime = strtotime(Carbon::now($timeZone));
 
             //early Leaving
-            $totalEarlyLeavingSeconds = strtotime($date . $endTime) - time();
+            $totalEarlyLeavingSeconds = strtotime($date . $endTime) - $currentDateTime;
             $hours                    = floor($totalEarlyLeavingSeconds / 3600);
             $mins                     = floor($totalEarlyLeavingSeconds / 60 % 60);
             $secs                     = floor($totalEarlyLeavingSeconds % 60);
             $earlyLeaving             = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
-            $currentTimestamp = Carbon::now($user->timezone)->timestamp;
-            if (time() > strtotime($date . $endTime)) {
+
+            if ($currentDateTime > strtotime($date . $endTime)) {
                 //Overtime
-                $totalOvertimeSeconds = time() - strtotime($date . $endTime);
+                $totalOvertimeSeconds = $currentDateTime - strtotime($date . $endTime);
                 $hours                = floor($totalOvertimeSeconds / 3600);
                 $mins                 = floor($totalOvertimeSeconds / 60 % 60);
                 $secs                 = floor($totalOvertimeSeconds % 60);
                 $overtime             = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+
             } else {
                 $overtime = '00:00:00';
             }
@@ -667,7 +670,7 @@ class AttendanceEmployeeController extends Controller
 
         if ($settings['ip_restrict'] == 'on') {
 
-          $request->validate([
+            $request->validate([
                 'fingerprint' => 'required',
                 // Add other validation rules for your request data
             ]);
@@ -710,8 +713,8 @@ class AttendanceEmployeeController extends Controller
             ->where('date', '=', date('Y-m-d'))
             ->first();
 
-            $date = $user->convertDateToUserTimezone(date("Y-m-d"));
-            $time = $user->convertTimeToUserTimezone(date("H:i:s"));
+        $date = $user->convertDateToUserTimezone(date("Y-m-d"));
+        $time = $user->convertTimeToUserTimezone(date("H:i:s"));
 
         if ($lastClockOutEntry != null) {
             // Calculate late based on the difference between the last clock-out time and the current clock-in time
