@@ -24,8 +24,10 @@ class DesignationController extends Controller
     public function create()
     {
         if (\Auth::user()->can('Create Designation')) {
-            $departments = Department::where('created_by', '=', \Auth::user()->creatorId())->get();
-            $departments = $departments->pluck('name', 'id');
+            $departments = Department::get()->map(function ($department) {
+                $department->name =   $department->name . ' (' . $department->branch->name . ')';
+                return $department;
+            })->pluck('name', 'id');
 
             return view('designation.create', compact('departments'));
         } else {
@@ -73,9 +75,12 @@ class DesignationController extends Controller
 
         if (\Auth::user()->can('Edit Designation')) {
             if ($designation->created_by == \Auth::user()->creatorId()) {
+                
+                $departments = Department::get()->map(function ($department) {
+                    $department->name =   $department->name . ' (' . $department->branch->name . ')';
+                    return $department;
+                })->pluck('name', 'id');
 
-                $departments = Department::where('id', $designation->department_id)->first();
-                $departments = $departments->pluck('name', 'id');
 
                 return view('designation.edit', compact('designation', 'departments'));
             } else {

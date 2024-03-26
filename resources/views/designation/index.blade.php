@@ -34,6 +34,7 @@
                     <table class="table" id="pc-dt-simple">
                         <thead>
                             <tr>
+                                <th>{{ __('Branch') }}</th>
                                 <th>{{ __('Department') }}</th>
                                 <th>{{ __('Designation') }}</th>
                                 <th width="200px">{{ __('Action') }}</th>
@@ -42,6 +43,7 @@
                         <tbody>
                             @foreach ($designations as $designation)
                                 <tr>
+                                    <td>{{ !empty($designation->department_id) ? $designation->department->branch->name : '-' }}</td>
                                     <td>{{ !empty($designation->department_id) ? $designation->department->name : '-' }}</td>
                                     <td>{{ $designation->name }}</td>
                                     <td class="Action">

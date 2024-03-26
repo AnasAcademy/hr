@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('page-title'); ?>
    <?php echo e(__('Manage Designation')); ?>
 
@@ -35,6 +33,7 @@
                     <table class="table" id="pc-dt-simple">
                         <thead>
                             <tr>
+                                <th><?php echo e(__('Branch')); ?></th>
                                 <th><?php echo e(__('Department')); ?></th>
                                 <th><?php echo e(__('Designation')); ?></th>
                                 <th width="200px"><?php echo e(__('Action')); ?></th>
@@ -43,6 +42,7 @@
                         <tbody>
                             <?php $__currentLoopData = $designations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $designation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
+                                    <td><?php echo e(!empty($designation->department_id) ? $designation->department->branch->name : '-'); ?></td>
                                     <td><?php echo e(!empty($designation->department_id) ? $designation->department->name : '-'); ?></td>
                                     <td><?php echo e($designation->name); ?></td>
                                     <td class="Action">
