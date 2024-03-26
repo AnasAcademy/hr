@@ -404,15 +404,20 @@ class EmployeeController extends Controller
             $empUser->removeRole($oldRole);
             $empUser->assignRole($role);
 
-            // $oldDepartment = Department::where("manager_id", $empUser->id)->get();
+            // $oldDepartment = Department::where("manager_id", $empUser->id)->first();
 
-            if($employee->user->type != 'manager'){
-                $oldDepartment = Department::where("manager_id", $empUser->id)->first();
-                $oldDepartment->update(["manager_id"=> null]);
+            if($employee->user->type != 'manager' && $oldType == 'manager'){
+
+                $oldDepartment = $employee->user->managedDepartment;
+                if($oldDepartment){
+                    $oldDepartment->update(["manager_id"=> null]);
+                }
             }
             else if($employee->user->type == 'manager'){
-                $oldDepartment = Department::where("manager_id", $empUser->id)->first();
-                $oldDepartment->update(["manager_id"=> null]);
+                $oldDepartment = $employee->user->managedDepartment;
+                if($oldDepartment){
+                    $oldDepartment->update(["manager_id"=> null]);
+                }
                 Department::find($request['department_id'])->update(["manager_id"=> $empUser->id]);
 
             }

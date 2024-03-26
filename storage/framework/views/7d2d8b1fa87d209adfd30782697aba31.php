@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('page-title'); ?>
     <?php if(\Auth::user()->type == 'super admin'): ?>
         <?php echo e(__('Manage Companies')); ?>
@@ -33,12 +35,7 @@
                 class="btn btn-sm btn-primary" data-bs-original-title="<?php echo e(__('Create')); ?>">
                 <i class="ti ti-plus"></i>
             </a>
-        <?php else: ?>
-            <a href="#" data-url="<?php echo e(route('user.create')); ?>" data-ajax-popup="true"
-                data-title="<?php echo e(__('Create New User')); ?>" data-bs-toggle="tooltip" title="" class="btn btn-sm btn-primary"
-                data-bs-original-title="<?php echo e(__('Create')); ?>">
-                <i class="ti ti-plus"></i>
-            </a>
+        
         <?php endif; ?>
     <?php endif; ?>
 
@@ -282,18 +279,7 @@
                         </div>
                     </div>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                <div class="col-xl-3 col-lg-4 col-sm-6">
-                    <a href="#" class="btn-addnew-project " data-ajax-popup="true"
-                        data-url="<?php echo e(route('user.create')); ?>" data-title="<?php echo e(__('Create New User')); ?>"
-                        data-bs-toggle="tooltip" title="" class="btn btn-sm btn-primary"
-                        data-bs-original-title="<?php echo e(__('Create')); ?>">
-                        <div class="bg-primary proj-add-icon">
-                            <i class="ti ti-plus"></i>
-                        </div>
-                        <h6 class="mt-4 mb-2"><?php echo e(__('New User')); ?></h6>
-                        <p class="text-muted text-center"><?php echo e(__('Click here to add new user')); ?></p>
-                    </a>
-                </div>
+                
             <?php endif; ?>
         </div>
     </div>

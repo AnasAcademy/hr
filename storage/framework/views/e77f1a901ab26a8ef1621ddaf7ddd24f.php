@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Dashboard')); ?>
 
@@ -16,7 +18,7 @@
         <?php endif; ?>
 
 
-        <?php if(\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager'): ?>
+        <?php if(\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager' || \Auth::user()->type == 'hr'): ?>
             
             <div class="d-flex justify-content-end mb-5">
                 <form action="create/ip" method="post" id="deviceIpIdentifier">
@@ -695,7 +697,7 @@
 
 
 
-    <?php if(\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager'): ?>
+    <?php if(\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager' || \Auth::user()->type == 'hr'): ?>
         
         <script src="<?php echo e(asset('js/userfingerprint.js')); ?>"></script>
 

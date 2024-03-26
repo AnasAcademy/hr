@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Edit Employee')); ?>
 
@@ -162,13 +164,22 @@
                                         </div>
 
                                         <div class="form-group ">
-                                            <?php echo Form::label('leave_balance', __('Holiday Balance'), ['class' => 'form-label']); ?>
+                                            <?php echo Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']); ?>
 
                                             <?php echo Form::number('leave_balance', $employee->leave_balance, [
                                                 'class' => 'form-control',
                                                 'min' => 0,
                                                 'placeholder' => 'Enter the Limit Number of Holidays',
                                             ]); ?>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <?php echo e(Form::label('role', __('Role'), ['class' => 'form-label'])); ?>
+
+
+                                            <?php echo e(Form::select('role', $roles, $myRole->id ?? "", ['class' => 'form-control', 'id' => 'role', 'placeholder' => 'Select User Role', 'required' => 'required'])); ?>
+
 
                                         </div>
 

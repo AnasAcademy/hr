@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 use Illuminate\Validation\Rule;
 use Lab404\Impersonate\Impersonate;
+use App\Models\Department;
 
 class UserController extends Controller
 {
@@ -210,6 +211,7 @@ class UserController extends Controller
             $user->fill($input)->save();
         } else {
             $user = User::findOrFail($id);
+            $oldType = $user->type;
 
             $role          = Role::findById($request->role);
             $oldRole       = Role::where('name', $user->type)->first();
@@ -219,6 +221,23 @@ class UserController extends Controller
 
             $user->removeRole($oldRole);
             $user->assignRole($role);
+
+            if($user->type != 'manager' && $oldType == 'manager'){
+
+                $oldDepartment = $user->managedDepartment;
+                if($oldDepartment){
+                    $oldDepartment->update(["manager_id"=> null]);
+                }
+            }
+            else if($user->type == 'manager'){
+                $oldDepartment = $user->managedDepartment;
+                if($oldDepartment){
+                    $oldDepartment->update(["manager_id"=> null]);
+                }
+               
+                Department::find($user->employee->department_id)->update(["manager_id"=> $user->id]);
+
+            }
         }
 
         return redirect()->route('user.index')->with('success', 'User successfully updated.');
