@@ -1,12 +1,12 @@
 <?php $__env->startSection('page-title'); ?>
-    <?php echo e(__('Manage Leave')); ?>
+    <?php echo e(__('Manage Holidays Request')); ?>
 
 <?php $__env->stopSection(); ?>
 
 
 <?php $__env->startSection('breadcrumb'); ?>
     <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>"><?php echo e(__('Home')); ?></a></li>
-    <li class="breadcrumb-item"><?php echo e(__('Leave ')); ?></li>
+    <li class="breadcrumb-item"><?php echo e(__('Holidays Request ')); ?></li>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('action-button'); ?>
@@ -22,7 +22,7 @@
 
     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Create Leave')): ?>
         <a href="#" data-url="<?php echo e(route('leave.create')); ?>" data-ajax-popup="true"
-            data-title="<?php echo e(__('Create New Leave')); ?>" data-size="lg" data-bs-toggle="tooltip" title=""
+            data-title="<?php echo e(__('Create New Request')); ?>" data-size="lg" data-bs-toggle="tooltip" title=""
             class="btn btn-sm btn-primary" data-bs-original-title="<?php echo e(__('Create')); ?>">
             <i class="ti ti-plus"></i>
         </a>
@@ -92,8 +92,8 @@
                                                             data-size="lg"
                                                             data-url="<?php echo e(URL::to('leave/' . $leave->id . '/action')); ?>"
                                                             data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
-                                                            title="" data-title="<?php echo e(__('Leave Action')); ?>"
-                                                            data-bs-original-title="<?php echo e(__('Manage Leave')); ?>">
+                                                            title="" data-title="<?php echo e(__('Request Action')); ?>"
+                                                            data-bs-original-title="<?php echo e(__('Manage Holidays Request')); ?>">
                                                             <i class="ti ti-caret-right text-white"></i>
                                                         </a>
                                                     </div>
@@ -103,7 +103,7 @@
                                                                 data-size="lg"
                                                                 data-url="<?php echo e(URL::to('leave/' . $leave->id . '/edit')); ?>"
                                                                 data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
-                                                                title="" data-title="<?php echo e(__('Edit Leave')); ?>"
+                                                                title="" data-title="<?php echo e(__('Edit Request')); ?>"
                                                                 data-bs-original-title="<?php echo e(__('Edit')); ?>">
                                                                 <i class="ti ti-pencil text-white"></i>
                                                             </a>
@@ -133,8 +133,8 @@
                                                             data-size="lg"
                                                             data-url="<?php echo e(URL::to('leave/' . $leave->id . '/action')); ?>"
                                                             data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip"
-                                                            title="" data-title="<?php echo e(__('Leave Action')); ?>"
-                                                            data-bs-original-title="<?php echo e(__('Manage Leave')); ?>">
+                                                            title="" data-title="<?php echo e(__('Request Action')); ?>"
+                                                            data-bs-original-title="<?php echo e(__('Manage Holidays Request')); ?>">
                                                             <i class="ti ti-caret-right text-white"></i>
                                                         </a>
                                                     </div>

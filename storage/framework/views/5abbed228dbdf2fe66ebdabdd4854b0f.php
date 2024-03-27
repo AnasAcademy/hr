@@ -240,7 +240,7 @@
                         
                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('View Leave')): ?>
                             <li class="dash-item <?php echo e(Request::segment(1) == 'calender' ? ' active' : ''); ?>">
-                                <a class="dash-link" href="<?php echo e(route('leave.index')); ?>"><?php echo e(__('Manage Leave')); ?></a>
+                                <a class="dash-link" href="<?php echo e(route('leave.index')); ?>"><?php echo e(__('Manage Holidays Request')); ?></a>
                             </li>
                         <?php endif; ?>
                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Attendance')): ?>
