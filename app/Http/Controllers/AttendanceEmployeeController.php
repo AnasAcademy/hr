@@ -412,7 +412,7 @@ class AttendanceEmployeeController extends Controller
             return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
         }
 
-        if (\Auth::user()->type == 'company' || \Auth::user()->type == 'hr') {
+        if (\Auth::user()->type == 'company') {
             $employeeId      = AttendanceEmployee::where('employee_id', $request->employee_id)->first();
             $check = AttendanceEmployee::where('id', '=', $id)->where('employee_id', '=', $request->employee_id)->where('date', $request->date)->first();
 
@@ -442,7 +442,7 @@ class AttendanceEmployeeController extends Controller
             $earlyLeaving             = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 
             if ($totalEarlyLeavingSeconds < 0) {
-                $earlyLeaving = "00:00:00";
+                $earlyLeaving = 0;
             }
 
             if (strtotime($clockOut) > strtotime($endTime)) {
@@ -477,7 +477,8 @@ class AttendanceEmployeeController extends Controller
 
         $startTime = Utility::getValByName('company_start_time');
         $endTime   = Utility::getValByName('company_end_time');
-        if (Auth::user()->type == 'employee') {
+
+        if (Auth::user()->type == 'employee' || Auth::user()->type == 'manager' || Auth::user()->type == 'hr'){
             // $date = date("Y-m-d");
             // $time = date("H:i:s");
             $date = $user->convertDateToUserTimezone(date("Y-m-d"));
@@ -507,7 +508,9 @@ class AttendanceEmployeeController extends Controller
             } else {
                 $overtime = '00:00:00';
             }
-
+            if ($totalEarlyLeavingSeconds < 0) {
+                $earlyLeaving = '00:00:00';
+            }
             $attendanceEmployee['clock_out']     = $time;
             $attendanceEmployee['early_leaving'] = $earlyLeaving;
             $attendanceEmployee['overtime']      = $overtime;
@@ -521,8 +524,9 @@ class AttendanceEmployeeController extends Controller
 
             return redirect()->route('dashboard')->with('success', __('Employee successfully clock Out.'));
         } else {
-            $date = date("Y-m-d");
-            $clockout_time = date("H:i:s");
+            $date = $user->convertDateToUserTimezone(date("Y-m-d"));
+            $clockout_time = $user->convertTimeToUserTimezone(date("H:i:s"));
+
             //late
             $totalLateSeconds = strtotime($clockout_time) - strtotime($date . $startTime);
 
@@ -549,6 +553,10 @@ class AttendanceEmployeeController extends Controller
                 $overtime             = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
             } else {
                 $overtime = '00:00:00';
+            }
+
+            if ($totalEarlyLeavingSeconds < 0) {
+                $earlyLeaving = '00:00:00';
             }
 
             $attendanceEmployee                = AttendanceEmployee::find($id);
