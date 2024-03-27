@@ -62,7 +62,7 @@
                                             
                                         </td>
                                         <td><?php echo e($device->ip); ?></td>
-                                        <td><?php echo e($device->user->name); ?></td>
+                                        <td><?php echo e($device->user->name ?? ""); ?></td>
                                         <td>
                                             <?php if($device->status == 'pending'): ?>
                                                 <div class="badge bg-warning p-2 px-3 rounded status-badge5">

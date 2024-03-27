@@ -466,6 +466,8 @@ class AttendanceEmployeeController extends Controller
                     'status' => $status
                 ]);
 
+
+
                 return redirect()->route('attendanceemployee.index')->with('success', __('Employee attendance successfully updated.'));
             } else {
                 return redirect()->route('attendanceemployee.index')->with('error', __('You can only update current day attendance.'));
@@ -478,14 +480,14 @@ class AttendanceEmployeeController extends Controller
         $startTime = Utility::getValByName('company_start_time');
         $endTime   = Utility::getValByName('company_end_time');
 
-        if (Auth::user()->type == 'employee' || Auth::user()->type == 'manager' || Auth::user()->type == 'hr'){
+        if (Auth::user()->type == 'employee' || Auth::user()->type == 'manager' || Auth::user()->type == 'hr') {
             // $date = date("Y-m-d");
             // $time = date("H:i:s");
             $date = $user->convertDateToUserTimezone(date("Y-m-d"));
             $time = $user->convertTimeToUserTimezone(date("H:i:s"));
 
             // get user timeZone
-            $timeZone =$user->timezone ?? config('app.timezone');
+            $timeZone = $user->timezone ?? config('app.timezone');
 
             // get current time according to user timezone
             $currentDateTime = strtotime(Carbon::now($timeZone));
@@ -505,6 +507,14 @@ class AttendanceEmployeeController extends Controller
                 $secs                 = floor($totalOvertimeSeconds % 60);
                 $overtime             = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 
+                $time1 = Carbon::parse($todayAttendance->total_rest);
+                $time2 = Carbon::parse($overtime);
+
+                if ($time2->greaterThan($time1)) {
+                    $overtime = $time2->diff($time1)->format('%H:%I:%S');
+                }else{
+                    $overtime = '00:00:00';
+                }
             } else {
                 $overtime = '00:00:00';
             }
