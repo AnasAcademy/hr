@@ -24,8 +24,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('ip_restricts', function (Blueprint $table) {
-            $table->integer('created_by')->change();
             $table->dropForeign(['created_by']);
+            // $table->integer('created_by')->change();
         });
     }
 };

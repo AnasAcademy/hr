@@ -26,8 +26,8 @@ return new class extends Migration
     {
         Schema::table('attendance_employees', function (Blueprint $table) {
             //
-            $table->integer('employee_id')->change();
             $table->dropForeign(['employee_id']);
+            // $table->integer('employee_id')->change();
         });
     }
 };
