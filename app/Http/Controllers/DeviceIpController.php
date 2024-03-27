@@ -25,12 +25,11 @@ class DeviceIpController extends Controller
             if ($managedDepartment) {
                 $userIdsInDepartment = $managedDepartment->employees->pluck('user_id')->toArray();
                 $userIdsInDepartment = array_diff($userIdsInDepartment, [$user->id]);
-               
+
                 $devices = IpRestrict::whereIn('belongs_to', $userIdsInDepartment)->get();
-            }else{
+            } else {
                 $devices = [];
             }
-
         } else {
             $devices = IpRestrict::get();
         }
@@ -41,7 +40,7 @@ class DeviceIpController extends Controller
     {
         $user = \Auth::user();
         $users = User::get();
-        if($user->type == "manager"){
+        if ($user->type == "manager") {
             $users = $user->managedDepartment->employees->map->user;
         }
         return view('restrict_ip.create', ["users" => $users]);
@@ -50,7 +49,7 @@ class DeviceIpController extends Controller
     public function storeIp(Request $request)
     {
         $user = \Auth::user();
-        if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager') {
+        if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager' || \Auth::user()->type == 'hr') {
             $validator = \Validator::make(
                 $request->all(),
                 [
@@ -65,6 +64,7 @@ class DeviceIpController extends Controller
 
             $exist = IpRestrict::where('ip', $request['deviceIp'])->where("belongs_to", $user->id)->first();
             if ($exist) {
+                setcookie('device_fingerprint', $exist->ip, time() + 24*60*60, "/");
                 if ($exist->status == "approved") {
                     return redirect()->back()->with('error', __('this Device is already Added'));
                 } else return redirect()->back()->with('error', __('this Device is already Added wait to be approved'));
@@ -75,7 +75,8 @@ class DeviceIpController extends Controller
             $ip->belongs_to  = \Auth::user()->id;
             $ip->created_by = \Auth::user()->creatorId();
             $ip->save();
-            // Cookie::make('device_fingerprint', $ip->ip);
+            // Set a cookie that expires in 24 hour
+            setcookie('device_fingerprint', $ip->ip, time() + 24*60*60, "/");
             return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
         } else if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin') {
             $validator = \Validator::make(
