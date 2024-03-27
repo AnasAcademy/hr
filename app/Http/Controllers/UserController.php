@@ -218,6 +218,9 @@ class UserController extends Controller
             $input         = $request->all();
             $input['type'] = $role->name;
             $user->fill($input)->save();
+            if($user->employee){
+                $user->employee->fill($input)->save();
+            }
 
             $user->removeRole($oldRole);
             $user->assignRole($role);
@@ -234,7 +237,7 @@ class UserController extends Controller
                 if($oldDepartment){
                     $oldDepartment->update(["manager_id"=> null]);
                 }
-               
+
                 Department::find($user->employee->department_id)->update(["manager_id"=> $user->id]);
 
             }
@@ -315,11 +318,9 @@ class UserController extends Controller
         $user['email'] = $request['email'];
         $user->save();
 
-        if (\Auth::user()->type == 'employee') {
-            $employee        = Employee::where('user_id', $user->id)->first();
-            $employee->email = $request['email'];
-            $employee->save();
-        }
+        if($user->employee){
+            $user->employee->fill($request->all())->save();
+        };
 
         return redirect()->back()->with(
             'success',
@@ -375,6 +376,9 @@ class UserController extends Controller
             'is_login_enable' => 1,
         ])->save();
 
+        if($user->employee){
+            $user->employee->update('password', $user->password);
+        }
         return redirect()->route('user.index')->with(
             'success',
             'User Password successfully updated.'
@@ -401,6 +405,9 @@ class UserController extends Controller
                 $obj_user->password = Hash::make($request_data['new_password']);;
                 $obj_user->save();
 
+                if($obj_user->employee){
+                    $obj_user->employee->update('password', $obj_user->password);
+                }
                 return redirect()->route('profile', $objUser->id)->with('success', __('Password successfully updated.'));
             } else {
                 return redirect()->route('profile', $objUser->id)->with('error', __('Please enter correct current password.'));
