@@ -512,7 +512,7 @@ class AttendanceEmployeeController extends Controller
 
                 if ($time2->greaterThan($time1)) {
                     $overtime = $time2->diff($time1)->format('%H:%I:%S');
-                }else{
+                } else {
                     $overtime = '00:00:00';
                 }
             } else {
@@ -724,15 +724,26 @@ class AttendanceEmployeeController extends Controller
         $date = $user->convertDateToUserTimezone(date("Y-m-d"));
         $time = $user->convertTimeToUserTimezone(date("H:i:s"));
 
-        if(strtotime($startTime)> strtotime($time)){
-            return redirect()->back()->with('error', __("You can\\'t clock in now wait the time to be ". $user->timeFormat($startTime)));
+        if (strtotime($startTime) > strtotime($time)) {
+            return redirect()->back()->with('error', __("You can\\'t clock in now wait the time to be " . $user->timeFormat($startTime)));
         }
 
         if ($lastClockOutEntry != null) {
             // Calculate late based on the difference between the last clock-out time and the current clock-in time
             $lastClockOutTime = $lastClockOutEntry->clock_out;
+            $lastClockinTime = $lastClockOutEntry->clock_in;
             $actualClockInTime = $date . ' ' . $time;
 
+            $actualWorkingHours = strtotime($lastClockOutTime) - strtotime($lastClockinTime);
+            $officeTime['startTime'] = Utility::getValByName('company_start_time');
+            $officeTime['endTime']   = Utility::getValByName('company_end_time');
+
+            $workHours = strtotime($officeTime['endTime']) - strtotime($officeTime['startTime']);
+
+            if ($actualWorkingHours >= $workHours) {
+                return redirect()->back()->with('error', __("You can\\'t clock in now, you acually working ".$workHours/(60*60)." hours"));
+            }
+            
             $totalLateSeconds = strtotime($actualClockInTime) - strtotime($date . ' ' . $lastClockOutTime);
 
             // Ensure late time is non-negative

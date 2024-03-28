@@ -718,14 +718,14 @@
                 @php
                     [$hours, $minutes] = explode(':', $employeeAttendance->clock_in);
                     $workHours = strtotime($officeTime['endTime']) - strtotime($officeTime['startTime']);
-                    $workHours = $workHours/(60*60);
+                    $workHours = $workHours / (60 * 60);
                 @endphp
                 var startTime = new Date();
                 startTime.setHours({{ $hours }});
                 startTime.setMinutes({{ $minutes }});
                 startTime.setSeconds(0);
                 var targetTime = new Date(startTime.getTime());
-                targetTime.setHours(targetTime.getHours() +{{ $workHours}});
+                targetTime.setHours(targetTime.getHours() + {{ $workHours }});
 
                 console.log('time: ', targetTime);
 
@@ -754,6 +754,15 @@
                     if (distance < 0) {
                         clearInterval(x);
                         document.getElementById("countdown").innerHTML = "EXPIRED";
+                        let clockOutForm = document.getElementById('clockOutForm');
+
+                            getFingerPrint(function(fingerprintValue) {
+                                // Set the fingerprint value in the hidden input field
+                                document.getElementById("lockOutFingerprint").value = fingerprintValue;
+                                // Submit the form
+                                clockOutForm.submit();
+                            });
+
                     }
                 }, 1000);
             @endif
