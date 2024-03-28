@@ -727,6 +727,9 @@
                 var targetTime = new Date(startTime.getTime());
                 targetTime.setHours(targetTime.getHours() +{{ $workHours}});
 
+                console.log('time: ', targetTime);
+
+
 
                 // Update the countdown every 1 second
                 var x = setInterval(function() {

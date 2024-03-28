@@ -692,16 +692,6 @@ class AttendanceEmployeeController extends Controller
                 'fingerprint' => 'required',
                 // Add other validation rules for your request data
             ]);
-            // $userIp = request()->ip();
-            // $shell = shell_exec('getmac');
-            // $macAddress = "";
-            // $pattern = '/([0-9A-Fa-f-]+)\s+\\\Device/';
-            // if (preg_match($pattern, $shell, $matches)) {
-            //     $macAddress = $matches[1];
-            // } else {
-            //     dd("Pattern not found");
-            // }
-
 
 
             $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
@@ -733,6 +723,10 @@ class AttendanceEmployeeController extends Controller
 
         $date = $user->convertDateToUserTimezone(date("Y-m-d"));
         $time = $user->convertTimeToUserTimezone(date("H:i:s"));
+
+        if(strtotime($startTime)> strtotime($time)){
+            return redirect()->back()->with('error', __("You can\\'t clock in now wait the time to be ". $user->timeFormat($startTime)));
+        }
 
         if ($lastClockOutEntry != null) {
             // Calculate late based on the difference between the last clock-out time and the current clock-in time
