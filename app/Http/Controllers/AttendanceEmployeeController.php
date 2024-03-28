@@ -729,21 +729,35 @@ class AttendanceEmployeeController extends Controller
         }
 
         if ($lastClockOutEntry != null) {
-            // Calculate late based on the difference between the last clock-out time and the current clock-in time
+
             $lastClockOutTime = $lastClockOutEntry->clock_out;
-            $lastClockinTime = $lastClockOutEntry->clock_in;
+            $lastClockinTime = $lastClockOutEntry->last_clock_in;
             $actualClockInTime = $date . ' ' . $time;
 
-            $actualWorkingHours = strtotime($lastClockOutTime) - strtotime($lastClockinTime);
+            $actualWorkingHours = (int)date('H', strtotime($lastClockOutEntry->work_hours));
+
             $officeTime['startTime'] = Utility::getValByName('company_start_time');
             $officeTime['endTime']   = Utility::getValByName('company_end_time');
 
-            $workHours = strtotime($officeTime['endTime']) - strtotime($officeTime['startTime']);
+            $officeWorkHours = strtotime($officeTime['endTime']) - strtotime($officeTime['startTime']);
 
-            if ($actualWorkingHours >= $workHours) {
-                return redirect()->back()->with('error', __("You can\\'t clock in now, you acually working ".$workHours/(60*60)." hours"));
+            if ($actualWorkingHours >= $officeWorkHours) {
+                return redirect()->back()->with('error', __("You can\\'t clock in now, you acually working " . $officeWorkHours / (60 * 60) . " hours"));
             }
-            
+
+            // Parse the time strings into Carbon objects
+            $clockInTime = Carbon::createFromFormat('H:i:s', $lastClockinTime);
+            $clockOutTime = Carbon::createFromFormat('H:i:s', $lastClockOutTime);
+
+            // Calculate the difference in hours, minutes, and seconds
+            $difference = $clockOutTime->diff($clockInTime);
+
+            // Add the difference to the initial hours
+            $workingHours = Carbon::parse($lastClockOutEntry->work_hours)->addHours($difference->h)->addMinutes($difference->i)->addSeconds($difference->s);
+
+
+
+            // Calculate late based on the difference between the last clock-out time and the current clock-in time
             $totalLateSeconds = strtotime($actualClockInTime) - strtotime($date . ' ' . $lastClockOutTime);
 
             // Ensure late time is non-negative
@@ -758,10 +772,13 @@ class AttendanceEmployeeController extends Controller
             $time1 = Carbon::parse($lastClockOutEntry->total_rest);
             $time2 = Carbon::parse($rest);
 
-            $sum = $time1->addHours($time2->hour)->addMinutes($time2->minute)->addSeconds($time2->second);
+            $restSum = $time1->addHours($time2->hour)->addMinutes($time2->minute)->addSeconds($time2->second);
 
-            $lastClockOutEntry->total_rest = $sum->format('H:i:s');
+            // update the attendance record
+            $lastClockOutEntry->total_rest = $restSum->format('H:i:s');
+            $lastClockOutEntry->last_clock_in = $actualClockInTime;
             $lastClockOutEntry->clock_out = '00:00:00';
+            $lastClockOutEntry->work_hours = $workingHours->format('H:i:s');
             $lastClockOutEntry->early_leaving = '00:00:00';
             $lastClockOutEntry->status = 'Present';
             $lastClockOutEntry->save();
@@ -785,6 +802,7 @@ class AttendanceEmployeeController extends Controller
             $employeeAttendance->date          = $date;
             $employeeAttendance->status        = 'Present';
             $employeeAttendance->clock_in      = $time;
+            $employeeAttendance->last_clock_in = $time;
             $employeeAttendance->clock_out     = '00:00:00';
             $employeeAttendance->late          = $late;
             $employeeAttendance->early_leaving = '00:00:00';
