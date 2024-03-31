@@ -2684,8 +2684,12 @@ class User extends Authenticatable implements MustVerifyEmail
     //     );
     // }
 
+    // public function devices()
+    // {
+    //     return $this->hasMany(IpRestrict::class, 'belongs_to');
+    // }
     public function devices()
     {
-        return $this->hasMany(IpRestrict::class, 'belongs_to');
+        return $this->hasMany(UserDevice::class, 'user_id');
     }
 }

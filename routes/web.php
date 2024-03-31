@@ -216,7 +216,8 @@ Route::group(['middleware' => ['verified']], function () {
             Route::post('ip/{id}/approve', [DeviceIpController::class, 'approveIp'])->name('approve.ip');
             Route::post('ip/{id}/reject', [DeviceIpController::class, 'rejectIp'])->name('reject.ip');
             Route::get('create/ip', [DeviceIpController::class, 'createIp'])->name('create.ip');
-            Route::post('create/ip', [DeviceIpController::class, 'storeIp'])->name('store.ip');
+            // Route::post('create/ip', [DeviceIpController::class, 'storeIp'])->name('store.ip');
+            Route::post('create/ip', [DeviceIpController::class, 'storeDevice'])->name('store.ip');
             Route::get('edit/ip/{id}', [DeviceIpController::class, 'editIp'])->name('edit.ip');
             Route::post('edit/ip/{id}', [DeviceIpController::class, 'updateIp'])->name('update.ip');
             Route::delete('destroy/ip/{id}', [DeviceIpController::class, 'destroyIp'])->name('destroy.ip');
@@ -911,7 +912,7 @@ Route::group(['middleware' => ['verified']], function () {
     Route::get('export/attendance', [AttendanceEmployeeController::class, 'export'])->name('attendance.export');
 
 
-    
+
     Route::resource('timesheet', TimeSheetController::class)->middleware(
         [
             'auth',

@@ -8,7 +8,12 @@ use App\Models\User;
 
 use App\Models\IpRestrict;
 
+use App\Models\Utility;
+
+use App\Models\UserDevice;
+
 use Illuminate\Support\Facades\Cookie;
+
 
 class DeviceIpController extends Controller
 {
@@ -64,7 +69,7 @@ class DeviceIpController extends Controller
 
             $exist = IpRestrict::where('ip', $request['deviceIp'])->where("belongs_to", $user->id)->first();
             if ($exist) {
-                setcookie('device_fingerprint', $exist->ip, time() + 24*60*60, "/");
+                setcookie('device_fingerprint', $exist->ip, time() + 24 * 60 * 60, "/");
                 if ($exist->status == "approved") {
                     return redirect()->back()->with('error', __('this Device is already Added'));
                 } else return redirect()->back()->with('error', __('this Device is already Added wait to be approved'));
@@ -76,7 +81,7 @@ class DeviceIpController extends Controller
             $ip->created_by = \Auth::user()->creatorId();
             $ip->save();
             // Set a cookie that expires in 24 hour
-            setcookie('device_fingerprint', $ip->ip, time() + 24*60*60, "/");
+            setcookie('device_fingerprint', $ip->ip, time() + 24 * 60 * 60, "/");
             return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
         } else if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin') {
             $validator = \Validator::make(
@@ -178,5 +183,62 @@ class DeviceIpController extends Controller
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
+    }
+
+
+    public function storeDevice(Request $request)
+    {
+        $AuthUser = \Auth::user();
+
+        $ip = $_SERVER['REMOTE_ADDR']; // your ip address here
+
+        $userDevice = new UserDevice();
+        $userDevice->user_id = $AuthUser->id;
+
+        if ($AuthUser->type == 'company' || $AuthUser->type == 'super admin') {
+            $validator = \Validator::make(
+                $request->all(),
+                [
+                    'deviceIp' => 'required',
+                    'belongs_to' => 'required|exists:users,id'
+                ]
+            );
+            if ($validator->fails()) {
+                $messages = $validator->getMessageBag();
+
+                return redirect()->back()->with('error', $messages->first());
+            }
+
+            $ip = $request['deviceIp'];
+            $userDevice->user_id = $request['belongs_to'];
+        }
+
+
+        $query = @unserialize(file_get_contents('http://ip-api.com/php/' . $ip));
+
+        $whichbrowser = new \WhichBrowser\Parser($_SERVER['HTTP_USER_AGENT']);
+        if ($whichbrowser->device->type == 'bot') {
+            return redirect()->back()->with('error', "You can't able to Add Device");
+        }
+        $referrer = isset($_SERVER['HTTP_REFERER']) ? parse_url($_SERVER['HTTP_REFERER']) : null;
+
+        /* Detect extra details about the user */
+        $query['browser_name'] = $whichbrowser->browser->name ?? null;
+        $query['os_name'] = $whichbrowser->os->name ?? null;
+        $query['device_type'] = Utility::get_device_type($_SERVER['HTTP_USER_AGENT']);
+        $query['referrer_host'] = $referrer['host'] ?? "";
+        $query['referrer_path'] = $referrer['path']  ?? "";
+
+        $json = json_encode($query);
+        $date = $AuthUser->convertDateToUserTimezone(date("Y-m-d"));
+        $time = $AuthUser->convertTimeToUserTimezone(date("H:i:s"));
+
+        $userDevice->ip = $ip;
+        $userDevice->date = $date . " " . $time;
+        $userDevice->Details = $json;
+        $userDevice->created_by = $AuthUser->id;
+        $userDevice->save();
+
+        return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
     }
 }
