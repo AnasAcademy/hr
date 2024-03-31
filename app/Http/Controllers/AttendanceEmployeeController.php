@@ -8,6 +8,7 @@ use App\Models\Branch;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\IpRestrict;
+use App\Models\UserDevice;
 use App\Models\User;
 use App\Models\Utility;
 use Carbon\Carbon;
@@ -690,12 +691,36 @@ class AttendanceEmployeeController extends Controller
 
             $request->validate([
                 'fingerprint' => 'required',
-                // Add other validation rules for your request data
+                'latitude' => 'required',
+                'longitude' => 'required'
             ]);
 
 
-            $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
-            if (empty($ip) || $ip->status != "approved") {
+            // $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
+            // if (empty($ip) || $ip->status != "approved") {
+            //     return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
+            // }
+
+            $ip = $_SERVER['REMOTE_ADDR']; // your ip address here
+
+            $currentLocation = $user->getLocation($ip);
+
+            $allowedLocations = $user->devices()->where("status", "approved")->get();
+
+            // Check if the user's current location is in the allowed locations
+            $isAllowed = false;
+            $loginedLocation  = null;
+            foreach ($allowedLocations as $location) {
+                $distance = $this->distance($request['latitude'], $request['longitude'], $location->latitude, $location->longitude);
+                // dd(['distance' => $distance, 'latitude' => $location->latitude, 'longitude' => $location->longitude, 'currentLat'=> $request['latitude'], "currentLong"=>$request['longitude']]);
+                if ($distance <= 100) { // Assuming a maximum distance of 100 kilometers is allowed
+                    $isAllowed = true;
+                    $loginedLocation = $location;
+                    break;
+                }
+            }
+
+            if (!$isAllowed) {
                 return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
             }
         }
@@ -727,7 +752,7 @@ class AttendanceEmployeeController extends Controller
         if (strtotime($startTime) > strtotime($time)) {
             return redirect()->back()->with('error', __("You can\\'t clock in now wait the time to be " . $user->timeFormat($startTime)));
         }
-
+        // dd($loginedLocation->id);
         if ($lastClockOutEntry != null) {
 
             $lastClockOutTime = $lastClockOutEntry->clock_out;
@@ -809,7 +834,7 @@ class AttendanceEmployeeController extends Controller
             $employeeAttendance->overtime      = '00:00:00';
             $employeeAttendance->total_rest    = '00:00:00';
             $employeeAttendance->created_by    = \Auth::user()->id;
-            $employeeAttendance->clock_in_ip    = $ip->id;
+            $employeeAttendance->clock_in_ip    = $loginedLocation->id;
 
             $employeeAttendance->save();
         }
@@ -1076,5 +1101,17 @@ class AttendanceEmployeeController extends Controller
         $data = Excel::download(new AttendanceExport(), $name . '.xlsx');
 
         return $data;
+    }
+
+
+    // Helper method to calculate distance between two points
+    private function distance($lat1, $lon1, $lat2, $lon2)
+    {
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        return $miles * 1.609344; // Convert to kilometers
     }
 }

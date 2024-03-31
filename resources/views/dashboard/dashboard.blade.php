@@ -22,7 +22,6 @@
                 <form action="create/ip" method="post" id="deviceIpIdentifier">
                     @csrf
                     <input type="hidden" name="deviceIp" id="deviceIp">
-
                     @php
                         $exist = false;
                     @endphp
@@ -690,6 +689,52 @@
 
 
 @if (\Auth::user()->type == 'employee' || \Auth::user()->type == 'manager' || \Auth::user()->type == 'hr')
+    {{-- get location --}}
+    <script>
+        function getLocation(locationCallBack) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        let location = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        };
+                        locationCallBack(location);
+                    },
+                    function(error) {
+                        if (error.code === error.PERMISSION_DENIED) {
+                            alert(
+                                "Location permission denied. Please enable location access in your browser settings."
+                                );
+                        } else {
+                            alert("Error getting location: " + error.message);
+                        }
+                        locationCallBack(null);
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+                locationCallBack(null);
+            }
+        }
+
+        function createLocationField(targetForm, lat, long) {
+            let latInput = document.createElement("input");
+            latInput.setAttribute("value", lat);
+            latInput.setAttribute("type", "hidden");
+            latInput.setAttribute("name", "latitude");
+
+            let longInput = document.createElement("input");
+            longInput.setAttribute("value", long);
+            longInput.setAttribute("type", "hidden");
+            longInput.setAttribute("name", "longitude");
+
+            targetForm.appendChild(latInput);
+            targetForm.appendChild(longInput);
+
+        }
+    </script>
+
     {{-- finger print script link --}}
     <script src="{{ asset('js/userfingerprint.js') }}"></script>
 
@@ -702,9 +747,14 @@
                     document.getElementById("deviceIp").value = fingerprintValue;
                     let form = event.target;
                     let device = fingerprintValue;
-                    // document.cookie = "device_fingerprint=" + fingerprintValue;
-                    // Submit the form
-                    form.submit();
+                    getLocation((location) => {
+                        if (location) {
+                            createLocationField(form, location.latitude, location.longitude);
+                            // Submit the form
+                            form.submit();
+                        }
+                    });
+
                 });
             }
         });
@@ -756,12 +806,12 @@
                         document.getElementById("countdown").innerHTML = "EXPIRED";
                         let clockOutForm = document.getElementById('clockOutForm');
 
-                            getFingerPrint(function(fingerprintValue) {
-                                // Set the fingerprint value in the hidden input field
-                                document.getElementById("lockOutFingerprint").value = fingerprintValue;
-                                // Submit the form
-                                clockOutForm.submit();
-                            });
+                        getFingerPrint(function(fingerprintValue) {
+                            // Set the fingerprint value in the hidden input field
+                            document.getElementById("lockOutFingerprint").value = fingerprintValue;
+                            // Submit the form
+                            clockOutForm.submit();
+                        });
 
                     }
                 }, 1000);
@@ -784,8 +834,13 @@
                     // Set the fingerprint value in the hidden input field
                     document.getElementById("lockInFingerprint").value = fingerprintValue;
                     let form = event.target;
-                    // Submit the form
-                    form.submit();
+                    getLocation((location) => {
+                        if (location) {
+                            createLocationField(form, location.latitude, location.longitude);
+                            // Submit the form
+                            form.submit();
+                        }
+                    });
                 });
             }
 
@@ -795,8 +850,13 @@
                     // Set the fingerprint value in the hidden input field
                     document.getElementById("lockOutFingerprint").value = fingerprintValue;
                     let form = event.target;
-                    // Submit the form
-                    form.submit();
+                    getLocation((location) => {
+                        if (location) {
+                            createLocationField(form, location.latitude, location.longitude);
+                            // Submit the form
+                            form.submit();
+                        }
+                    });
                 });
             }
         });

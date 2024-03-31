@@ -188,6 +188,20 @@ class DeviceIpController extends Controller
 
     public function storeDevice(Request $request)
     {
+
+        $validator = \Validator::make(
+            $request->all(),
+            [
+                'latitude' => 'required',
+                'longitude' => 'required'
+            ]
+        );
+        if ($validator->fails()) {
+            $messages = $validator->getMessageBag();
+
+            return redirect()->back()->with('error', $messages->first());
+        }
+
         $AuthUser = \Auth::user();
 
         $ip = $_SERVER['REMOTE_ADDR']; // your ip address here
@@ -213,23 +227,9 @@ class DeviceIpController extends Controller
             $userDevice->user_id = $request['belongs_to'];
         }
 
-
-        $query = @unserialize(file_get_contents('http://ip-api.com/php/' . $ip));
-
-        $whichbrowser = new \WhichBrowser\Parser($_SERVER['HTTP_USER_AGENT']);
-        if ($whichbrowser->device->type == 'bot') {
-            return redirect()->back()->with('error', "You can't able to Add Device");
-        }
-        $referrer = isset($_SERVER['HTTP_REFERER']) ? parse_url($_SERVER['HTTP_REFERER']) : null;
-
-        /* Detect extra details about the user */
-        $query['browser_name'] = $whichbrowser->browser->name ?? null;
-        $query['os_name'] = $whichbrowser->os->name ?? null;
-        $query['device_type'] = Utility::get_device_type($_SERVER['HTTP_USER_AGENT']);
-        $query['referrer_host'] = $referrer['host'] ?? "";
-        $query['referrer_path'] = $referrer['path']  ?? "";
-
+        $query = $AuthUser->getLocation($ip);
         $json = json_encode($query);
+
         $date = $AuthUser->convertDateToUserTimezone(date("Y-m-d"));
         $time = $AuthUser->convertTimeToUserTimezone(date("H:i:s"));
 
@@ -237,8 +237,16 @@ class DeviceIpController extends Controller
         $userDevice->date = $date . " " . $time;
         $userDevice->Details = $json;
         $userDevice->created_by = $AuthUser->id;
+        $userDevice->latitude = $request['latitude'];
+        $userDevice->longitude = $request['longitude'];
+        $userDevice->device_type = $query['device_type'] ?? '';
+        $userDevice->browser_name = $query['browser_name'] ?? '';
+        $userDevice->os_name = $query['os_name'] ?? '';
         $userDevice->save();
 
         return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
     }
+
+
+
 }
