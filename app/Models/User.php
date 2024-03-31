@@ -2692,4 +2692,25 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserDevice::class, 'user_id');
     }
+
+    public function getLocation($ip){
+        $query = @unserialize(file_get_contents('http://ip-api.com/php/' . $ip));
+
+        $whichbrowser = new \WhichBrowser\Parser($_SERVER['HTTP_USER_AGENT']);
+        if ($whichbrowser->device->type == 'bot') {
+            return redirect()->back()->with('error', "You can't able to Add Device");
+        }
+        $referrer = isset($_SERVER['HTTP_REFERER']) ? parse_url($_SERVER['HTTP_REFERER']) : null;
+
+        /* Detect extra details about the user */
+        $query['browser_name'] = $whichbrowser->browser->name ?? null;
+        $query['os_name'] = $whichbrowser->os->name ?? null;
+        $query['device_type'] = Utility::get_device_type($_SERVER['HTTP_USER_AGENT']);
+        $query['referrer_host'] = $referrer['host'] ?? "";
+        $query['referrer_path'] = $referrer['path']  ?? "";
+
+
+
+        return $query;
+    }
 }
