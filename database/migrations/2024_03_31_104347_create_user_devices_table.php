@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('ip');
             $table->string('date');
             $table->json('Details');
-            $table->foreignId('user_id')->nullable()->references('id')->on('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->foreignId('created_by')->nullable()->references('id')->on('users')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('created_by')->nullable()->references('id')->on('users')->cascadeOnUpdate();
             $table->foreignId('approved_by')->nullable()->references('id')->on('users')
-            ->nullOnDelete()->cascadeOnUpdate();
+            ->cascadeOnUpdate();
             $table->string('status')->default('pending');
             $table->timestamps();
         });
