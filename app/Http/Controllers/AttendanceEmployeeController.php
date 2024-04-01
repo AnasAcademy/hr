@@ -705,24 +705,39 @@ class AttendanceEmployeeController extends Controller
 
             $currentLocation = $user->getLocation($ip);
 
-            $allowedLocations = $user->devices()->where("status", "approved")->get();
+            // $allowedLocations = $user->devices()->where("status", "approved")->get();
+            $allowedDevices = $user->devices;
 
             // Check if the user's current location is in the allowed locations
             $isAllowed = false;
-            $loginedLocation  = null;
-            foreach ($allowedLocations as $location) {
-                $distance = $this->distance($request['latitude'], $request['longitude'], $location->latitude, $location->longitude);
-                // dd(['distance' => $distance, 'latitude' => $location->latitude, 'longitude' => $location->longitude, 'currentLat'=> $request['latitude'], "currentLong"=>$request['longitude']]);
-                if ($distance <= 100) { // Assuming a maximum distance of 100 kilometers is allowed
+            $isAllowed = false;
+            $allowedLocation  = null;
+            // dd($allowedDevices);
+            if($allowedDevices->isEmpty()){
+                return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out, Click add my device Button.'));
+            }
+
+            foreach ($allowedDevices as $device) {
+                $distance = $this->calculateDistance($request['latitude'], $request['longitude'], $device->latitude, $device->longitude);
+                dd(['distance' => $distance, 'latitude' => $device->latitude, 'longitude' => $device->longitude, 'currentLat'=> $request['latitude'], "currentLong"=>$request['longitude']]);
+
+
+                if ($distance <= 100) { // Assuming a maximum distance of 1 km is allowed
                     $isAllowed = true;
-                    $loginedLocation = $location;
+                    $allowedLocation = $device;
                     break;
                 }
             }
 
-            if (!$isAllowed) {
-                return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
+            if ($isAllowed) {
+                if($allowedLocation->status !="approved"){
+                    return redirect()->back()->with('error', __("Can\\'t clock in & clock out from this device wait the manager to approve."));
+                }
+            }else{
+                return redirect()->back()->with('error', __("Can\\'t clock in & clock out from your location."));
+
             }
+
         }
 
         $employeeId = !empty(\Auth::user()->employee) ? \Auth::user()->employee->id : 0;
@@ -834,7 +849,7 @@ class AttendanceEmployeeController extends Controller
             $employeeAttendance->overtime      = '00:00:00';
             $employeeAttendance->total_rest    = '00:00:00';
             $employeeAttendance->created_by    = \Auth::user()->id;
-            $employeeAttendance->clock_in_ip    = $loginedLocation->id;
+            $employeeAttendance->clock_in_ip    = $allowedLocation->id;
 
             $employeeAttendance->save();
         }
@@ -1105,6 +1120,8 @@ class AttendanceEmployeeController extends Controller
 
 
     // Helper method to calculate distance between two points
+
+    // useS the Spherical Law of Cosines formula to calculate the distance
     private function distance($lat1, $lon1, $lat2, $lon2)
     {
         $theta = $lon1 - $lon2;
@@ -1114,4 +1131,16 @@ class AttendanceEmployeeController extends Controller
         $miles = $dist * 60 * 1.1515;
         return $miles * 1.609344; // Convert to kilometers
     }
+
+    //  uses the Haversine formula to calculate the distance (more accurate)
+    function calculateDistance($lat1, $lon1, $lat2, $lon2) {
+        $earthRadius = 6371000; // meters
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $a = sin($dLat / 2) * sin($dLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) * sin($dLon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        $distance = $earthRadius * $c;
+        return $distance; // return distance in meters
+    }
+    //d = 2R × sin⁻¹(√[sin²((θ₂ - θ₁)/2) + cosθ₁ × cosθ₂ × sin²((φ₂ - φ₁)/2)])
 }
