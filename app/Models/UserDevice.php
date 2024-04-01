@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserDevice extends Model
 {
     use HasFactory;
-
-    protected $gaurded = [];
+    protected $guarded = [];
 
     function admin(){
         return $this->belongsTo(User::class, 'approved_by');

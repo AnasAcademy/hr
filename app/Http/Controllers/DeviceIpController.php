@@ -22,24 +22,24 @@ class DeviceIpController extends Controller
     {
         $user = \Auth::user();
         if ($user->type == 'employee') {
-            $devices = IpRestrict::where("belongs_to", $user->id)->first();
+            $devices = UserDevice::where("belongs_to", $user->id)->first();
         } else if ($user->type == 'manager') {
-            $devices = IpRestrict::get();
+            $devices = UserDevice::get();
             $managedDepartment = $user->managedDepartment;
 
             if ($managedDepartment) {
                 $userIdsInDepartment = $managedDepartment->employees->pluck('user_id')->toArray();
                 $userIdsInDepartment = array_diff($userIdsInDepartment, [$user->id]);
 
-                $devices = IpRestrict::whereIn('belongs_to', $userIdsInDepartment)->get();
+                $devices = UserDevice::whereIn('user_id', $userIdsInDepartment)->get();
             } else {
                 $devices = [];
             }
         } else {
-            $devices = IpRestrict::get();
+            $devices = UserDevice::get();
         }
 
-        return view("restrict_ip.index", ['devices' => $devices]);
+        return view("userDevices.index", ['devices' => $devices]);
     }
     public function createIp()
     {
@@ -48,7 +48,7 @@ class DeviceIpController extends Controller
         if ($user->type == "manager") {
             $users = $user->managedDepartment->employees->map->user;
         }
-        return view('restrict_ip.create', ["users" => $users]);
+        return view('userDevices.create', ["users" => $users]);
     }
 
     public function storeIp(Request $request)
@@ -113,15 +113,15 @@ class DeviceIpController extends Controller
 
     public function editIp($id)
     {
-        $device = IpRestrict::find($id);
+        $device = UserDevice::find($id);
         $users =  $users = User::get();
-        return view('restrict_ip.edit', compact('device', 'users'));
+        return view('userDevices.edit', compact('device', 'users'));
     }
     public function action($id)
     {
-        $device = IpRestrict::find($id);
+        $device = UserDevice::find($id);
 
-        return view('restrict_ip.action', compact('device'));
+        return view('userDevices.action', compact('device'));
     }
 
     public function updateIp(Request $request, $id)
@@ -154,10 +154,10 @@ class DeviceIpController extends Controller
     public function destroyIp($id)
     {
         if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin' || \Auth::user()->type == 'manager') {
-            $ip = IpRestrict::find($id);
+            $ip = UserDevice::find($id);
             $ip->delete();
 
-            return redirect()->back()->with('success', __('IP successfully deleted.'));
+            return redirect()->back()->with('success', __('Device successfully deleted.'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -165,10 +165,10 @@ class DeviceIpController extends Controller
     public function approveIp($id)
     {
         if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin' || \Auth::user()->type == 'manager') {
-            $ip = IpRestrict::find($id);
+            $ip = UserDevice::find($id);
             $ip->update(["status" => "approved", "approved_by" => \Auth::user()->id]);
 
-            return redirect()->back()->with('success', __('IP successfully Approved.'));
+            return redirect()->back()->with('success', __('Device successfully Approved.'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -176,10 +176,10 @@ class DeviceIpController extends Controller
     public function rejectIp($id)
     {
         if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin' || \Auth::user()->type == 'manager') {
-            $ip = IpRestrict::find($id);
+            $ip = UserDevice::find($id);
             $ip->update(["status" => "rejected", "approved_by" => \Auth::user()->id]);
 
-            return redirect()->back()->with('success', __('IP successfully Rejected.'));
+            return redirect()->back()->with('success', __('Device successfully Rejected.'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -214,8 +214,8 @@ class DeviceIpController extends Controller
             $validator = \Validator::make(
                 $request->all(),
                 [
-                    'deviceIp' => 'required',
-                    'belongs_to' => 'required|exists:users,id'
+                    'ip' => 'required',
+                    'user_id' => 'required|exists:users,id'
                 ]
             );
             if ($validator->fails()) {
@@ -224,39 +224,39 @@ class DeviceIpController extends Controller
                 return redirect()->back()->with('error', $messages->first());
             }
 
-            $ip = $request['deviceIp'];
             $userDevice->user_id = $request['belongs_to'];
-            $user = User::find($request['belongs_to']);
+            $user = User::find($request['user_id']);
+            $ip = $request['ip'];
         }
 
         $allowedDevices = $user->devices;
 
-            // Check if the user's current location is in the allowed locations
-            $isAllowed = false;
-            $allowedLocation  = null;
+        // Check if the user's current location is in the allowed locations
+        $isAllowed = false;
+        $allowedLocation  = null;
 
-            if($allowedDevices->count() >=2){
-                return redirect()->back()->with('error', __("You can\\'t add more than two devices."));
+        if ($allowedDevices->count() >= 2) {
+            return redirect()->back()->with('error', __("You can\\'t add more than two devices."));
+        }
+        foreach ($allowedDevices as $device) {
+            $obj = new AttendanceEmployeeController();
+            $distance = $obj->calculateDistance($request['latitude'], $request['longitude'], $device->latitude, $device->longitude);
+
+            if ($distance <= 10) { // Assuming a maximum distance of 10 km is allowed
+                $isAllowed = true;
+                $allowedLocation  = $device;
+                break;
             }
-            foreach ($allowedDevices as $device) {
-                $obj = new AttendanceEmployeeController();
-                $distance = $obj->calculateDistance($request['latitude'], $request['longitude'], $device->latitude, $device->longitude);
+        }
 
-                if ($distance <= 10) { // Assuming a maximum distance of 10 km is allowed
-                    $isAllowed = true;
-                    $allowedLocation  = $device;
-                    break;
-                }
+        if ($isAllowed) {
+            setcookie('add_device_disabled', true, time() + 24 * 60 * 60, "/");
+            if ($allowedLocation !== null && $allowedLocation->status != "approved") {
+                return redirect()->back()->with('error', __("this Device is already Added wait to be approved"));
             }
 
-            if ($isAllowed) {
-                setcookie('add_device_disabled', true, time() + 24 * 60 * 60, "/");
-                if ($allowedLocation!== null && $allowedLocation->status != "approved") {
-                    return redirect()->back()->with('error', __("this Device is already Added wait to be approved"));
-                }
-
-                return redirect()->back()->with('error', __("This Device is already Added"));
-            }
+            return redirect()->back()->with('error', __("This Device is already Added"));
+        }
 
 
         $query = $AuthUser->getLocation($ip);
@@ -281,6 +281,39 @@ class DeviceIpController extends Controller
         return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
     }
 
+    public function updateDevice(Request $request, $id)
+    {
+        $AuthUser = \Auth::user();
+        if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin' || \Auth::user()->type == 'manager') {
+            $validator = \Validator::make(
+                $request->all(),
+                [
+                    'ip'=>"required",
+                    'user_id' => 'required|exists:users,id',
+                    'status' => 'required',
+                    'latitude' => 'required',
+                    'longitude' => 'required'
+                ]
+            );
+            if ($validator->fails()) {
+                $messages = $validator->getMessageBag();
 
+                return redirect()->back()->with('error', $messages->first());
+            }
 
+            $device     = UserDevice::find($id);
+            $input = $request->all();
+            $query = $AuthUser->getLocation($request['ip']);
+            $json = json_encode($query);
+
+            $input['details']=$json;
+
+            $device->update($input);
+            $device->save();
+
+            return redirect()->back()->with('success', __('Device successfully updated.'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
 }

@@ -219,7 +219,7 @@ Route::group(['middleware' => ['verified']], function () {
             // Route::post('create/ip', [DeviceIpController::class, 'storeIp'])->name('store.ip');
             Route::post('create/ip', [DeviceIpController::class, 'storeDevice'])->name('store.ip');
             Route::get('edit/ip/{id}', [DeviceIpController::class, 'editIp'])->name('edit.ip');
-            Route::post('edit/ip/{id}', [DeviceIpController::class, 'updateIp'])->name('update.ip');
+            Route::post('edit/ip/{id}', [DeviceIpController::class, 'updateDevice'])->name('update.ip');
             Route::delete('destroy/ip/{id}', [DeviceIpController::class, 'destroyIp'])->name('destroy.ip');
 
             Route::get('create/webhook', [SettingsController::class, 'createWebhook'])->name('create.webhook');
