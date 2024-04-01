@@ -772,6 +772,16 @@ class AttendanceEmployeeController extends Controller
             ->first();
 
         if ($lastClockInEntry != null) {
+
+            return redirect()->back()->with('error', __('You are already Clock In'));
+        }
+        // Find the last clocked out entry for the employee
+        $lastClockOutEntry = AttendanceEmployee::orderBy('id', 'desc')
+            ->where('employee_id', '=', $employeeId)
+            ->where('clock_out', '!=', '00:00:00')
+            ->where('date', '=', date('Y-m-d'))
+            ->first();
+
         $date = $user->convertDateToUserTimezone(date("Y-m-d"));
         $time = $user->convertTimeToUserTimezone(date("H:i:s"));
 
@@ -867,6 +877,7 @@ class AttendanceEmployeeController extends Controller
 
         return redirect()->back()->with('success', __('Employee Successfully Clock In.'));
     }
+
 
     public function bulkAttendance(Request $request)
     {
