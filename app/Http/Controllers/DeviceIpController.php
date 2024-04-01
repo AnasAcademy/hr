@@ -203,6 +203,7 @@ class DeviceIpController extends Controller
         }
 
         $AuthUser = \Auth::user();
+        $user = $AuthUser;
 
         $ip = $_SERVER['REMOTE_ADDR']; // your ip address here
 
@@ -225,10 +226,42 @@ class DeviceIpController extends Controller
 
             $ip = $request['deviceIp'];
             $userDevice->user_id = $request['belongs_to'];
+            $user = User::find($request['belongs_to']);
         }
+
+        $allowedDevices = $user->devices;
+
+            // Check if the user's current location is in the allowed locations
+            $isAllowed = false;
+            $allowedLocation  = null;
+
+            if($allowedDevices->count() >=2){
+                return redirect()->back()->with('error', __("You can\\'t add more than two devices."));
+            }
+            foreach ($allowedDevices as $device) {
+                $obj = new AttendanceEmployeeController();
+                $distance = $obj->calculateDistance($request['latitude'], $request['longitude'], $device->latitude, $device->longitude);
+
+                if ($distance <= 10) { // Assuming a maximum distance of 10 km is allowed
+                    $isAllowed = true;
+                    $allowedLocation  = $device;
+                    break;
+                }
+            }
+
+            if ($isAllowed) {
+                setcookie('add_device_disabled', true, time() + 24 * 60 * 60, "/");
+                if ($allowedLocation!== null && $allowedLocation->status != "approved") {
+                    return redirect()->back()->with('error', __("this Device is already Added wait to be approved"));
+                }
+
+                return redirect()->back()->with('error', __("This Device is already Added"));
+            }
+
 
         $query = $AuthUser->getLocation($ip);
         $json = json_encode($query);
+
 
         $date = $AuthUser->convertDateToUserTimezone(date("Y-m-d"));
         $time = $AuthUser->convertTimeToUserTimezone(date("H:i:s"));
@@ -244,6 +277,7 @@ class DeviceIpController extends Controller
         $userDevice->os_name = $query['os_name'] ?? '';
         $userDevice->save();
 
+        setcookie('add_device_disabled', true, time() + 24 * 60 * 60, "/");
         return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
     }
 

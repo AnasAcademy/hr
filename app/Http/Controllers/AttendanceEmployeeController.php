@@ -409,7 +409,6 @@ class AttendanceEmployeeController extends Controller
 
         // Check if the user's current location is in the allowed locations
         $isAllowed = false;
-        $isAllowed = false;
         $allowedLocation  = null;
         if ($allowedDevices->isEmpty()) {
             return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out, Click add my device Button.'));
@@ -730,8 +729,6 @@ class AttendanceEmployeeController extends Controller
             // $allowedLocations = $user->devices()->where("status", "approved")->get();
             $allowedDevices = $user->devices;
 
-            // Check if the user's current location is in the allowed locations
-            $isAllowed = false;
             $isAllowed = false;
             $allowedLocation  = null;
             // dd($allowedDevices);
@@ -739,6 +736,7 @@ class AttendanceEmployeeController extends Controller
                 return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out, Click add my device Button.'));
             }
 
+            // Check if the user's current location is in the allowed locations
             foreach ($allowedDevices as $device) {
                 $distance = $this->calculateDistance($request['latitude'], $request['longitude'], $device->latitude, $device->longitude);
                 // dd(['distance' => $distance, 'latitude' => $device->latitude, 'longitude' => $device->longitude, 'currentLat' => $request['latitude'], "currentLong" => $request['longitude']]);
