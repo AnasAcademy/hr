@@ -392,25 +392,48 @@ class AttendanceEmployeeController extends Controller
 
         $request->validate([
             'fingerprint' => 'required',
-            // Add other validation rules for your request data
+            'latitude' => 'required',
+            'longitude' => 'required'
         ]);
-        // $userIp = request()->ip();
-        // $shell = shell_exec('getmac');
-        // $macAddress = "";
-        // $pattern = '/([0-9A-Fa-f-]+)\s+\\\Device/';
-        // if (preg_match($pattern, $shell, $matches)) {
-        //     $macAddress = $matches[1];
-        // } else {
-        //     dd("Pattern not found");
-        // }
 
 
         $user = \Auth::user();
 
-        $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
+        // $ip  = IpRestrict::where('belongs_to', \Auth::user()->id)->whereIn('ip', [$request['fingerprint']])->first();
 
-        if (empty($ip) || $ip->status != "approved") {
-            return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
+        // if (empty($ip) || $ip->status != "approved") {
+        //     return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out.'));
+        // }
+
+        $allowedDevices = $user->devices;
+
+        // Check if the user's current location is in the allowed locations
+        $isAllowed = false;
+        $isAllowed = false;
+        $allowedLocation  = null;
+        if ($allowedDevices->isEmpty()) {
+            return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out, Click add my device Button.'));
+        }
+
+        foreach ($allowedDevices as $device) {
+            $distance = $this->calculateDistance($request['latitude'], $request['longitude'], $device->latitude, $device->longitude);
+            // dd(['distance' => $distance, 'latitude' => $device->latitude, 'longitude' => $device->longitude, 'currentLat' => $request['latitude'], "currentLong" => $request['longitude']]);
+
+
+            if ($distance <= 10) { // Assuming a maximum distance of 10 km is allowed
+                $isAllowed = true;
+                $allowedLocation = $device;
+                break;
+            }
+        }
+
+        if ($isAllowed) {
+
+            if ($allowedLocation!== null && $allowedLocation->status != "approved") {
+                return redirect()->back()->with('error', __("Can\\'t clock in & clock out from this device wait the manager to approve."));
+            }
+        } else {
+            return redirect()->back()->with('error', __("Can\\'t clock in & clock out from your location."));
         }
 
         if (\Auth::user()->type == 'company') {
@@ -463,7 +486,7 @@ class AttendanceEmployeeController extends Controller
                     'overtime' => $overtime,
                     'clock_in' => $clockIn,
                     'clock_out' => $clockOut,
-                    'clock_out_ip' => $ip->id,
+                    'clock_out_device' => $allowedLocation->id ?? null,
                     'status' => $status
                 ]);
 
@@ -526,7 +549,7 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee['early_leaving'] = $earlyLeaving;
             $attendanceEmployee['overtime']      = $overtime;
             $attendanceEmployee['status']      = "Leave";
-            $attendanceEmployee['clock_out_ip'] = $ip->id;
+            $attendanceEmployee['clock_out_device'] = $allowedLocation->id ?? null;
 
             if (!empty($request->date)) {
                 $attendanceEmployee['date']       =  $request->date;
@@ -576,7 +599,6 @@ class AttendanceEmployeeController extends Controller
             $attendanceEmployee->early_leaving = $earlyLeaving;
             $attendanceEmployee->overtime      = $overtime;
             $attendanceEmployee->total_rest    = '00:00:00';
-            $attendanceEmployee->clock_out_ip    = $ip->id;
             $attendanceEmployee->status    = "Leave";
 
 
@@ -713,16 +735,16 @@ class AttendanceEmployeeController extends Controller
             $isAllowed = false;
             $allowedLocation  = null;
             // dd($allowedDevices);
-            if($allowedDevices->isEmpty()){
+            if ($allowedDevices->isEmpty()) {
                 return redirect()->back()->with('error', __('This device is not allowed to clock in & clock out, Click add my device Button.'));
             }
 
             foreach ($allowedDevices as $device) {
                 $distance = $this->calculateDistance($request['latitude'], $request['longitude'], $device->latitude, $device->longitude);
-                dd(['distance' => $distance, 'latitude' => $device->latitude, 'longitude' => $device->longitude, 'currentLat'=> $request['latitude'], "currentLong"=>$request['longitude']]);
+                // dd(['distance' => $distance, 'latitude' => $device->latitude, 'longitude' => $device->longitude, 'currentLat' => $request['latitude'], "currentLong" => $request['longitude']]);
 
 
-                if ($distance <= 100) { // Assuming a maximum distance of 1 km is allowed
+                if ($distance <= 10) { // Assuming a maximum distance of 10 km is allowed
                     $isAllowed = true;
                     $allowedLocation = $device;
                     break;
@@ -730,14 +752,12 @@ class AttendanceEmployeeController extends Controller
             }
 
             if ($isAllowed) {
-                if($allowedLocation->status !="approved"){
+                if ($allowedLocation!== null && $allowedLocation->status != "approved") {
                     return redirect()->back()->with('error', __("Can\\'t clock in & clock out from this device wait the manager to approve."));
                 }
-            }else{
+            } else {
                 return redirect()->back()->with('error', __("Can\\'t clock in & clock out from your location."));
-
             }
-
         }
 
         $employeeId = !empty(\Auth::user()->employee) ? \Auth::user()->employee->id : 0;
@@ -752,15 +772,6 @@ class AttendanceEmployeeController extends Controller
             ->first();
 
         if ($lastClockInEntry != null) {
-            return redirect()->back()->with('error', __('You are already Clock In'));
-        }
-        // Find the last clocked out entry for the employee
-        $lastClockOutEntry = AttendanceEmployee::orderBy('id', 'desc')
-            ->where('employee_id', '=', $employeeId)
-            ->where('clock_out', '!=', '00:00:00')
-            ->where('date', '=', date('Y-m-d'))
-            ->first();
-
         $date = $user->convertDateToUserTimezone(date("Y-m-d"));
         $time = $user->convertTimeToUserTimezone(date("H:i:s"));
 
@@ -849,7 +860,7 @@ class AttendanceEmployeeController extends Controller
             $employeeAttendance->overtime      = '00:00:00';
             $employeeAttendance->total_rest    = '00:00:00';
             $employeeAttendance->created_by    = \Auth::user()->id;
-            $employeeAttendance->clock_in_ip    = $allowedLocation->id;
+            $employeeAttendance->clock_in_device    = $allowedLocation->id ?? null;
 
             $employeeAttendance->save();
         }
@@ -1133,14 +1144,15 @@ class AttendanceEmployeeController extends Controller
     }
 
     //  uses the Haversine formula to calculate the distance (more accurate)
-    function calculateDistance($lat1, $lon1, $lat2, $lon2) {
-        $earthRadius = 6371000; // meters
+    function calculateDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371; // km
         $dLat = deg2rad($lat2 - $lat1);
         $dLon = deg2rad($lon2 - $lon1);
         $a = sin($dLat / 2) * sin($dLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) * sin($dLon / 2);
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
         $distance = $earthRadius * $c;
-        return $distance; // return distance in meters
+        return $distance; // return distance in km
     }
     //d = 2R × sin⁻¹(√[sin²((θ₂ - θ₁)/2) + cosθ₁ × cosθ₂ × sin²((φ₂ - φ₁)/2)])
 }
