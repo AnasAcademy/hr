@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::table('attendance_employees', function (Blueprint $table) {
             //
             Schema::table('attendance_employees', function (Blueprint $table) {
-                $table->unsignedBigInteger('clock_in_ip')->nullable();
-                $table->foreign('clock_in_ip')->references('id')->on('ip_restricts')
+                $table->unsignedBigInteger('clock_out_device')->nullable();
+                $table->foreign('clock_out_device')->references('id')->on('user_devices')
                 ->nullOnDelete()->cascadeOnUpdate();
             });
         });
@@ -28,8 +28,8 @@ return new class extends Migration
     {
         Schema::table('attendance_employees', function (Blueprint $table) {
             //
-            $table->dropForeign(['clock_in_ip']);
-            $table->dropColumn('clock_in_ip');
+            $table->dropForeign(['clock_out_device']);
+            $table->dropColumn('clock_out_device');
         });
     }
 };
