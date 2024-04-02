@@ -23,15 +23,17 @@
                     @csrf
                     <input type="hidden" name="deviceIp" id="deviceIp">
                     @php
-                        $add_device_disabled = false;
+                        $addedDeviceCount = 0;
                     @endphp
-                    @if (isset($_COOKIE['add_device_disabled']))
+                    @if (isset($_COOKIE['addedDeviceCount']))
                         @php
-                            $add_device_disabled = $_COOKIE['add_device_disabled'];
+                            $addedDeviceCount = $_COOKIE['addedDeviceCount'];
                         @endphp
                     @endif
 
-                    <button class="btn btn-success"  type="submit">Add My Device</button>
+                    <button class="btn btn-success @if ($addedDeviceCount >= 2) disabled @endif"
+                        @if ($addedDeviceCount >= 2) disabled @endif type="submit">Add My Device
+                    </button>
 
                 </form>
 

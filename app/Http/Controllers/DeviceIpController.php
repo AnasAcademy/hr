@@ -131,7 +131,7 @@ class DeviceIpController extends Controller
                 $request->all(),
                 [
                     'ip' => 'required',
-                    'belongs_to' => 'required',
+                    'user_id' => 'required',
                     'status' => 'required',
                 ]
             );
@@ -224,7 +224,7 @@ class DeviceIpController extends Controller
                 return redirect()->back()->with('error', $messages->first());
             }
 
-            $userDevice->user_id = $request['belongs_to'];
+            $userDevice->user_id = $request['user_id'];
             $user = User::find($request['user_id']);
             $ip = $request['ip'];
         }
@@ -236,6 +236,7 @@ class DeviceIpController extends Controller
         $allowedLocation  = null;
 
         if ($allowedDevices->count() >= 2) {
+            setcookie('addedDeviceCount', $allowedDevices->count(), time() + 24 * 60 * 60, "/");
             return redirect()->back()->with('error', __("You can\\'t add more than two devices."));
         }
         foreach ($allowedDevices as $device) {
@@ -250,7 +251,7 @@ class DeviceIpController extends Controller
         }
 
         if ($isAllowed) {
-            setcookie('add_device_disabled', true, time() + 24 * 60 * 60, "/");
+            setcookie('addedDeviceCount', $allowedDevices->count(), time() + 24 * 60 * 60, "/");
             if ($allowedLocation !== null && $allowedLocation->status != "approved") {
                 return redirect()->back()->with('error', __("this Device is already Added wait to be approved"));
             }
@@ -277,7 +278,7 @@ class DeviceIpController extends Controller
         $userDevice->os_name = $query['os_name'] ?? '';
         $userDevice->save();
 
-        setcookie('add_device_disabled', true, time() + 24 * 60 * 60, "/");
+        setcookie('addedDeviceCount', $allowedDevices->count(), time() + 24 * 60 * 60, "/");
         return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
     }
 
