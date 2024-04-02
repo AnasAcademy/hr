@@ -281,7 +281,7 @@ class DeviceIpController extends Controller
         $userDevice->os_name = $query['os_name'] ?? '';
         $userDevice->save();
 
-        setcookie('addedDeviceCount', $allowedDevices->count(), time() + 24 * 60 * 60, "/");
+        setcookie('addedDeviceCount', $allowedDevices->count()+1, time() + 24 * 60 * 60, "/");
         if($AuthUser->type == 'company' || $AuthUser->type == 'super admin'){
             return redirect()->back()->with('success', __('Device Added Successfully'));
         }else{
