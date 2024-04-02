@@ -15,7 +15,7 @@
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
             {{ Form::label('ip', __('Device Ip'), ['class' => 'col-form-label']) }}
-            {{ Form::text('ip', null, ['class' => 'form-control', 'placeholder' => 'Enter the Device Identifier']) }}
+            {{ Form::text('ip', null, ['class' => 'form-control', 'placeholder' => 'Enter the Device Ip']) }}
         </div>
         <div class="form-group">
             @error('user_id')
@@ -39,7 +39,7 @@
             @enderror
             {{ Form::label('latitude', __('Device latitude'), ['class' => 'col-form-label']) }}
             <input class="form-control" type="text" name="latitude" placeholder="Enter latitude Degree"
-                id="latitude" value="{{ $device->latitude }}">
+                id="latitude">
         </div>
 
         <div class="form-group">
@@ -48,7 +48,7 @@
             @enderror
             {{ Form::label('longitude', __('Device longitude'), ['class' => 'col-form-label']) }}
             <input class="form-control" type="text" name="longitude" placeholder="Enter longitude Degree"
-                id="longitude" value="{{ $device->longitude }}">
+                id="longitude">
         </div>
 
     </div>

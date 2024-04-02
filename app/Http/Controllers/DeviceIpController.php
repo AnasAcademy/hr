@@ -225,6 +225,8 @@ class DeviceIpController extends Controller
             }
 
             $userDevice->user_id = $request['user_id'];
+            $userDevice->status= 'approved';
+            $userDevice->approved_by= $AuthUser->id;
             $user = User::find($request['user_id']);
             $ip = $request['ip'];
         }
@@ -279,7 +281,12 @@ class DeviceIpController extends Controller
         $userDevice->save();
 
         setcookie('addedDeviceCount', $allowedDevices->count(), time() + 24 * 60 * 60, "/");
-        return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
+        if($AuthUser->type == 'company' || $AuthUser->type == 'super admin'){
+            return redirect()->back()->with('success', __('Device Added Successfully'));
+        }else{
+
+            return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
+        }
     }
 
     public function updateDevice(Request $request, $id)
