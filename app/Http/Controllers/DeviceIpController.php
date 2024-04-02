@@ -245,7 +245,8 @@ class DeviceIpController extends Controller
             $obj = new AttendanceEmployeeController();
             $distance = $obj->calculateDistance($request['latitude'], $request['longitude'], $device->latitude, $device->longitude);
 
-            if ($distance <= 10) { // Assuming a maximum distance of 10 km is allowed
+            if ($distance <= UserDevice::allowedDistance) { // Assuming a maximum distance of 3 km is allowed
+                dd(['distance' => $distance, 'latitude' => $device->latitude, 'longitude' => $device->longitude, 'reqLat'=>$request['latitude'], 'reqLong'=>$request['longitude']]);
                 $isAllowed = true;
                 $allowedLocation  = $device;
                 break;

@@ -18,5 +18,7 @@ class UserDevice extends Model
     }
 
 
+    public const allowedDistance = 3; // 3km
+
 
 }

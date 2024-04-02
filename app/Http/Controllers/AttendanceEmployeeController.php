@@ -416,10 +416,10 @@ class AttendanceEmployeeController extends Controller
 
         foreach ($allowedDevices as $device) {
             $distance = $this->calculateDistance($request['latitude'], $request['longitude'], $device->latitude, $device->longitude);
-            // dd(['distance' => $distance, 'latitude' => $device->latitude, 'longitude' => $device->longitude, 'currentLat' => $request['latitude'], "currentLong" => $request['longitude']]);
+            dd(['distance' => $distance, 'latitude' => $device->latitude, 'longitude' => $device->longitude, 'currentLat' => $request['latitude'], "currentLong" => $request['longitude']]);
 
 
-            if ($distance <= 10) { // Assuming a maximum distance of 10 km is allowed
+            if ($distance <= UserDevice::allowedDistance) { // Assuming a maximum distance of 3 km is allowed
                 $isAllowed = true;
                 $allowedLocation = $device;
                 break;
@@ -742,7 +742,7 @@ class AttendanceEmployeeController extends Controller
                 // dd(['distance' => $distance, 'latitude' => $device->latitude, 'longitude' => $device->longitude, 'currentLat' => $request['latitude'], "currentLong" => $request['longitude']]);
 
 
-                if ($distance <= 10) { // Assuming a maximum distance of 10 km is allowed
+                if ($distance <= UserDevice::allowedDistance) { // Assuming a maximum distance of 3 km is allowed
                     $isAllowed = true;
                     $allowedLocation = $device;
                     break;
