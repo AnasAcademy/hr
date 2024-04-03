@@ -22,7 +22,7 @@ class DeviceIpController extends Controller
     {
         $user = \Auth::user();
         if ($user->type == 'employee') {
-            $devices = UserDevice::where("belongs_to", $user->id)->first();
+            $devices = $user->devices;
         } else if ($user->type == 'manager') {
             $devices = UserDevice::get();
             $managedDepartment = $user->managedDepartment;
