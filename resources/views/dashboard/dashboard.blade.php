@@ -31,9 +31,10 @@
                         @endphp
                     @endif
 
-                    <button class="btn btn-success @if ($addedDeviceCount >= 2) disabled @endif"
+                    <button class="btn btn-success" type="submit">Add My Device</button>
+                    {{-- <button class="btn btn-success @if ($addedDeviceCount >= 2) disabled @endif"
                         @if ($addedDeviceCount >= 2) disabled @endif type="submit">Add My Device
-                    </button>
+                    </button> --}}
 
                 </form>
 
@@ -99,7 +100,7 @@
                                         class="btn btn-danger">{{ __('CLOCK OUT') }}</button>
                                 @else
                                     <button type="submit" value="1" name="out" id="clock_out"
-                                        class="btn btn-danger disabled" disabled>{{ __('CLOCK OUT') }}</button>
+                                        class="btn btn-danger disabled" >{{ __('CLOCK OUT') }}</button>
                                 @endif
                                 {{ Form::close() }}
                             </div>
@@ -799,9 +800,13 @@
 
                             getFingerPrint(function(fingerprintValue) {
                                 // Set the fingerprint value in the hidden input field
-                                document.getElementById("lockOutFingerprint").value = fingerprintValue;
-                                // Submit the form
-                                clockOutForm.submit();
+                                // document.getElementById("lockOutFingerprint").value = fingerprintValue;
+                                // clock_in.disabled = false;
+                                // clock_in.classList.remove("disabled");
+                                // clock_out.disabled = true;
+                                // clock_out.classList.add("disabled");
+                                // // Submit the form
+                                // clockOutForm.submit();
                             });
 
                         }
@@ -809,7 +814,7 @@
                 @endif
             }
 
-            if (clock_in.disabled) {
+            if (clock_in.disabled==true) {
                 timeDown();
             }
         </script>
