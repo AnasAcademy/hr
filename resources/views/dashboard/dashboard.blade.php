@@ -31,41 +31,13 @@
                         @endphp
                     @endif
 
-                    <button class="btn btn-success" type="submit">Add My Device</button>
+                    <button class="btn btn-success" type="submit">{{__('Add My Device')}}</button>
                     {{-- <button class="btn btn-success @if ($addedDeviceCount >= 2) disabled @endif"
                         @if ($addedDeviceCount >= 2) disabled @endif type="submit">Add My Device
                     </button> --}}
 
                 </form>
 
-            </div>
-            <div class="col-xxl-6">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <h5>{{ __('Calendar') }}</h5>
-                                <input type="hidden" id="path_admin" value="{{ url('/') }}">
-                            </div>
-                            <div class="col-lg-6">
-                                {{-- <div class="form-group"> --}}
-                                <label for=""></label>
-                                @if (isset($setting['is_enabled']) && $setting['is_enabled'] == 'on')
-                                    <select class="form-control" name="calender_type" id="calender_type"
-                                        style="float: right;width: 155px;" onchange="get_data()">
-                                        <option value="google_calender">{{ __('Google Calendar') }}</option>
-                                        <option value="local_calender" selected="true">
-                                            {{ __('Local Calendar') }}</option>
-                                    </select>
-                                @endif
-                                {{-- </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id='event_calendar' class='calendar'></div>
-                    </div>
-                </div>
             </div>
             <div class="col-xxl-6">
                 <div class="card" style="min-height: 230px;">
@@ -135,6 +107,35 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xxl-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h5>{{ __('Calendar') }}</h5>
+                                <input type="hidden" id="path_admin" value="{{ url('/') }}">
+                            </div>
+                            <div class="col-lg-6">
+                                {{-- <div class="form-group"> --}}
+                                <label for=""></label>
+                                @if (isset($setting['is_enabled']) && $setting['is_enabled'] == 'on')
+                                    <select class="form-control" name="calender_type" id="calender_type"
+                                        style="float: right;width: 155px;" onchange="get_data()">
+                                        <option value="google_calender">{{ __('Google Calendar') }}</option>
+                                        <option value="local_calender" selected="true">
+                                            {{ __('Local Calendar') }}</option>
+                                    </select>
+                                @endif
+                                {{-- </div> --}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id='event_calendar' class='calendar'></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-xl-12 col-lg-12 col-md-12">
                 <div class="card">
                     <div class="card-header card-body table-border-style">
