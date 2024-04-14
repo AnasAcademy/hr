@@ -72,6 +72,7 @@
     </script>
 @endpush
 @section('action-button')
+    @if(\Auth::user()->type != 'employee')
     <a href="#" data-url="{{ route('attendance.file.import') }}" data-ajax-popup="true"
         data-title="{{ __('Import  Attendance CSV File') }}" data-bs-toggle="tooltip" title=""
         class="btn btn-sm btn-primary" data-bs-original-title="{{ __('Import') }}">
@@ -82,6 +83,7 @@
         data-bs-original-title="{{ __('Export') }}">
         <i class="ti ti-file-export"></i>
     </a>
+    @endif
 @endsection
 @section('content')
     @if (session('status'))

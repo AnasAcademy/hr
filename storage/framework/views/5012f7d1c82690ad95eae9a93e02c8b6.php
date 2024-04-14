@@ -52,15 +52,16 @@
             <div class="form-group">
                 <?php echo e(Form::label('start_date', __('Start Date'), ['class' => 'col-form-label'])); ?>
 
-                <?php echo e(Form::text('start_date', null, ['class' => 'form-control d_week current_date', 'autocomplete' => 'off'])); ?>
-
+                
+                <input type="date" id="start_date" name="start_date" min="<?php echo e(date('Y-m-d')); ?>" class="form-control  current_date">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <?php echo e(Form::label('end_date', __('End Date'), ['class' => 'col-form-label'])); ?>
 
-                <?php echo e(Form::text('end_date', null, ['class' => 'form-control d_week current_date', 'autocomplete' => 'off'])); ?>
+                
+                <input type="date" id="end_date" name="end_date" min="<?php echo e(date('Y-m-d')); ?>" class="form-control  current_date">
 
             </div>
         </div>
@@ -121,6 +122,20 @@
         if (day < 10) day = "0" + day;
         var today = now.getFullYear() + '-' + month + '-' + day;
         $('.current_date').val(today);
+        $('#start_date').datepicker({
+            // Set the minimum date to today's date
+            min: new Date()
+        });
+    });
+</script>
+<script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the datepicker
+        $('#start_date').datepicker({
+            // Set the minimum date to today's date
+            minDate: new Date()
+        });
     });
 </script>
 

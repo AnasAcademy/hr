@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Manage Attendance List')); ?>
 
@@ -73,16 +72,18 @@
     </script>
 <?php $__env->stopPush(); ?>
 <?php $__env->startSection('action-button'); ?>
+    <?php if(\Auth::user()->type != 'employee'): ?>
     <a href="#" data-url="<?php echo e(route('attendance.file.import')); ?>" data-ajax-popup="true"
         data-title="<?php echo e(__('Import  Attendance CSV File')); ?>" data-bs-toggle="tooltip" title=""
         class="btn btn-sm btn-primary" data-bs-original-title="<?php echo e(__('Import')); ?>">
         <i class="ti ti-file"></i>
     </a>
-    
+
     <a href="<?php echo e(route('attendance.export')); ?>" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
         data-bs-original-title="<?php echo e(__('Export')); ?>">
         <i class="ti ti-file-export"></i>
     </a>
+    <?php endif; ?>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
     <?php if(session('status')): ?>
@@ -210,7 +211,7 @@
                                     <th><?php echo e(__('Clock Out')); ?></th>
                                     <th><?php echo e(__('Late')); ?></th>
                                     <th><?php echo e(__('Early Leaving')); ?></th>
-                                    <th><?php echo e(__('Overtime')); ?></th>
+                                    
                                     <?php if(Gate::check('Edit Attendance') || Gate::check('Delete Attendance')): ?>
                                         <th width="200px"><?php echo e(__('Action')); ?></th>
                                     <?php endif; ?>
@@ -232,7 +233,7 @@
                                         </td>
                                         <td><?php echo e($attendance->late); ?></td>
                                         <td><?php echo e($attendance->early_leaving); ?></td>
-                                        <td><?php echo e($attendance->overtime); ?></td>
+                                        
                                         <?php if(Gate::check('Edit Attendance') || Gate::check('Delete Attendance')): ?>
                                             <td class="Action">
                                                 <span>
