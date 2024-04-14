@@ -52,7 +52,7 @@
                             <div id="countdown" class="btn btn-info text-center d-none"></div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 float-right border-right">
+                            <div class="col-sm-6 mb-3 float-right border-right">
                                 {{ Form::open(['url' => 'attendanceemployee/attendance', 'method' => 'post', 'id' => 'clockInForm']) }}
                                 <input type="hidden" name="fingerprint" id="lockInFingerprint">
                                 @if (empty($employeeAttendance) || $employeeAttendance->clock_out != '00:00:00')
@@ -64,7 +64,7 @@
                                 @endif
                                 {{ Form::close() }}
                             </div>
-                            <div class="col-md-6 float-left">
+                            <div class="col-sm-6 float-left">
                                 @if (!empty($employeeAttendance) && $employeeAttendance->clock_out == '00:00:00')
                                     {{ Form::model($employeeAttendance, ['route' => ['attendanceemployee.update', $employeeAttendance->id], 'method' => 'PUT', 'id' => 'clockOutForm']) }}
                                     <input type="hidden" name="fingerprint" id="lockOutFingerprint">
