@@ -88,7 +88,7 @@
                         <i class="ti ti-rotate"></i> <span><?php echo e(__('Grammar check with AI')); ?></span>
                     </a>
                 <?php endif; ?>
-                <?php echo e(Form::textarea('remark', null, ['class' => 'form-control grammer_textarea', 'required' => 'required', 'placeholder' => __('Leave Remark'), 'rows' => '3'])); ?>
+                <?php echo e(Form::textarea('remark', null, ['class' => 'form-control grammer_textarea', 'placeholder' => __('Leave Remark'), 'rows' => '3'])); ?>
 
             </div>
         </div>

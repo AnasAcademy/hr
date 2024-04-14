@@ -79,7 +79,6 @@ class LeaveController extends Controller
                     'start_date' => 'required',
                     'end_date' => 'required',
                     'leave_reason' => 'required',
-                    'remark' => 'required',
                 ]
             );
             if ($validator->fails()) {
@@ -136,7 +135,7 @@ class LeaveController extends Controller
                 $leave->end_date         = $request->end_date;
                 $leave->total_leave_days = $total_leave_days;
                 $leave->leave_reason     = $request->leave_reason;
-                $leave->remark           = $request->remark;
+                $leave->remark           = $request->remark ?? null;
                 $leave->status           = 'Pending';
                 $leave->created_by       = \Auth::user()->creatorId();
                 $leave->save();

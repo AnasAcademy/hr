@@ -75,7 +75,7 @@
                         <i class="ti ti-rotate"></i> <span>{{ __('Grammar check with AI') }}</span>
                     </a>
                 @endif
-                {{ Form::textarea('remark', null, ['class' => 'form-control grammer_textarea', 'required' => 'required', 'placeholder' => __('Leave Remark'), 'rows' => '3']) }}
+                {{ Form::textarea('remark', null, ['class' => 'form-control grammer_textarea', 'placeholder' => __('Leave Remark'), 'rows' => '3']) }}
             </div>
         </div>
     </div>

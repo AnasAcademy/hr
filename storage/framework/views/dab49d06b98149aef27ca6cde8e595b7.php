@@ -48,8 +48,8 @@
 
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Leave')): ?>
 <div class="modal-footer">
-    <input type="submit" value="<?php echo e(__('Approved')); ?>" class="btn btn-success rounded" name="status">
-    <input type="submit" value="<?php echo e(__('Reject')); ?>" class="btn btn-danger rounded" name="status">
+    <input type="submit" value="Approved" class="btn btn-success rounded" name="status">
+    <input type="submit" value="Rejected" class="btn btn-danger rounded" name="status">
 </div>
 <?php endif; ?>
 
