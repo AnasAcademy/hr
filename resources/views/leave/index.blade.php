@@ -7,7 +7,7 @@
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Home') }}</a></li>
-    <li class="breadcrumb-item">{{ __('Holidays Request ') }}</li>
+    <li class="breadcrumb-item">{{ __('Holidays Request') }}</li>
 @endsection
 
 @section('action-button')
@@ -72,13 +72,13 @@
                                         <td>
                                             @if ($leave->status == 'Pending')
                                                 <div class="badge bg-warning p-2 px-3 rounded status-badge5">
-                                                    {{ $leave->status }}</div>
+                                                    {{ __($leave->status) }}</div>
                                             @elseif($leave->status == 'Approved')
                                                 <div class="badge bg-success p-2 px-3 rounded status-badge5">
-                                                    {{ $leave->status }}</div>
-                                            @elseif($leave->status == 'Reject')
+                                                    {{ __($leave->status) }}</div>
+                                            @elseif($leave->status == 'Rejected')
                                                 <div class="badge bg-danger p-2 px-3 rounded status-badge5">
-                                                    {{ $leave->status }}</div>
+                                                    {{ __($leave->status) }}</div>
                                             @endif
                                         </td>
 

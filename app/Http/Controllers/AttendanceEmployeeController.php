@@ -784,7 +784,7 @@ class AttendanceEmployeeController extends Controller
         $time = $user->convertTimeToUserTimezone(date("H:i:s"));
 
         if (strtotime($startTime) > strtotime($time)) {
-            return redirect()->back()->with('error', __("You can\\'t clock in now wait the time to be " . $user->timeFormat($startTime)));
+            return redirect()->back()->with('error', __("You can\\'t clock in now wait the time to be ") . $user->timeFormat($startTime));
         }
         // dd($loginedLocation->id);
         if ($lastClockOutEntry != null) {
@@ -801,7 +801,7 @@ class AttendanceEmployeeController extends Controller
             $officeWorkHours = strtotime($officeTime['endTime']) - strtotime($officeTime['startTime']);
 
             if ($actualWorkingHours >= $officeWorkHours) {
-                return redirect()->back()->with('error', __("You can\\'t clock in now, you acually working " . $officeWorkHours / (60 * 60) . " hours"));
+                return redirect()->back()->with('error', __("You can\\'t clock in now, you acually working ") . $officeWorkHours / (60 * 60) . __(" hours"));
             }
 
             // Parse the time strings into Carbon objects

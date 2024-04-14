@@ -6,7 +6,7 @@
 
 <?php $__env->startSection('breadcrumb'); ?>
     <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>"><?php echo e(__('Home')); ?></a></li>
-    <li class="breadcrumb-item"><?php echo e(__('Holidays Request ')); ?></li>
+    <li class="breadcrumb-item"><?php echo e(__('Holidays Request')); ?></li>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('action-button'); ?>
@@ -73,13 +73,13 @@
                                         <td>
                                             <?php if($leave->status == 'Pending'): ?>
                                                 <div class="badge bg-warning p-2 px-3 rounded status-badge5">
-                                                    <?php echo e($leave->status); ?></div>
+                                                    <?php echo e(__($leave->status)); ?></div>
                                             <?php elseif($leave->status == 'Approved'): ?>
                                                 <div class="badge bg-success p-2 px-3 rounded status-badge5">
-                                                    <?php echo e($leave->status); ?></div>
-                                            <?php elseif($leave->status == 'Reject'): ?>
+                                                    <?php echo e(__($leave->status)); ?></div>
+                                            <?php elseif($leave->status == 'Rejected'): ?>
                                                 <div class="badge bg-danger p-2 px-3 rounded status-badge5">
-                                                    <?php echo e($leave->status); ?></div>
+                                                    <?php echo e(__($leave->status)); ?></div>
                                             <?php endif; ?>
                                         </td>
 

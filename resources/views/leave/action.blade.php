@@ -47,8 +47,8 @@
 
 @can('Manage Leave')
 <div class="modal-footer">
-    <input type="submit" value="{{ __('Approved') }}" class="btn btn-success rounded" name="status">
-    <input type="submit" value="{{ __('Reject') }}" class="btn btn-danger rounded" name="status">
+    <input type="submit" value="Approved" class="btn btn-success rounded" name="status">
+    <input type="submit" value="Rejected" class="btn btn-danger rounded" name="status">
 </div>
 @endcan
 
