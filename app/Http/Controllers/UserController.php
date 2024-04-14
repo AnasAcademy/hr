@@ -172,7 +172,7 @@ class UserController extends Controller
 
                 $resp = Utility::sendEmailTemplate('new_user', [$user->id => $user->email], $uArr);
 
-                return redirect()->route('user.index')->with('success', __('User successfully created.') . ((!empty($resp) && $resp['is_success'] == false && !empty($resp['error'])) ? '<br> <span class="text-danger">' . $resp['error'] . '</span>' : ''));
+                return redirect()->back()->with('success', __('User successfully created.') . ((!empty($resp) && $resp['is_success'] == false && !empty($resp['error'])) ? '<br> <span class="text-danger">' . $resp['error'] . '</span>' : ''));
             }
             return redirect()->back()->with('success', __('User successfully created.'));
         } else {
