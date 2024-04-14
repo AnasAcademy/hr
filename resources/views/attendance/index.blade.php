@@ -77,7 +77,7 @@
         class="btn btn-sm btn-primary" data-bs-original-title="{{ __('Import') }}">
         <i class="ti ti-file"></i>
     </a>
-    
+
     <a href="{{ route('attendance.export') }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
         data-bs-original-title="{{ __('Export') }}">
         <i class="ti ti-file-export"></i>
@@ -201,7 +201,7 @@
                                     <th>{{ __('Clock Out') }}</th>
                                     <th>{{ __('Late') }}</th>
                                     <th>{{ __('Early Leaving') }}</th>
-                                    <th>{{ __('Overtime') }}</th>
+                                    {{-- <th>{{ __('Overtime') }}</th> --}}
                                     @if (Gate::check('Edit Attendance') || Gate::check('Delete Attendance'))
                                         <th width="200px">{{ __('Action') }}</th>
                                     @endif
@@ -221,7 +221,7 @@
                                         </td>
                                         <td>{{ $attendance->late }}</td>
                                         <td>{{ $attendance->early_leaving }}</td>
-                                        <td>{{ $attendance->overtime }}</td>
+                                        {{-- <td>{{ $attendance->overtime }}</td> --}}
                                         @if (Gate::check('Edit Attendance') || Gate::check('Delete Attendance'))
                                             <td class="Action">
                                                 <span>
