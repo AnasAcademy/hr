@@ -105,6 +105,10 @@
                     <a href="{{ route('user.index') }}" class="dash-link"><span class="dash-micon"><i
                                 class="ti ti-user"></i></span><span class="dash-mtext">{{ __('Companies') }}</span></a>
                 </li>
+                <li class="dash-item">
+                    <a href="{{ route('superAdmin.index') }}" class="dash-link"><span class="dash-micon"><i
+                                class="ti ti-user"></i></span><span class="dash-mtext">{{ __('Super Admins') }}</span></a>
+                </li>
             @else
                 @if (Gate::check('Manage User') ||
                         Gate::check('Manage Role') ||

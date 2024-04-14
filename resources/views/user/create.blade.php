@@ -27,7 +27,7 @@
                 {!! Form::password('password', ['class' => 'form-control', 'required' => 'required','placeholder'=>'Enter password']) !!}
             </div>
         </div> --}}
-        @if (\Auth::user()->type != 'super admin')
+        {{-- @if (\Auth::user()->type != 'super admin') --}}
             <div class="form-group">
                 {{ Form::label('role', __('User Role'), ['class' => 'form-label']) }}
                 <div class="form-icon-user">
@@ -39,12 +39,12 @@
                     </span>
                 @enderror
             </div>
-        @endif
+        {{-- @endif --}}
         {{-- timezone --}}
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="form-group">
                 {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}
-                
+
                 <select type="text" name="timezone" class="form-control select2"
                     id="timezone">
                     <option value="">{{ __('Select Timezone') }}</option>
@@ -64,7 +64,7 @@
 
             </div>
         </div>
-        
+
         <div class="col-md-5 mb-3">
             <label for="password_switch">{{ __('Login is enable') }}</label>
             <div class="form-check form-switch custom-switch-v1 float-end">

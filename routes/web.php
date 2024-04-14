@@ -327,6 +327,8 @@ Route::group(['middleware' => ['verified']], function () {
                 'XSS',
             ]
         );
+
+    Route::get('/superAdmins',[ UserController::class, 'superAdmin'])->name('superAdmin.index')->middleware(['auth', 'XSS']);
     // user log
     Route::get('userlogsView/{id}', [EmployeeController::class, 'view'])->name('userlog.view')->middleware(['auth', 'XSS']);
 
@@ -1693,5 +1695,4 @@ Route::group(['middleware' => ['verified']], function () {
         Artisan::call('optimize:clear');
         return redirect()->back()->with('success', 'Cache Clear Successfully');
     })->name('config.cache');
-
 });

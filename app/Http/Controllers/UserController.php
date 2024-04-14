@@ -50,6 +50,9 @@ class UserController extends Controller
         if (\Auth::user()->can('Create User')) {
             $user  = \Auth::user();
             $roles = Role::where('created_by', '=', $user->creatorId())->where('name', '!=', 'employee')->get()->pluck('name', 'id');
+            if($user->type == 'super admin') {
+                $roles = Role::whereIn('name', ['company', 'super admin'])->get()->pluck('name', 'id');
+            }
             $timezones = config('timezones');
             $settings = Utility::settings();
             return view('user.create', compact('roles', 'timezones', 'settings'));
@@ -97,6 +100,7 @@ class UserController extends Controller
             if (\Auth::user()->type == 'super admin') {
                 $date = date("Y-m-d H:i:s");
                 $userpassword = $request->input('password');
+                $role_r = Role::findById($request->role);
                 $user = User::create(
                     [
                         'name' => $request['name'],
@@ -104,7 +108,7 @@ class UserController extends Controller
                         'timezone' => $request['timezone'],
                         'is_login_enable' => !empty($request->password_switch) && $request->password_switch == 'on' ? 1 : 0,
                         'password' => !empty($userpassword) ? Hash::make($userpassword) : null,
-                        'type' => 'company',
+                        'type' =>  $role_r->name,
                         'plan' => $plan = Plan::where('price', '<=', 0)->first()->id,
                         'lang' => !empty($default_language) ? $default_language->value : 'en',
                         'created_by' => \Auth::user()->id,
@@ -112,18 +116,21 @@ class UserController extends Controller
                     ]
                 );
 
-                $user->assignRole('Company');
-                $user->userDefaultData();
-                $user->userDefaultDataRegister($user->id);
-                GenerateOfferLetter::defaultOfferLetterRegister($user->id);
-                ExperienceCertificate::defaultExpCertificatRegister($user->id);
-                JoiningLetter::defaultJoiningLetterRegister($user->id);
-                NOC::defaultNocCertificateRegister($user->id);
-                Utility::jobStage($user->id);
-                $role_r = Role::findById(2);
 
-                //create company default roles
-                Utility::MakeRole($user->id);
+                $user->assignRole($role_r);
+                if($user->type == 'company'){
+                    $user->userDefaultData();
+                    $user->userDefaultDataRegister($user->id);
+                    GenerateOfferLetter::defaultOfferLetterRegister($user->id);
+                    ExperienceCertificate::defaultExpCertificatRegister($user->id);
+                    JoiningLetter::defaultJoiningLetterRegister($user->id);
+                    NOC::defaultNocCertificateRegister($user->id);
+                    Utility::jobStage($user->id);
+                    $role_r = Role::findById(2);
+
+                    //create company default roles
+                    Utility::MakeRole($user->id);
+                }
             } else {
                 $objUser    = \Auth::user()->creatorId();
                 // $objUser = User::find($objUser);
@@ -167,7 +174,7 @@ class UserController extends Controller
 
                 return redirect()->route('user.index')->with('success', __('User successfully created.') . ((!empty($resp) && $resp['is_success'] == false && !empty($resp['error'])) ? '<br> <span class="text-danger">' . $resp['error'] . '</span>' : ''));
             }
-            return redirect()->route('user.index')->with('success', __('User successfully created.'));
+            return redirect()->back()->with('success', __('User successfully created.'));
         } else {
             return response()->json(['error' => __('Permission denied.')], 401);
         }
@@ -218,32 +225,30 @@ class UserController extends Controller
             $input         = $request->all();
             $input['type'] = $role->name;
             $user->fill($input)->save();
-            if($user->employee){
+            if ($user->employee) {
                 $user->employee->fill($input)->save();
             }
 
             $user->removeRole($oldRole);
             $user->assignRole($role);
 
-            if($user->type != 'manager' && $oldType == 'manager'){
+            if ($user->type != 'manager' && $oldType == 'manager') {
 
                 $oldDepartment = $user->managedDepartment;
-                if($oldDepartment){
-                    $oldDepartment->update(["manager_id"=> null]);
+                if ($oldDepartment) {
+                    $oldDepartment->update(["manager_id" => null]);
                 }
-            }
-            else if($user->type == 'manager'){
+            } else if ($user->type == 'manager') {
                 $oldDepartment = $user->managedDepartment;
-                if($oldDepartment){
-                    $oldDepartment->update(["manager_id"=> null]);
+                if ($oldDepartment) {
+                    $oldDepartment->update(["manager_id" => null]);
                 }
 
-                Department::find($user->employee->department_id)->update(["manager_id"=> $user->id]);
-
+                Department::find($user->employee->department_id)->update(["manager_id" => $user->id]);
             }
         }
 
-        return redirect()->route('user.index')->with('success', 'User successfully updated.');
+        return redirect()->back()->with('success', 'User successfully updated.');
     }
 
 
@@ -256,7 +261,7 @@ class UserController extends Controller
             $employee = Employee::where('user_id', $user->id)->delete();
             $user->delete();
 
-            return redirect()->route('user.index')->with('success', 'User successfully deleted.');
+            return redirect()->back()->with('success', 'User successfully deleted.');
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -318,7 +323,7 @@ class UserController extends Controller
         $user['email'] = $request['email'];
         $user->save();
 
-        if($user->employee){
+        if ($user->employee) {
             $user->employee->fill($request->all())->save();
         };
 
@@ -376,7 +381,7 @@ class UserController extends Controller
             'is_login_enable' => 1,
         ])->save();
 
-        if($user->employee){
+        if ($user->employee) {
             $user->employee->update('password', $user->password);
         }
         return redirect()->route('user.index')->with(
@@ -405,7 +410,7 @@ class UserController extends Controller
                 $obj_user->password = Hash::make($request_data['new_password']);;
                 $obj_user->save();
 
-                if($obj_user->employee){
+                if ($obj_user->employee) {
                     $obj_user->employee->update('password', $obj_user->password);
                 }
                 return redirect()->route('profile', $objUser->id)->with('success', __('Password successfully updated.'));
@@ -542,5 +547,20 @@ class UserController extends Controller
             'is_success' => false,
             'error'      => 'User ID is invalid.',
         ];
+    }
+
+
+    public function superAdmin()
+    {
+        if (\Auth::user()->can('Manage User') && \Auth::user()->type == 'super admin') {
+
+            $user = \Auth::user();
+
+            $users = User::where('type', '=', 'super admin')->get();
+
+            return view('user.index', compact('users'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 }
