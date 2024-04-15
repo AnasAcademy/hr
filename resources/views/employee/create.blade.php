@@ -305,7 +305,7 @@
 @endsection
 
 @push('script-page')
-    <script>
+    {{-- <script>
         navigator.geolocation.getCurrentPosition(function(position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
@@ -314,7 +314,7 @@
             console.log(mapUrl);
             window.open(mapUrl, '_self');
         })
-    </script>
+    </script> --}}
     <script>
         $('input[type="file"]').change(function(e) {
             var file = e.target.files[0].name;
