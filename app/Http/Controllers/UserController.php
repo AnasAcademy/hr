@@ -33,7 +33,7 @@ class UserController extends Controller
         if (\Auth::user()->can('Manage User')) {
             $user = \Auth::user();
             if (\Auth::user()->type == 'super admin') {
-                $users = User::where('created_by', '=', $user->creatorId())->where('type', '=', 'company')->with('currentPlan')->get();
+                $users = User::where('type', '=', 'company')->with('currentPlan')->get();
                 $CountUser = User::where('created_by')->get();
             } else {
                 $users = User::where('created_by', '=', $user->creatorId())->get();
@@ -109,7 +109,7 @@ class UserController extends Controller
                         'is_login_enable' => !empty($request->password_switch) && $request->password_switch == 'on' ? 1 : 0,
                         'password' => !empty($userpassword) ? Hash::make($userpassword) : null,
                         'type' =>  $role_r->name,
-                        'plan' => $plan = Plan::where('price', '<=', 0)->first()->id,
+                        'plan' => null,
                         'lang' => !empty($default_language) ? $default_language->value : 'en',
                         'created_by' => \Auth::user()->id,
                         'email_verified_at' => $date,
@@ -119,6 +119,7 @@ class UserController extends Controller
 
                 $user->assignRole($role_r);
                 if($user->type == 'company'){
+                    $user->update(["plan"=>$plan = Plan::where('price', '<=', 0)->first()->id]);
                     $user->userDefaultData();
                     $user->userDefaultDataRegister($user->id);
                     GenerateOfferLetter::defaultOfferLetterRegister($user->id);
