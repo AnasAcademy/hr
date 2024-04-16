@@ -225,8 +225,8 @@ class DeviceIpController extends Controller
             }
 
             $userDevice->user_id = $request['user_id'];
-            $userDevice->status= 'approved';
-            $userDevice->approved_by= $AuthUser->id;
+            $userDevice->status = 'approved';
+            $userDevice->approved_by = $AuthUser->id;
             $user = User::find($request['user_id']);
             $ip = $request['ip'];
         }
@@ -281,11 +281,26 @@ class DeviceIpController extends Controller
         $userDevice->os_name = $query['os_name'] ?? '';
         $userDevice->save();
 
-        setcookie('addedDeviceCount', $allowedDevices->count()+1, time() + 24 * 60 * 60, "/");
-        if($AuthUser->type == 'company' || $AuthUser->type == 'super admin'){
+        setcookie('addedDeviceCount', $allowedDevices->count() + 1, time() + 24 * 60 * 60, "/");
+        if ($AuthUser->type == 'company' || $AuthUser->type == 'super admin') {
             return redirect()->back()->with('success', __('Device Added Successfully'));
-        }else{
-
+        } else {
+            $manager =  $user->employee->departement->manager;
+            $emailDetails= [
+                "manager" =>$manager->name ?? "",
+                "receiver" => $manager->email ?? "",
+                "subject" => "Add Employee Device Request"
+            ];
+            try {
+                /Mail::send('email.add_device', [...$emailDetails], function ($message) use ($emailDetails) {
+                    $message->to($emailDetails['receiver'])
+                        ->from($user->email, $user->name)
+                        ->subject($emailDetails['subject']);
+                });
+                return true;
+            } catch (\Exception $e) {
+                return false;
+            }
             return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
         }
     }
@@ -297,7 +312,7 @@ class DeviceIpController extends Controller
             $validator = \Validator::make(
                 $request->all(),
                 [
-                    'ip'=>"required",
+                    'ip' => "required",
                     'user_id' => 'required|exists:users,id',
                     'status' => 'required',
                     'latitude' => 'required',
@@ -315,7 +330,7 @@ class DeviceIpController extends Controller
             $query = $AuthUser->getLocation($request['ip']);
             $json = json_encode($query);
 
-            $input['details']=$json;
+            $input['details'] = $json;
 
             $device->update($input);
             $device->save();
