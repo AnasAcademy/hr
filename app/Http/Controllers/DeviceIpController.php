@@ -11,6 +11,11 @@ use App\Models\IpRestrict;
 use App\Models\Utility;
 
 use App\Models\UserDevice;
+use Illuminate\Support\Facades\Mail;
+
+use App\Mail\CommonEmailTemplate;
+
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Cookie;
 
@@ -164,24 +169,61 @@ class DeviceIpController extends Controller
     }
     public function approveIp($id)
     {
-        if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin' || \Auth::user()->type == 'manager') {
-            $ip = UserDevice::find($id);
-            $ip->update(["status" => "approved", "approved_by" => \Auth::user()->id]);
+        try {
+            if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin' || \Auth::user()->type == 'manager') {
+                $ip = UserDevice::find($id);
+                $user = \Auth::user();
+                $ip->update(["status" => "approved", "approved_by" => \Auth::user()->id]);
+                $settings = Utility::settings();
+                $content = "<p>Dear {employee_name},</p>
+                <p>I would like to inform you the new device is Approved.</p>
 
-            return redirect()->back()->with('success', __('Device successfully Approved.'));
-        } else {
-            return redirect()->back()->with('error', __('Permission denied.'));
+
+                <p>follow this link: {app_url}</p>
+                <p>Thanks,<br>{app_name}</p>";
+
+                $template['subject'] = "Approve Employee Device Request";
+                $template['from'] = $user->email;
+                $template['content'] = Utility::replaceVariable($content, ["employee_name" => $ip->user->name, "app_name" => $user->name]);
+                $template = (object) $template;
+                Mail::to($ip->user->email)->send(new CommonEmailTemplate($template, $settings, $ip->user->email));
+
+                return redirect()->back()->with('success', __('Device successfully Approved.'));
+            } else {
+                return redirect()->back()->with('error', __('Permission denied.'));
+            }
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
     public function rejectIp($id)
     {
-        if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin' || \Auth::user()->type == 'manager') {
-            $ip = UserDevice::find($id);
-            $ip->update(["status" => "rejected", "approved_by" => \Auth::user()->id]);
+        try {
+            if (\Auth::user()->type == 'company' || \Auth::user()->type == 'super admin' || \Auth::user()->type == 'manager') {
+                $ip = UserDevice::find($id);
+                $user = \Auth::user();
+                $ip->update(["status" => "rejected", "approved_by" => \Auth::user()->id]);
+                $settings = Utility::settings();
+                $content = "<p>Dear {employee_name},</p>
+                <p>I would like to inform you the new device is Rejected.</p>
 
-            return redirect()->back()->with('success', __('Device successfully Rejected.'));
-        } else {
-            return redirect()->back()->with('error', __('Permission denied.'));
+
+                <p>follow this link: {app_url}</p>
+                <p>Thanks,<br>{app_name}</p>";
+
+                $template['subject'] = "Reject Employee Device Request";
+                $template['from'] = $user->email;
+                $template['content'] = Utility::replaceVariable($content, ["employee_name" => $ip->user->name, "app_name" => $user->name]);
+                $template = (object) $template;
+                Mail::to($ip->user->email)->send(new CommonEmailTemplate($template, $settings, $ip->user->email));
+
+                return redirect()->back()->with('success', __('Device successfully Rejected.'));
+            } else {
+                return redirect()->back()->with('error', __('Permission denied.'));
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -279,27 +321,33 @@ class DeviceIpController extends Controller
         $userDevice->device_type = $query['device_type'] ?? '';
         $userDevice->browser_name = $query['browser_name'] ?? '';
         $userDevice->os_name = $query['os_name'] ?? '';
-        $userDevice->save();
+
 
         setcookie('addedDeviceCount', $allowedDevices->count() + 1, time() + 24 * 60 * 60, "/");
         if ($AuthUser->type == 'company' || $AuthUser->type == 'super admin') {
+            $userDevice->save();
             return redirect()->back()->with('success', __('Device Added Successfully'));
         } else {
-            $manager =  $user->employee->departement->manager;
-            $emailDetails= [
-                "manager" =>$manager->name ?? "",
-                "receiver" => $manager->email ?? "",
-                "subject" => "Add Employee Device Request"
-            ];
+            $manager =  $user->employee->department->manager;
             try {
-                /Mail::send('email.add_device', [...$emailDetails], function ($message) use ($emailDetails) {
-                    $message->to($emailDetails['receiver'])
-                        ->from($user->email, $user->name)
-                        ->subject($emailDetails['subject']);
-                });
-                return true;
+
+                $settings = Utility::settings();
+                $settings['mail_from_name'] = $user->name;
+                $settings['mail_from_address'] = $user->email;
+                $content = "<p>Dear {employee_name}</p>
+                <p>I Ask to add my device to be able to register attendance in HR System.</p>
+
+                <p>{app_url}</p>
+                <p>Thanks,<br>{app_name}</p>";
+
+                $template['subject'] = "Add Employee Device Request";
+                $template['from'] = $user->email;
+                $template['content'] = Utility::replaceVariable($content, ["employee_name" => $manager->name]);
+                $template = (object) $template;
+                Mail::to($manager->email)->send(new CommonEmailTemplate($template, $settings, $manager->email));
+                $userDevice->save();
             } catch (\Exception $e) {
-                return false;
+                return redirect()->back()->with('error', $e->getMessage());
             }
             return redirect()->back()->with('success', __('Device Added Successfully wait the admin to approve'));
         }
