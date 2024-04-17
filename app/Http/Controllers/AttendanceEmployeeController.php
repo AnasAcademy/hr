@@ -546,9 +546,9 @@ class AttendanceEmployeeController extends Controller
             }
 
 
-            // Parse the time strings into Carbon objects
-            $clockInTime = Carbon::createFromFormat('H:i:s', $todayAttendance->last_clock_in);
-            $clockOutTime = Carbon::createFromFormat('H:i:s', $currentDateTime);
+           // Parse the time strings into Carbon objects
+           $clockInTime = Carbon::createFromFormat('H:i:s', $todayAttendance->last_clock_in);
+           $clockOutTime = Carbon::now($timeZone);
 
             // Calculate the difference in hours, minutes, and seconds
             $difference = $clockOutTime->diff($clockInTime);
