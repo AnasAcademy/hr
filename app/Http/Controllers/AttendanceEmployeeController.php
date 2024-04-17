@@ -544,10 +544,23 @@ class AttendanceEmployeeController extends Controller
             if ($totalEarlyLeavingSeconds < 0) {
                 $earlyLeaving = '00:00:00';
             }
+
+
+            // Parse the time strings into Carbon objects
+            $clockInTime = Carbon::createFromFormat('H:i:s', $todayAttendance->last_clock_in);
+            $clockOutTime = Carbon::createFromFormat('H:i:s', $currentDateTime);
+
+            // Calculate the difference in hours, minutes, and seconds
+            $difference = $clockOutTime->diff($clockInTime);
+
+            // Add the difference to the initial hours
+            $workingHours = Carbon::parse($todayAttendance->work_hours)->addHours($difference->h)->addMinutes($difference->i)->addSeconds($difference->s);
+
             $attendanceEmployee['clock_out']     = $time;
             $attendanceEmployee['early_leaving'] = $earlyLeaving;
             $attendanceEmployee['overtime']      = $overtime;
             $attendanceEmployee['status']      = "Leave";
+            $attendanceEmployee['work_hours'] = $workingHours->format('H:i:s');
             $attendanceEmployee['clock_out_device'] = $allowedLocation->id ?? null;
 
             if (!empty($request->date)) {
