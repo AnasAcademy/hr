@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Twilio\Rest\Client;
 use Spatie\GoogleCalendar\Event as GoogleEvent;
+use Illuminate\Support\Facades\File;
 
 class Utility extends Model
 {
@@ -675,7 +676,28 @@ class Utility extends Model
                             ]
                         );
 
-                        Mail::to($mailTo)->send(new CommonEmailTemplate($content, $settings, $mailTo[0]));
+                        if ($template->slug == "new_employee") {
+                            
+                            // Get all files in the public/files folder
+                            $files = File::files(public_path('files'));
+
+                            $attachments = [];
+
+                            // Loop through each file and construct the attachments array
+                            foreach ($files as $file) {
+                                $attachments[] = [
+                                    'file' => $file->getPathname(),
+                                    'options' => [
+                                        'as' => $file->getFilename(), // Use the filename as the attachment name
+                                        'mime' => File::mimeType($file->getPathname()), // Get the MIME type of the file
+                                    ],
+                                ];
+                            }
+
+                            Mail::to($mailTo)->send(new CommonEmailTemplate($content, $settings, $mailTo[0], $attachments));
+                        } else {
+                            Mail::to($mailTo)->send(new CommonEmailTemplate($content, $settings, $mailTo[0]));
+                        }
                     } catch (\Exception $e) {
                         $error = __('E-Mail has been not sent due to SMTP configuration');
                     }

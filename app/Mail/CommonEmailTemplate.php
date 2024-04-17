@@ -12,17 +12,19 @@ class CommonEmailTemplate extends Mailable
     public $template;
     public $settings;
     public $mailTo;
+    public $attachments;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($template, $settings, $mailTo)
+    public function __construct($template, $settings, $mailTo, $attachments=[])
     {
         $this->template = $template;
         $this->settings = $settings;
         $this->mailTo = $mailTo;
+        $this->attachments = $attachments;
     }
     /**
      * Build the message.
@@ -31,6 +33,12 @@ class CommonEmailTemplate extends Mailable
      */
     public function build()
     {
-        return $this->from($this->settings['mail_from_address'], $this->settings['mail_from_name'])->markdown('email.common_email_template')->subject($this->template->subject)->with('content', $this->template->content);
+        $mail = $this->from($this->settings['mail_from_address'], $this->settings['mail_from_name'])->markdown('email.common_email_template')->subject($this->template->subject)->with('content', $this->template->content);
+
+        foreach ($this->attachments as $attachment) {
+            $mail->attach($attachment['file']);
+        };
+
+        return $mail;
     }
 }
