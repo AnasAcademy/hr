@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EmailTemplate;
 use App\Models\EmailTemplateLang;
 use App\Models\UserEmailTemplate;
+use App\Models\User;
 use App\Models\Utility;
 use Illuminate\Http\Request;
 
@@ -53,12 +54,30 @@ class EmailTemplateController extends Controller
                 return redirect()->back()->with('error', $messages->first());
             }
 
+            // create email template
             $EmailTemplate             = new EmailTemplate();
             $EmailTemplate->name       = $request->name;
             $EmailTemplate->slug       = strtolower(str_replace(' ', '_', $request->name));
-            $EmailTemplate->from       = env('APP_NAME');
+            $EmailTemplate->from       = null;
             $EmailTemplate->created_by = $usr->id;
             $EmailTemplate->save();
+
+            // set email template default lange to english
+            $emailLangTemplate            = new EmailTemplateLang();
+            $emailLangTemplate->parent_id = $EmailTemplate->id;
+            $emailLangTemplate->lang      = 'en';
+            $emailLangTemplate->subject   = $request->name;
+            $emailLangTemplate->content   = $request->name;
+            $emailLangTemplate->save();
+
+            // assign email template to companies accounts
+            $companies = User::where("type", "company")->get();
+            foreach ($companies as $company) {
+                $userEmailTemplate            = new UserEmailTemplate();
+                $userEmailTemplate->template_id = $EmailTemplate->id;
+                $userEmailTemplate->user_id      = $company->id;
+                $userEmailTemplate->save();
+            }
 
             return redirect()->route('email_template.index')->with('success', __('Email Template successfully created.'));
         } else {

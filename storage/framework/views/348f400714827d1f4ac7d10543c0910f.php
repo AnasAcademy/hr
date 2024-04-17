@@ -349,16 +349,7 @@ unset($__errorArgs, $__bag); ?>"
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('script-page'); ?>
-    <script>
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-            console.log("Latitude: " + latitude + "\nLongitude: " + longitude);
-            var mapUrl = 'https://www.google.com/maps?q=' + latitude + ',' + longitude;
-            console.log(mapUrl);
-            window.open(mapUrl, '_self');
-        })
-    </script>
+    
     <script>
         $('input[type="file"]').change(function(e) {
             var file = e.target.files[0].name;
