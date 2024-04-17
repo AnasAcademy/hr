@@ -818,14 +818,14 @@ class AttendanceEmployeeController extends Controller
             }
 
             // Parse the time strings into Carbon objects
-            $clockInTime = Carbon::createFromFormat('H:i:s', $lastClockinTime);
-            $clockOutTime = Carbon::createFromFormat('H:i:s', $lastClockOutTime);
+            // $clockInTime = Carbon::createFromFormat('H:i:s', $lastClockinTime);
+            // $clockOutTime = Carbon::createFromFormat('H:i:s', $lastClockOutTime);
 
             // Calculate the difference in hours, minutes, and seconds
-            $difference = $clockOutTime->diff($clockInTime);
+            // $difference = $clockOutTime->diff($clockInTime);
 
             // Add the difference to the initial hours
-            $workingHours = Carbon::parse($lastClockOutEntry->work_hours)->addHours($difference->h)->addMinutes($difference->i)->addSeconds($difference->s);
+            // $workingHours = Carbon::parse($lastClockOutEntry->work_hours)->addHours($difference->h)->addMinutes($difference->i)->addSeconds($difference->s);
 
 
 
@@ -850,7 +850,7 @@ class AttendanceEmployeeController extends Controller
             $lastClockOutEntry->total_rest = $restSum->format('H:i:s');
             $lastClockOutEntry->last_clock_in = $actualClockInTime;
             $lastClockOutEntry->clock_out = '00:00:00';
-            $lastClockOutEntry->work_hours = $workingHours->format('H:i:s');
+            // $lastClockOutEntry->work_hours = $workingHours->format('H:i:s');
             $lastClockOutEntry->early_leaving = '00:00:00';
             $lastClockOutEntry->status = 'Present';
             $lastClockOutEntry->save();
