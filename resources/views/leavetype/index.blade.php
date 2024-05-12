@@ -10,7 +10,7 @@
 @endsection
 
 @section('action-button')
-    @can('Create Branch')
+    @can('Create Leave Type')
         <a href="#" data-url="{{ route('leavetype.create') }}" data-ajax-popup="true"
             data-title="{{ __('Create New Leave Type') }}" data-bs-toggle="tooltip" title="" class="btn btn-sm btn-primary"
             data-bs-original-title="{{ __('Create') }}">

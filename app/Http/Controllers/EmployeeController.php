@@ -406,7 +406,7 @@ class EmployeeController extends Controller
             }
             $input = $request->all();
 
-            if (auth()->user()->type != 'employee') {
+            if (auth()->user()->type != 'employee' && auth()->user()->id != $employee->id) {
                 $validator = \Validator::make(
                     $request->all(),
                     [
