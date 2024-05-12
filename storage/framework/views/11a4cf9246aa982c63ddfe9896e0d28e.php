@@ -116,18 +116,23 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <?php echo csrf_field(); ?>
+                                        
                                         <div class="form-group ">
                                             <?php echo Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']); ?>
 
                                             <?php echo Form::text('employee_id', $employeesId, ['class' => 'form-control', 'disabled' => 'disabled']); ?>
 
                                         </div>
+
+                                        
                                         <div class="form-group col-md-6">
                                             <?php echo e(Form::label('branch_id', __('Select Branch*'), ['class' => 'form-label'])); ?>
 
                                             <?php echo e(Form::select('branch_id', $branches, null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Select Branch', 'id' => 'branch_id'])); ?>
 
                                         </div>
+
+                                        
                                         <div class="form-group col-md-6">
                                             <?php echo e(Form::label('department_id', __('Select Department*'), ['class' => 'form-label'])); ?>
 
@@ -136,6 +141,8 @@
 
                                             </div>
                                         </div>
+
+                                        
                                         <div class="form-group col-md-6">
                                             <?php echo e(Form::label('designation_id', __('Select Designation'), ['class' => 'form-label', 'required' => 'required'])); ?>
 
@@ -150,7 +157,18 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group col-md-6">
+
+                                         
+                                    <div class="form-group col-md-6">
+                                        <?php echo e(Form::label('job_type', __('Job Type'), ['class' => 'form-label'])); ?>
+
+
+                                        <?php echo e(Form::select('job_type', $jobTypes, null, ['class' => 'form-control', 'id' => 'job_type', 'placeholder' => 'Select User Job Type', 'required' => 'required'])); ?>
+
+                                    </div>
+
+                                        
+                                        <div class="form-group ">
                                             <?php echo Form::label('company_doj', 'Company Date Of Joining', ['class' => 'form-label']); ?>
 
                                             <?php echo Form::date('company_doj', null, [
@@ -161,6 +179,48 @@
 
                                         </div>
 
+                                        
+                                    <div class="form-group col-md-6">
+                                        <?php echo e(Form::label('work_start_time', __('work Start Time *'), ['class' => 'col-form-label'])); ?>
+
+
+                                        <?php echo e(Form::time('work_start_time', \Carbon\Carbon::parse($employee->work_start_time)->format('h:i') , ['class' => 'form-control timepicker_format'])); ?>
+
+                                        <?php $__errorArgs = ['work_start_time'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <span class="invalid-company_start_time" role="alert">
+                                                <small class="text-danger"><?php echo e($message); ?></small>
+                                            </span>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                    </div>
+
+                                    
+                                    <div class="form-group col-md-6">
+                                        <?php echo e(Form::label('work_end_time', __('work End Time *'), ['class' => 'col-form-label'])); ?>
+
+                                        <?php echo e(Form::time('work_end_time', \Carbon\Carbon::parse($employee->work_end_time)->format('h:i'), ['class' => 'form-control timepicker_format'])); ?>
+
+                                        <?php $__errorArgs = ['work_end_time'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <span class="invalid-company_end_time" role="alert">
+                                                <small class="text-danger"><?php echo e($message); ?></small>
+                                            </span>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                    </div>
+
+                                    
                                         <div class="form-group ">
                                             <?php echo Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']); ?>
 
@@ -172,12 +232,12 @@
 
                                         </div>
 
+                                        
                                         <div class="form-group">
                                             <?php echo e(Form::label('role', __('Role'), ['class' => 'form-label'])); ?>
 
 
                                             <?php echo e(Form::select('role', $roles, $myRole->id ?? "", ['class' => 'form-control', 'id' => 'role', 'placeholder' => 'Select User Role', 'required' => 'required'])); ?>
-
 
                                         </div>
 
@@ -196,28 +256,57 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="info">
-                                                    <strong><?php echo e(__('Branch')); ?></strong>
+                                                    <strong><?php echo e(__('Branch')); ?>: </strong>
                                                     <span><?php echo e(!empty($employee->branch) ? $employee->branch->name : ''); ?></span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="info font-style">
-                                                    <strong><?php echo e(__('Department')); ?></strong>
+                                                    <strong><?php echo e(__('Department')); ?>: </strong>
                                                     <span><?php echo e(!empty($employee->department) ? $employee->department->name : ''); ?></span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="info font-style">
-                                                    <strong><?php echo e(__('Designation')); ?></strong>
+                                                    <strong><?php echo e(__('Designation')); ?>: </strong>
                                                     <span><?php echo e(!empty($employee->designation) ? $employee->designation->name : ''); ?></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info">
+                                                    <strong><?php echo e(__('Job Type')); ?>: </strong>
+                                                    <span><?php echo e($employee->job_type); ?></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info">
+                                                    <strong><?php echo e(__('Date Of Joining')); ?>: </strong>
+                                                    <span><?php echo e(\Auth::user()->dateFormat($employee->company_doj)); ?></span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="info">
-                                                    <strong><?php echo e(__('Date Of Joining')); ?></strong>
-                                                    <span><?php echo e(\Auth::user()->dateFormat($employee->company_doj)); ?></span>
+                                                    <strong><?php echo e(__('Holidays blanace')); ?>: </strong>
+                                                     <span><?php echo e($employee->leave_balance); ?> Days</span>
                                                 </div>
                                             </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info">
+                                                    <strong><?php echo e(__('Work Start Time')); ?>: </strong>
+                                                     <span><?php echo e(\Auth::user()->TimeFormat($employee->work_start_time)); ?> </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info">
+                                                    <strong><?php echo e(__('Work End Time')); ?>: </strong>
+                                                     <span><?php echo e(\Auth::user()->TimeFormat($employee->work_end_time)); ?> </span>
+                                                </div>
+                                            </div>
+
 
                                         </div>
                                     </div>

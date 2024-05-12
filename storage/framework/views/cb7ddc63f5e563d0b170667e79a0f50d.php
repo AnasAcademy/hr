@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Employee')); ?>
 
@@ -179,6 +177,12 @@
 
                                 <div class="col-md-6">
                                     <div class="info text-sm">
+                                        <strong class="font-bold"><?php echo e(__('Job Type')); ?> :</strong>
+                                        <span><?php echo e($employee->job_type); ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
                                         <strong class="font-bold"><?php echo e(__('Date Of Joining')); ?> :</strong>
                                         <span><?php echo e(\Auth::user()->dateFormat($employee->company_doj)); ?></span>
                                     </div>
@@ -187,6 +191,18 @@
                                     <div class="info text-sm">
                                         <strong class="font-bold"><?php echo e(__('Holidays Balance')); ?> :</strong>
                                         <span><?php echo e($employee->leave_balance); ?> Days</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
+                                        <strong class="font-bold"><?php echo e(__('Work Start Time')); ?> :</strong>
+                                        <span><?php echo e(\Auth::user()->TimeFormat($employee->work_start_time)); ?> </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
+                                        <strong class="font-bold"><?php echo e(__('Work End Time')); ?> :</strong>
+                                        <span><?php echo e(\Auth::user()->TimeFormat($employee->work_end_time)); ?> </span>
                                     </div>
                                 </div>
 

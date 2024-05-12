@@ -142,6 +142,8 @@ unset($__errorArgs, $__bag); ?>
                             <div class="card-body employee-detail-create-body">
                                 <div class="row">
                                     <?php echo csrf_field(); ?>
+
+                                    
                                     <div class="form-group ">
                                         <?php echo Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']); ?>
 
@@ -149,6 +151,7 @@ unset($__errorArgs, $__bag); ?>
 
                                     </div>
 
+                                    
                                     <div class="form-group col-md-6">
                                         <?php echo e(Form::label('branch_id', __('Select Branch*'), ['class' => 'form-label'])); ?>
 
@@ -158,11 +161,12 @@ unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
 
+                                    
                                     <div class="form-group col-md-6">
                                         
 
                                         <div class="form-icon-user" id="department_id">
-                                            <?php echo e(Form::label('department_id', __('Department'), ['class' => 'form-label'])); ?>
+                                            <?php echo e(Form::label('department_id', __('Select Department*'), ['class' => 'form-label'])); ?>
 
                                             <select class="form-control select department_id" name="department_id"
                                                 id="department_id" placeholder="Select Department" required>
@@ -170,6 +174,7 @@ unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
 
+                                    
                                     <div class="form-group ">
                                         <?php echo e(Form::label('designation_id', __('Select Designation'), ['class' => 'form-label'])); ?>
 
@@ -180,12 +185,66 @@ unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
 
+                                     
+                                    <div class="form-group">
+                                        <?php echo e(Form::label('job_type', __('Job Type'), ['class' => 'form-label'])); ?>
+
+
+                                        <?php echo e(Form::select('job_type', $jobTypes, null, ['class' => 'form-control', 'id' => 'job_type', 'placeholder' => 'Select User Job Type', 'required' => 'required'])); ?>
+
+                                    </div>
+
+
+                                    
                                     <div class="form-group">
                                         <?php echo Form::label('company_doj', __('Company Date Of Joining'), ['class' => '  form-label']); ?>
 
                                         <?php echo e(Form::date('company_doj', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select company date of joining'])); ?>
 
                                     </div>
+
+                                    
+                                    <div class="form-group col-md-6">
+                                        <?php echo e(Form::label('work_start_time', __('work Start Time *'), ['class' => 'col-form-label'])); ?>
+
+
+                                        <?php echo e(Form::time('work_start_time', $officeTime['startTime'], ['class' => 'form-control timepicker_format'])); ?>
+
+                                        <?php $__errorArgs = ['work_start_time'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <span class="invalid-company_start_time" role="alert">
+                                                <small class="text-danger"><?php echo e($message); ?></small>
+                                            </span>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                    </div>
+
+                                    
+                                    <div class="form-group col-md-6">
+                                        <?php echo e(Form::label('work_end_time', __('work End Time *'), ['class' => 'col-form-label'])); ?>
+
+                                        <?php echo e(Form::time('work_end_time', $officeTime['endTime'], ['class' => 'form-control timepicker_format'])); ?>
+
+                                        <?php $__errorArgs = ['work_end_time'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <span class="invalid-company_end_time" role="alert">
+                                                <small class="text-danger"><?php echo e($message); ?></small>
+                                            </span>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                    </div>
+
+                                    
                                     <div class="form-group ">
                                         <?php echo Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']); ?>
 
@@ -197,14 +256,17 @@ unset($__errorArgs, $__bag); ?>
 
                                     </div>
 
+                                    
                                     <div class="form-group">
                                         <?php echo e(Form::label('role', __('Role'), ['class' => 'form-label'])); ?>
 
 
                                         <?php echo e(Form::select('role', $roles, null, ['class' => 'form-control', 'id' => 'role', 'placeholder' => 'Select User Role', 'required' => 'required'])); ?>
 
-
                                     </div>
+
+
+
 
                                 </div>
                             </div>
@@ -230,8 +292,8 @@ unset($__errorArgs, $__bag); ?>
                                                 </label>
                                             </div>
                                             <div class="float-right col-8">
-                                                <input type="hidden" name="emp_doc_id[<?php echo e($document->id); ?>]" id=""
-                                                    value="<?php echo e($document->id); ?>">
+                                                <input type="hidden" name="emp_doc_id[<?php echo e($document->id); ?>]"
+                                                    id="" value="<?php echo e($document->id); ?>">
                                                 <div class="choose-files">
                                                     <label for="document[<?php echo e($document->id); ?>]">
                                                         <div class=" bg-primary document cursor-pointer"> <i
@@ -360,7 +422,7 @@ unset($__errorArgs, $__bag); ?>"
     <script>
         $(document).ready(function() {
             var b_id = $('#branch_id').val();
-            // getDepartment(b_id);
+            getDepartment(b_id);
         });
         $(document).on('change', 'select[name=branch_id]', function() {
             var branch_id = $(this).val();
@@ -387,6 +449,7 @@ unset($__errorArgs, $__bag); ?>"
 
                     $('.department_id').append('<option value=""> <?php echo e(__('Select Department')); ?> </option>');
                     $.each(data, function(key, value) {
+                        
                         $('.department_id').append('<option value="' + key + '">' + value +
                             '</option>');
                     });
