@@ -7,6 +7,8 @@ use SebastianBergmann\CodeCoverage\Percentage;
 
 class Employee extends Model
 {
+
+    PUBLIC CONST JOBTYPES=['onsite'=>'Onsite', 'remotely'=> 'Remotely', 'hybrid'=>'Hybrid'];
     protected $table = 'employees';
     protected $fillable = [
         'user_id',
@@ -33,7 +35,10 @@ class Employee extends Model
         'account_type',
         'salary',
         'created_by',
-        'leave_balance'
+        'leave_balance',
+        'job_type',
+        'work_start_time',
+        'work_end_time',
     ];
 
     public function documents()
