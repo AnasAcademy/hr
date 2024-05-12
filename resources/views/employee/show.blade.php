@@ -175,6 +175,12 @@
 
                                 <div class="col-md-6">
                                     <div class="info text-sm">
+                                        <strong class="font-bold">{{ __('Job Type') }} :</strong>
+                                        <span>{{ $employee->job_type }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
                                         <strong class="font-bold">{{ __('Date Of Joining') }} :</strong>
                                         <span>{{ \Auth::user()->dateFormat($employee->company_doj) }}</span>
                                     </div>
@@ -183,6 +189,18 @@
                                     <div class="info text-sm">
                                         <strong class="font-bold">{{ __('Holidays Balance') }} :</strong>
                                         <span>{{ $employee->leave_balance }} Days</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
+                                        <strong class="font-bold">{{ __('Work Start Time') }} :</strong>
+                                        <span>{{ \Auth::user()->TimeFormat($employee->work_start_time) }} </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info text-sm">
+                                        <strong class="font-bold">{{ __('Work End Time') }} :</strong>
+                                        <span>{{ \Auth::user()->TimeFormat($employee->work_end_time) }} </span>
                                     </div>
                                 </div>
 

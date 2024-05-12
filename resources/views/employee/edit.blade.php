@@ -109,20 +109,27 @@
                                 <div class="card-body">
                                     <div class="row">
                                         @csrf
+                                        {{-- employee id --}}
                                         <div class="form-group ">
                                             {!! Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']) !!}
                                             {!! Form::text('employee_id', $employeesId, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
                                         </div>
+
+                                        {{-- branch --}}
                                         <div class="form-group col-md-6">
                                             {{ Form::label('branch_id', __('Select Branch*'), ['class' => 'form-label']) }}
                                             {{ Form::select('branch_id', $branches, null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Select Branch', 'id' => 'branch_id']) }}
                                         </div>
+
+                                        {{-- department --}}
                                         <div class="form-group col-md-6">
                                             {{ Form::label('department_id', __('Select Department*'), ['class' => 'form-label']) }}
                                             <div class="department_div">
                                                 {{ Form::select('department_id', $departments, null, ['class' => 'form-control department_id', 'id' => 'department_id', 'required' => 'required', 'id' => 'department_id']) }}
                                             </div>
                                         </div>
+
+                                        {{-- designation --}}
                                         <div class="form-group col-md-6">
                                             {{ Form::label('designation_id', __('Select Designation'), ['class' => 'form-label', 'required' => 'required']) }}
 
@@ -136,7 +143,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group col-md-6">
+
+                                         {{-- job type --}}
+                                    <div class="form-group col-md-6">
+                                        {{ Form::label('job_type', __('Job Type'), ['class' => 'form-label']) }}
+
+                                        {{ Form::select('job_type', $jobTypes, null, ['class' => 'form-control', 'id' => 'job_type', 'placeholder' => 'Select User Job Type', 'required' => 'required']) }}
+                                    </div>
+
+                                        {{-- date of join --}}
+                                        <div class="form-group ">
                                             {!! Form::label('company_doj', 'Company Date Of Joining', ['class' => 'form-label']) !!}
                                             {!! Form::date('company_doj', null, [
                                                 'class' => 'form-control ',
@@ -145,6 +161,30 @@
                                             ]) !!}
                                         </div>
 
+                                        {{-- work start time --}}
+                                    <div class="form-group col-md-6">
+                                        {{ Form::label('work_start_time', __('work Start Time *'), ['class' => 'col-form-label']) }}
+
+                                        {{ Form::time('work_start_time', \Carbon\Carbon::parse($employee->work_start_time)->format('h:i') , ['class' => 'form-control timepicker_format']) }}
+                                        @error('work_start_time')
+                                            <span class="invalid-company_start_time" role="alert">
+                                                <small class="text-danger">{{ $message }}</small>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    {{-- work end time --}}
+                                    <div class="form-group col-md-6">
+                                        {{ Form::label('work_end_time', __('work End Time *'), ['class' => 'col-form-label']) }}
+                                        {{ Form::time('work_end_time', \Carbon\Carbon::parse($employee->work_end_time)->format('h:i'), ['class' => 'form-control timepicker_format']) }}
+                                        @error('work_end_time')
+                                            <span class="invalid-company_end_time" role="alert">
+                                                <small class="text-danger">{{ $message }}</small>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    {{-- holiday balance --}}
                                         <div class="form-group ">
                                             {!! Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']) !!}
                                             {!! Form::number('leave_balance', $employee->leave_balance, [
@@ -154,11 +194,11 @@
                                             ]) !!}
                                         </div>
 
+                                        {{-- role --}}
                                         <div class="form-group">
                                             {{ Form::label('role', __('Role'), ['class' => 'form-label']) }}
 
                                             {{ Form::select('role', $roles, $myRole->id ?? "", ['class' => 'form-control', 'id' => 'role', 'placeholder' => 'Select User Role', 'required' => 'required']) }}
-
                                         </div>
 
                                     </div>
@@ -176,28 +216,57 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="info">
-                                                    <strong>{{ __('Branch') }}</strong>
+                                                    <strong>{{ __('Branch') }}: </strong>
                                                     <span>{{ !empty($employee->branch) ? $employee->branch->name : '' }}</span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="info font-style">
-                                                    <strong>{{ __('Department') }}</strong>
+                                                    <strong>{{ __('Department') }}: </strong>
                                                     <span>{{ !empty($employee->department) ? $employee->department->name : '' }}</span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="info font-style">
-                                                    <strong>{{ __('Designation') }}</strong>
+                                                    <strong>{{ __('Designation') }}: </strong>
                                                     <span>{{ !empty($employee->designation) ? $employee->designation->name : '' }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info">
+                                                    <strong>{{ __('Job Type') }}: </strong>
+                                                    <span>{{$employee->job_type }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info">
+                                                    <strong>{{ __('Date Of Joining') }}: </strong>
+                                                    <span>{{ \Auth::user()->dateFormat($employee->company_doj) }}</span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="info">
-                                                    <strong>{{ __('Date Of Joining') }}</strong>
-                                                    <span>{{ \Auth::user()->dateFormat($employee->company_doj) }}</span>
+                                                    <strong>{{ __('Holidays blanace') }}: </strong>
+                                                     <span>{{ $employee->leave_balance }} Days</span>
                                                 </div>
                                             </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info">
+                                                    <strong>{{ __('Work Start Time') }}: </strong>
+                                                     <span>{{ \Auth::user()->TimeFormat($employee->work_start_time) }} </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info">
+                                                    <strong>{{ __('Work End Time') }}: </strong>
+                                                     <span>{{ \Auth::user()->TimeFormat($employee->work_end_time) }} </span>
+                                                </div>
+                                            </div>
+
 
                                         </div>
                                     </div>

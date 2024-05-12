@@ -128,11 +128,14 @@
                             <div class="card-body employee-detail-create-body">
                                 <div class="row">
                                     @csrf
+
+                                    {{-- employee id --}}
                                     <div class="form-group ">
                                         {!! Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']) !!}
                                         {!! Form::text('employee_id', $employeesId, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
                                     </div>
 
+                                    {{-- branch --}}
                                     <div class="form-group col-md-6">
                                         {{ Form::label('branch_id', __('Select Branch*'), ['class' => 'form-label']) }}
                                         <div class="form-icon-user">
@@ -140,6 +143,7 @@
                                         </div>
                                     </div>
 
+                                    {{-- department --}}
                                     <div class="form-group col-md-6">
                                         {{-- {{ Form::label('department_id', __('Select Department*'), ['class' => 'form-label']) }}
                                         <div class="form-icon-user department_div">
@@ -147,13 +151,14 @@
                                         </div> --}}
 
                                         <div class="form-icon-user" id="department_id">
-                                            {{ Form::label('department_id', __('Department'), ['class' => 'form-label']) }}
+                                            {{ Form::label('department_id', __('Select Department*'), ['class' => 'form-label']) }}
                                             <select class="form-control select department_id" name="department_id"
                                                 id="department_id" placeholder="Select Department" required>
                                             </select>
                                         </div>
                                     </div>
 
+                                    {{-- designation --}}
                                     <div class="form-group ">
                                         {{ Form::label('designation_id', __('Select Designation'), ['class' => 'form-label']) }}
 
@@ -162,10 +167,44 @@
                                         </div>
                                     </div>
 
+                                     {{-- job type --}}
+                                    <div class="form-group">
+                                        {{ Form::label('job_type', __('Job Type'), ['class' => 'form-label']) }}
+
+                                        {{ Form::select('job_type', $jobTypes, null, ['class' => 'form-control', 'id' => 'job_type', 'placeholder' => 'Select User Job Type', 'required' => 'required']) }}
+                                    </div>
+
+
+                                    {{-- date of join --}}
                                     <div class="form-group">
                                         {!! Form::label('company_doj', __('Company Date Of Joining'), ['class' => '  form-label']) !!}
                                         {{ Form::date('company_doj', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select company date of joining']) }}
                                     </div>
+
+                                    {{-- work start time --}}
+                                    <div class="form-group col-md-6">
+                                        {{ Form::label('work_start_time', __('work Start Time *'), ['class' => 'col-form-label']) }}
+
+                                        {{ Form::time('work_start_time', $officeTime['startTime'], ['class' => 'form-control timepicker_format']) }}
+                                        @error('work_start_time')
+                                            <span class="invalid-company_start_time" role="alert">
+                                                <small class="text-danger">{{ $message }}</small>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    {{-- work end time --}}
+                                    <div class="form-group col-md-6">
+                                        {{ Form::label('work_end_time', __('work End Time *'), ['class' => 'col-form-label']) }}
+                                        {{ Form::time('work_end_time', $officeTime['endTime'], ['class' => 'form-control timepicker_format']) }}
+                                        @error('work_end_time')
+                                            <span class="invalid-company_end_time" role="alert">
+                                                <small class="text-danger">{{ $message }}</small>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    {{-- holiday balance --}}
                                     <div class="form-group ">
                                         {!! Form::label('leave_balance', __('Holidays Balance'), ['class' => 'form-label']) !!}
                                         {!! Form::number('leave_balance', null, [
@@ -175,12 +214,15 @@
                                         ]) !!}
                                     </div>
 
+                                    {{-- role --}}
                                     <div class="form-group">
                                         {{ Form::label('role', __('Role'), ['class' => 'form-label']) }}
 
                                         {{ Form::select('role', $roles, null, ['class' => 'form-control', 'id' => 'role', 'placeholder' => 'Select User Role', 'required' => 'required']) }}
-
                                     </div>
+
+
+
 
                                 </div>
                             </div>
@@ -206,8 +248,8 @@
                                                 </label>
                                             </div>
                                             <div class="float-right col-8">
-                                                <input type="hidden" name="emp_doc_id[{{ $document->id }}]" id=""
-                                                    value="{{ $document->id }}">
+                                                <input type="hidden" name="emp_doc_id[{{ $document->id }}]"
+                                                    id="" value="{{ $document->id }}">
                                                 <div class="choose-files">
                                                     <label for="document[{{ $document->id }}]">
                                                         <div class=" bg-primary document cursor-pointer"> <i
@@ -325,7 +367,7 @@
     <script>
         $(document).ready(function() {
             var b_id = $('#branch_id').val();
-            // getDepartment(b_id);
+            getDepartment(b_id);
         });
         $(document).on('change', 'select[name=branch_id]', function() {
             var branch_id = $(this).val();
@@ -352,6 +394,7 @@
 
                     $('.department_id').append('<option value=""> {{ __('Select Department') }} </option>');
                     $.each(data, function(key, value) {
+                        
                         $('.department_id').append('<option value="' + key + '">' + value +
                             '</option>');
                     });
