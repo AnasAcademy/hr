@@ -48,15 +48,13 @@ class EmployeeController extends Controller
             $user = \Auth::user();
             if ($user->type == 'employee') {
                 $employees = Employee::where('user_id', '=', Auth::user()->id)->get();
-            } else if($user->type == 'manager'){
+            } else if ($user->type == 'manager') {
                 // $employees = Employee::where('department_id', '=', Auth::user()->managedDepartment->id ?? null)->with(['branch', 'department', 'designation', 'user'])->get();
 
                 $employees = Employee::where("user_id", "!=", $user->id)->whereHas('department', function ($query) use ($user) {
                     $query->where('manager_id', $user->id);
                 })->get();
-
-            }
-            else{
+            } else {
                 $employees = Employee::where('created_by', \Auth::user()->creatorId())->with(['branch', 'department', 'designation', 'user'])->get();
             }
 
@@ -79,7 +77,10 @@ class EmployeeController extends Controller
             $timezones = config('timezones');
             $settings = Utility::settings();
             $roles = Role::whereNotIn('name', ['company', 'super admin'])->get()->pluck('name', 'id');
-            return view('employee.create', compact('employees', 'employeesId', 'departments', 'designations', 'documents', 'branches', 'company_settings', 'timezones', 'settings', 'roles'));
+            $jobTypes = Employee::JOBTYPES;
+            $officeTime['startTime'] = Utility::getValByName('company_start_time');
+            $officeTime['endTime']   = Utility::getValByName('company_end_time');
+            return view('employee.create', compact('employees', 'employeesId', 'departments', 'designations', 'documents', 'branches', 'company_settings', 'timezones', 'settings', 'roles', 'jobTypes', 'officeTime'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -105,8 +106,13 @@ class EmployeeController extends Controller
                     'timezone' => 'required',
                     'leave_balance' => 'required|integer',
                     'role' => 'required|exists:roles,id',
+                    'job_type' => ['required', 'string', Rule::in(array_keys(Employee::JOBTYPES))],
+                    'work_start_time' => 'required|date_format:H:i',
+                    'work_end_time' => 'required|date_format:H:i'
                 ]
             );
+
+
             if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
 
@@ -154,25 +160,25 @@ class EmployeeController extends Controller
 
             // if ($total_employee < $plan->max_employees || $plan->max_employees == -1)
 
-                $role = Role::findById($request->role);
-                if(!$role){
-                    $role = Role::where('name','employee')->first();
-                }
+            $role = Role::findById($request->role);
+            if (!$role) {
+                $role = Role::where('name', 'employee')->first();
+            }
 
-                $user = User::create(
-                    [
-                        'name' => $request['name'],
-                        'email' => $request['email'],
-                        'timezone' => $request['timezone'],
-                        'password' => Hash::make($request['password']),
-                        'type' => $role->name ?? 'employee',
-                        'lang' => !empty($default_language) ? $default_language->value : 'en',
-                        'created_by' => \Auth::user()->creatorId(),
-                        'email_verified_at' => $date,
-                    ]
-                );
-                $user->save();
-                $user->assignRole($role);
+            $user = User::create(
+                [
+                    'name' => $request['name'],
+                    'email' => $request['email'],
+                    'timezone' => $request['timezone'],
+                    'password' => Hash::make($request['password']),
+                    'type' => $role->name ?? 'employee',
+                    'lang' => !empty($default_language) ? $default_language->value : 'en',
+                    'created_by' => \Auth::user()->creatorId(),
+                    'email_verified_at' => $date,
+                ]
+            );
+            $user->save();
+            $user->assignRole($role);
             // } else {
             //     return redirect()->back()->with('error', __('Your employee limit is over, Please upgrade plan.'));
             // }
@@ -209,12 +215,15 @@ class EmployeeController extends Controller
                     'tax_payer_id' => $request['tax_payer_id'],
                     'created_by' => \Auth::user()->creatorId(),
                     'leave_balance' => $request['leave_balance'],
+                    'job_type' => $request['job_type'],
+                    'work_start_time' => $request['work_start_time'],
+                    'work_end_time' => $request['work_end_time'],
                 ]
 
             );
 
-            if($employee->user->type == 'manager'){
-                Department::where("id", $request['department_id'])->update(["manager_id"=> $employee->user->id]);
+            if ($employee->user->type == 'manager') {
+                Department::where("id", $request['department_id'])->update(["manager_id" => $employee->user->id]);
             }
 
             if ($request->hasFile('document')) {
@@ -288,8 +297,11 @@ class EmployeeController extends Controller
             $timezones = config('timezones');
             $settings = Utility::settings();
             $roles = Role::whereNotIn('name', ['company', 'super admin'])->get()->pluck('name', 'id');
-            $myRole = Role::where('name',$employee->user->type)->first();
-            return view('employee.edit', compact('employee', 'employeesId', 'branches', 'departments', 'designations', 'documents', 'timezones', 'settings', 'roles', 'myRole'));
+            $jobTypes = Employee::JOBTYPES;
+            $officeTime['startTime'] = Utility::getValByName('company_start_time');
+            $officeTime['endTime']   = Utility::getValByName('company_end_time');
+            $myRole = Role::where('name', $employee->user->type)->first();
+            return view('employee.edit', compact('employee', 'employeesId', 'branches', 'departments', 'designations', 'documents', 'timezones', 'settings', 'roles', 'myRole', 'jobTypes', 'officeTime'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -307,6 +319,8 @@ class EmployeeController extends Controller
                     'gender' => 'required',
                     'phone' => 'required|numeric',
                     'address' => 'required',
+                    'timezone' => 'required',
+
                 ]
             );
             if ($validator->fails()) {
@@ -386,40 +400,62 @@ class EmployeeController extends Controller
             $employee = Employee::findOrFail($id);
             $input    = $request->all();
             // dd($input);
-            $employee->fill($input)->save();
-            if($request->timezone){
+
+            if ($request->timezone) {
                 $employee->user->update(['timezone' => $request->timezone]);
             }
+            $input = $request->all();
 
-            $empUser = $employee->user;
-            $reqRole = $request->role ?? 0;
+            if (auth()->user()->type != 'employee') {
+                $validator = \Validator::make(
+                    $request->all(),
+                    [
+                        'branch_id' => 'required|exists:branches,id',
+                        'department_id' => 'required|exists:departments,id',
+                        'designation_id' => 'required|exists:designations,id',
+                        'document.*' => 'required',
+                        'leave_balance' => 'required|integer',
+                        'role' => 'required|exists:roles,id',
+                        'job_type' => ['required', 'string', Rule::in(array_keys(Employee::JOBTYPES))],
+                        'work_start_time' => 'required|date_format:H:i',
+                        'work_end_time' => 'required|date_format:H:i'
+                    ]
+                );
 
-            $role          = Role::findById($reqRole);
-            $oldRole       = Role::where('name', $empUser->type)->first();
-            $input         = $request->all();
-            $role = $role ?? $oldRole;
-            $input['type'] = $role->name;
-            $empUser->fill($input)->save();
+                if ($validator->fails()) {
+                    $messages = $validator->getMessageBag();
 
-            $empUser->removeRole($oldRole);
-            $empUser->assignRole($role);
+                    return redirect()->back()->withInput()->with('error', $messages->first());
+                }
 
+                $empUser = $employee->user;
+                $reqRole = $request->role ?? 0;
+
+                $role          = Role::findById($reqRole);
+                $oldRole       = Role::where('name', $empUser->type)->first();
+
+                $role = $role ?? $oldRole;
+                $input['type'] = $role->name;
+                $empUser->fill($input)->save();
+
+                $empUser->removeRole($oldRole);
+                $empUser->assignRole($role);
+            }
+            $employee->fill($input)->save();
             // $oldDepartment = Department::where("manager_id", $empUser->id)->first();
 
-            if($employee->user->type != 'manager' && $oldType == 'manager'){
+            if ($employee->user->type != 'manager' && $oldType == 'manager') {
 
                 $oldDepartment = $employee->user->managedDepartment;
-                if($oldDepartment){
-                    $oldDepartment->update(["manager_id"=> null]);
+                if ($oldDepartment) {
+                    $oldDepartment->update(["manager_id" => null]);
                 }
-            }
-            else if($employee->user->type == 'manager'){
+            } else if ($employee->user->type == 'manager') {
                 $oldDepartment = $employee->user->managedDepartment;
-                if($oldDepartment){
-                    $oldDepartment->update(["manager_id"=> null]);
+                if ($oldDepartment) {
+                    $oldDepartment->update(["manager_id" => null]);
                 }
-                Department::find($request['department_id'])->update(["manager_id"=> $empUser->id]);
-
+                Department::find($request['department_id'])->update(["manager_id" => $empUser->id]);
             }
 
             if ($request->salary) {
