@@ -165,7 +165,7 @@
                                     <div class="form-group col-md-6">
                                         {{ Form::label('work_start_time', __('Work Start Time'), ['class' => 'col-form-label']) }}<span class="text-danger pl-1">*</span>
 
-                                        {{ Form::time('work_start_time', \Carbon\Carbon::parse($employee->work_start_time)->format('h:i') , ['class' => 'form-control timepicker_format']) }}
+                                        {{ Form::time('work_start_time', \Carbon\Carbon::parse($employee->work_start_time) , ['class' => 'form-control timepicker_format']) }}
                                         @error('work_start_time')
                                             <span class="invalid-company_start_time" role="alert">
                                                 <small class="text-danger">{{ $message }}</small>
@@ -176,7 +176,7 @@
                                     {{-- work end time --}}
                                     <div class="form-group col-md-6">
                                         {{ Form::label('work_end_time', __('Work End Time'), ['class' => 'col-form-label']) }}<span class="text-danger pl-1">*</span>
-                                        {{ Form::time('work_end_time', \Carbon\Carbon::parse($employee->work_end_time)->format('h:i'), ['class' => 'form-control timepicker_format']) }}
+                                        {{ Form::time('work_end_time', \Carbon\Carbon::parse($employee->work_end_time), ['class' => 'form-control timepicker_format']) }}
                                         @error('work_end_time')
                                             <span class="invalid-company_end_time" role="alert">
                                                 <small class="text-danger">{{ $message }}</small>
