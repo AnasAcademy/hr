@@ -47,7 +47,8 @@
                     <div class="card-body">
                         <div class="d-flex gap-5 align-items-baseline flex-wrap mb-5">
                             <p class="text-muted pb-0-5">
-                                {{ __('My Office Time: ' . \Auth::user()->TimeFormat($officeTime['startTime']) . ' to ' . \Auth::user()->TimeFormat($officeTime['endTime'])) }}
+
+                                {{ __('My Office Time:') ." ". \Auth::user()->TimeFormat(auth()->user()->employee->work_start_time)    .' '.__('to').' '.  \Auth::user()->TimeFormat(auth()->user()->employee->work_end_time) }}
                             </p>
                             <div id="countdown" class="btn btn-info text-center d-none"></div>
                         </div>
@@ -760,10 +761,13 @@
                 @if (!empty($employeeAttendance))
                     @php
                         [$hours, $minutes] = explode(':', $employeeAttendance->clock_in);
-                        $workHours = strtotime($officeTime['endTime']) - strtotime($officeTime['startTime']);
+                        $workHours = strtotime(auth()->user()->employee->work_end_time) - strtotime(auth()->user()->employee->work_start_time);
                         $workHours = $workHours / (60 * 60);
-                    @endphp
+                        @endphp
+                        console.log({{  $workHours}});
                     var startTime = new Date();
+                    console.log({{$hours}});
+                    console.log(startTime);
                     startTime.setHours({{ $hours }});
                     startTime.setMinutes({{ $minutes }});
                     startTime.setSeconds(0);

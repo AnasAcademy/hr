@@ -428,7 +428,7 @@ class AttendanceEmployeeController extends Controller
 
         if ($isAllowed) {
 
-            if ($allowedLocation!== null && $allowedLocation->status != "approved") {
+            if ($allowedLocation !== null && $allowedLocation->status != "approved") {
                 return redirect()->back()->with('error', __("Can\\'t clock in & clock out from this device wait the manager to approve."));
             }
         } else {
@@ -546,9 +546,9 @@ class AttendanceEmployeeController extends Controller
             }
 
 
-           // Parse the time strings into Carbon objects
-           $clockInTime = Carbon::createFromFormat('H:i:s', $todayAttendance->last_clock_in);
-           $clockOutTime = Carbon::now($timeZone);
+            // Parse the time strings into Carbon objects
+            $clockInTime = Carbon::createFromFormat('H:i:s', $todayAttendance->last_clock_in);
+            $clockOutTime = Carbon::now($timeZone);
 
             // Calculate the difference in hours, minutes, and seconds
             $difference = $clockOutTime->diff($clockInTime);
@@ -763,7 +763,7 @@ class AttendanceEmployeeController extends Controller
             }
 
             if ($isAllowed) {
-                if ($allowedLocation!== null && $allowedLocation->status != "approved") {
+                if ($allowedLocation !== null && $allowedLocation->status != "approved") {
                     return redirect()->back()->with('error', __("Can\\'t clock in & clock out from this device wait the manager to approve."));
                 }
             } else {
@@ -793,9 +793,9 @@ class AttendanceEmployeeController extends Controller
             ->where('date', '=', date('Y-m-d'))
             ->first();
 
-        $date = $user->convertDateToUserTimezone(date("Y-m-d"));
-        $time = $user->convertTimeToUserTimezone(date("H:i:s"));
-
+        date_default_timezone_set('Europe/Bucharest');
+        $date = date("Y-m-d"); //$user->convertDateToUserTimezone(date("Y-m-d"));
+        $time = date("H:i:s"); //$user->convertTimeToUserTimezone(date("H:i:s"));
         if (strtotime($startTime) > strtotime($time)) {
             return redirect()->back()->with('error', __("You can\\'t clock in now wait the time to be ") . $user->timeFormat($startTime));
         }
