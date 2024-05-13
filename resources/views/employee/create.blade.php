@@ -38,17 +38,17 @@
                                         {!! Form::text('name', old('name'), [
                                             'class' => 'form-control',
                                             'required' => 'required',
-                                            'placeholder' => 'Enter employee name',
+                                            'placeholder' => __('Enter employee name'),
                                         ]) !!}
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('phone', __('Phone'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
-                                        {!! Form::text('phone', old('phone'), ['class' => 'form-control', 'placeholder' => 'Enter employee phone']) !!}
+                                        {!! Form::label('phone', __('Phone'), ['class' => 'form-label']) !!}<span class="text-danger pl-1"></span>
+                                        {!! Form::text('phone', old('phone'), ['class' => 'form-control', 'placeholder' => __('Enter employee phone')]) !!}
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            {!! Form::label('dob', __('Date of Birth'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
-                                            {{ Form::date('dob', null, ['class' => 'form-control current_date', 'required' => 'required', 'autocomplete' => 'off', 'placeholder' => 'Select Date of Birth']) }}
+                                            {!! Form::label('dob', __('Date of Birth'), ['class' => 'form-label']) !!}<span class="text-danger pl-1"></span>
+                                            {{ Form::date('dob', null, ['class' => 'form-control current_date', 'autocomplete' => 'off', 'placeholder' => 'Select Date of Birth']) }}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -56,13 +56,13 @@
                                             {!! Form::label('gender', __('Gender'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
                                             <div class="d-flex radio-check">
                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" id="g_male" value="Male" name="gender"
+                                                    <input type="radio" id="g_male" value="Male" name="gender" @checked(old('gender') == 'Male') required
                                                         class="form-check-input">
                                                     <label class="form-check-label "
                                                         for="g_male">{{ __('Male') }}</label>
                                                 </div>
                                                 <div class="custom-control custom-radio ms-1 custom-control-inline">
-                                                    <input type="radio" id="g_female" value="Female" name="gender"
+                                                    <input type="radio" id="g_female" value="Female" name="gender" @checked(old('gender') == 'Female') required
                                                         class="form-check-input">
                                                     <label class="form-check-label "
                                                         for="g_female">{{ __('Female') }}</label>
@@ -75,7 +75,7 @@
                                         {!! Form::email('email', old('email'), [
                                             'class' => 'form-control',
                                             'required' => 'required',
-                                            'placeholder' => 'Enter employee email',
+                                            'placeholder' => __('Enter employee email'),
                                         ]) !!}
                                     </div>
                                     <div class="form-group col-md-6">
@@ -83,22 +83,22 @@
                                         {!! Form::password('password', [
                                             'class' => 'form-control',
                                             'required' => 'required',
-                                            'placeholder' => 'Enter employee password',
+                                            'placeholder' => __('Enter employee password'),
                                         ]) !!}
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    {!! Form::label('address', __('Address'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
+                                    {!! Form::label('address', __('Address'), ['class' => 'form-label']) !!}<span class="text-danger pl-1"></span>
                                     {!! Form::textarea('address', old('address'), [
                                         'class' => 'form-control',
                                         'rows' => 3,
-                                        'placeholder' => 'Enter employee address',
+                                        'placeholder' => __('Enter employee address'),
                                     ]) !!}
                                 </div>
 
                                 {{-- timezone --}}
                                 <div class="form-group">
-                                    {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}
+                                    {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}<span class="text-danger pl-1">*</span>
 
                                     <select type="text" name="timezone" class="form-control select2" id="timezone">
                                         <option value="">{{ __('Select Timezone') }}</option>
@@ -131,36 +131,36 @@
 
                                     {{-- employee id --}}
                                     <div class="form-group ">
-                                        {!! Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']) !!}
-                                        {!! Form::text('employee_id', $employeesId, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+                                        {!! Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
+                                        {!! Form::text('employee_id', null, ['class' => 'form-control']) !!}
                                     </div>
 
                                     {{-- branch --}}
                                     <div class="form-group col-md-6">
-                                        {{ Form::label('branch_id', __('Select Branch*'), ['class' => 'form-label']) }}
+                                        {{ Form::label('branch_id', __('Select Branch'), ['class' => 'form-label']) }}<span class="text-danger pl-1">*</span>
                                         <div class="form-icon-user">
-                                            {{ Form::select('branch_id', $branches, null, ['class' => 'form-control branch_id', 'required' => 'required', 'placeholder' => 'Select Branch', 'id' => 'branch_id', 'required' => 'required']) }}
+                                            {{ Form::select('branch_id', $branches, null, ['class' => 'form-control branch_id', 'required' => 'required', 'placeholder' => __('Select Branch'), 'id' => 'branch_id', 'required' => 'required']) }}
                                         </div>
                                     </div>
 
                                     {{-- department --}}
                                     <div class="form-group col-md-6">
-                                        {{-- {{ Form::label('department_id', __('Select Department*'), ['class' => 'form-label']) }}
+                                        {{-- {{ Form::label('department_id', __('Select Department'), ['class' => 'form-label']) }}<span class="text-danger pl-1">*</span>
                                         <div class="form-icon-user department_div">
                                             {{ Form::select('department_id', $departments, null, ['class' => 'form-control select2 department_id', 'id' => 'department_id', 'required' => 'required', 'placeholder' => 'Select Department']) }}
                                         </div> --}}
 
                                         <div class="form-icon-user" id="department_id">
-                                            {{ Form::label('department_id', __('Select Department*'), ['class' => 'form-label']) }}
+                                            {{ Form::label('department_id', __('Select Department'), ['class' => 'form-label']) }}<span class="text-danger pl-1">*</span>
                                             <select class="form-control select department_id" name="department_id"
-                                                id="department_id" placeholder="Select Department" required>
+                                                id="department_id" placeholder="{{__('Select Department') }}" required>
                                             </select>
                                         </div>
                                     </div>
 
                                     {{-- designation --}}
                                     <div class="form-group ">
-                                        {{ Form::label('designation_id', __('Select Designation'), ['class' => 'form-label']) }}
+                                        {{ Form::label('designation_id', __('Select Designation'), ['class' => 'form-label']) }}<span class="text-danger pl-1">*</span>
 
                                         <div class="form-icon-user designation_div">
                                             {{ Form::select('designation_id', $designations, null, ['class' => 'form-control', 'id' => 'designation_id', 'placeholder' => 'Select Designation', 'required' => 'required']) }}
@@ -169,9 +169,10 @@
 
                                      {{-- job type --}}
                                     <div class="form-group">
-                                        {{ Form::label('job_type', __('Job Type'), ['class' => 'form-label']) }}
+                                        {{ Form::label('job_type', __('Job Type'), ['class' => 'form-label']) }}<span class="text-danger pl-1">*</span>
 
-                                        {{ Form::select('job_type', $jobTypes, null, ['class' => 'form-control', 'id' => 'job_type', 'placeholder' => 'Select User Job Type', 'required' => 'required']) }}
+                                        {{ Form::select('job_type', array_map('__', $jobTypes),'onsite', ['class' => 'form-control', 'id' => 'job_type', 'placeholder' =>__('Select User Job Type'), 'required' => 'required']) }}
+
                                     </div>
 
 
@@ -183,7 +184,7 @@
 
                                     {{-- work start time --}}
                                     <div class="form-group col-md-6">
-                                        {{ Form::label('work_start_time', __('work Start Time *'), ['class' => 'col-form-label']) }}
+                                        {{ Form::label('work_start_time', __('Work Start Time'), ['class' => 'col-form-label']) }}<span class="text-danger pl-1">*</span>
 
                                         {{ Form::time('work_start_time', $officeTime['startTime'], ['class' => 'form-control timepicker_format']) }}
                                         @error('work_start_time')
@@ -195,7 +196,7 @@
 
                                     {{-- work end time --}}
                                     <div class="form-group col-md-6">
-                                        {{ Form::label('work_end_time', __('work End Time *'), ['class' => 'col-form-label']) }}
+                                        {{ Form::label('work_end_time', __('Work End Time'), ['class' => 'col-form-label']) }}<span class="text-danger pl-1">*</span>
                                         {{ Form::time('work_end_time', $officeTime['endTime'], ['class' => 'form-control timepicker_format']) }}
                                         @error('work_end_time')
                                             <span class="invalid-company_end_time" role="alert">
@@ -210,15 +211,15 @@
                                         {!! Form::number('leave_balance', null, [
                                             'class' => 'form-control',
                                             'min' => 0,
-                                            'placeholder' => 'Enter the Limit Number of Holidays',
+                                            'placeholder' =>__('Enter the Limit Number of Holidays'),
                                         ]) !!}
                                     </div>
 
                                     {{-- role --}}
                                     <div class="form-group">
-                                        {{ Form::label('role', __('Role'), ['class' => 'form-label']) }}
+                                        {{ Form::label('role', __('Role'), ['class' => 'form-label']) }}<span class="text-danger pl-1">*</span>
 
-                                        {{ Form::select('role', $roles, null, ['class' => 'form-control', 'id' => 'role', 'placeholder' => 'Select User Role', 'required' => 'required']) }}
+                                        {{ Form::select('role', $roles, '4', ['class' => 'form-control', 'id' => 'role', 'placeholder' => 'Select User Role', 'required' => 'required']) }}
                                     </div>
 
 
@@ -394,7 +395,7 @@
 
                     $('.department_id').append('<option value=""> {{ __('Select Department') }} </option>');
                     $.each(data, function(key, value) {
-                        
+
                         $('.department_id').append('<option value="' + key + '">' + value +
                             '</option>');
                     });

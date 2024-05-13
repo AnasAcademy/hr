@@ -36,12 +36,12 @@
                                         {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required']) !!}
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('phone', __('Phone'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
+                                        {!! Form::label('phone', __('Phone'), ['class' => 'form-label']) !!}
                                         {!! Form::text('phone', null, ['class' => 'form-control']) !!}
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            {!! Form::label('dob', __('Date of Birth'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
+                                            {!! Form::label('dob', __('Date of Birth'), ['class' => 'form-label']) !!}
                                             {!! Form::text('dob', null, ['class' => 'form-control d_week', 'id' => 'data_picker1']) !!}
                                         </div>
                                     </div>
@@ -68,13 +68,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    {!! Form::label('address', __('Address'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
+                                    {!! Form::label('address', __('Address'), ['class' => 'form-label']) !!}
                                     {!! Form::textarea('address', null, ['class' => 'form-control', 'rows' => 3]) !!}
                                 </div>
 
                                 {{-- timezone --}}
                                 <div class="form-group">
-                                    {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}
+                                    {{ Form::label('timezone', __('Timezone'), ['class' => 'col-form-label']) }}<span class="text-danger pl-1">*</span>
 
                                     <select type="text" name="timezone" class="form-control select2" id="timezone">
                                         <option value="">{{ __('Select Timezone') }}</option>
@@ -111,19 +111,19 @@
                                         @csrf
                                         {{-- employee id --}}
                                         <div class="form-group ">
-                                            {!! Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']) !!}
-                                            {!! Form::text('employee_id', $employeesId, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+                                            {!! Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']) !!}<span class="text-danger pl-1">*</span>
+                                            {!! Form::text('employee_id', $employee->employee_id, ['class' => 'form-control',]) !!}
                                         </div>
 
                                         {{-- branch --}}
                                         <div class="form-group col-md-6">
-                                            {{ Form::label('branch_id', __('Select Branch*'), ['class' => 'form-label']) }}
-                                            {{ Form::select('branch_id', $branches, null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Select Branch', 'id' => 'branch_id']) }}
+                                            {{ Form::label('branch_id', __('Select Branch'), ['class' => 'form-label']) }}<span class="text-danger pl-1">*</span>
+                                            {{ Form::select('branch_id', $branches, null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => __('Select Branch'), 'id' => 'branch_id']) }}
                                         </div>
 
                                         {{-- department --}}
                                         <div class="form-group col-md-6">
-                                            {{ Form::label('department_id', __('Select Department*'), ['class' => 'form-label']) }}
+                                            {{ Form::label('department_id', __('Select Department'), ['class' => 'form-label']) }}<span class="text-danger pl-1">*</span>
                                             <div class="department_div">
                                                 {{ Form::select('department_id', $departments, null, ['class' => 'form-control department_id', 'id' => 'department_id', 'required' => 'required', 'id' => 'department_id']) }}
                                             </div>
@@ -131,14 +131,14 @@
 
                                         {{-- designation --}}
                                         <div class="form-group col-md-6">
-                                            {{ Form::label('designation_id', __('Select Designation'), ['class' => 'form-label', 'required' => 'required']) }}
+                                            {{ Form::label('designation_id', __('Select Designation'), ['class' => 'form-label', 'required' => 'required']) }}<span class="text-danger pl-1">*</span>
 
 
                                             <div class="form-icon-user">
                                                 <div class="designation_div">
                                                     <select class="form-control designation_id select2"
                                                         name="designation_id" id="choices-multiple"
-                                                        placeholder="Select Designation">
+                                                        placeholder="{{__('Select Designation')}}">
                                                     </select>
                                                 </div>
                                             </div>
@@ -146,14 +146,14 @@
 
                                          {{-- job type --}}
                                     <div class="form-group col-md-6">
-                                        {{ Form::label('job_type', __('Job Type'), ['class' => 'form-label']) }}
+                                        {{ Form::label('job_type', __('Job Type'), ['class' => 'form-label']) }}<span class="text-danger pl-1">*</span>
 
-                                        {{ Form::select('job_type', $jobTypes, null, ['class' => 'form-control', 'id' => 'job_type', 'placeholder' => 'Select User Job Type', 'required' => 'required']) }}
+                                        {{ Form::select('job_type',array_map('__', $jobTypes), null, ['class' => 'form-control', 'id' => 'job_type', 'placeholder' => __('Select User Job Type'), 'required' => 'required']) }}
                                     </div>
 
                                         {{-- date of join --}}
                                         <div class="form-group ">
-                                            {!! Form::label('company_doj', 'Company Date Of Joining', ['class' => 'form-label']) !!}
+                                            {!! Form::label('company_doj', __('Company Date Of Joining'), ['class' => 'form-label']) !!}
                                             {!! Form::date('company_doj', null, [
                                                 'class' => 'form-control ',
                                                 'id' => 'data_picker2',
@@ -163,7 +163,7 @@
 
                                         {{-- work start time --}}
                                     <div class="form-group col-md-6">
-                                        {{ Form::label('work_start_time', __('work Start Time *'), ['class' => 'col-form-label']) }}
+                                        {{ Form::label('work_start_time', __('Work Start Time'), ['class' => 'col-form-label']) }}<span class="text-danger pl-1">*</span>
 
                                         {{ Form::time('work_start_time', \Carbon\Carbon::parse($employee->work_start_time)->format('h:i') , ['class' => 'form-control timepicker_format']) }}
                                         @error('work_start_time')
@@ -175,7 +175,7 @@
 
                                     {{-- work end time --}}
                                     <div class="form-group col-md-6">
-                                        {{ Form::label('work_end_time', __('work End Time *'), ['class' => 'col-form-label']) }}
+                                        {{ Form::label('work_end_time', __('Work End Time'), ['class' => 'col-form-label']) }}<span class="text-danger pl-1">*</span>
                                         {{ Form::time('work_end_time', \Carbon\Carbon::parse($employee->work_end_time)->format('h:i'), ['class' => 'form-control timepicker_format']) }}
                                         @error('work_end_time')
                                             <span class="invalid-company_end_time" role="alert">

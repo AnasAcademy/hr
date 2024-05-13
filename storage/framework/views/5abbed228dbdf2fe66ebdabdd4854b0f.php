@@ -105,6 +105,10 @@
                     <a href="<?php echo e(route('user.index')); ?>" class="dash-link"><span class="dash-micon"><i
                                 class="ti ti-user"></i></span><span class="dash-mtext"><?php echo e(__('Companies')); ?></span></a>
                 </li>
+                <li class="dash-item">
+                    <a href="<?php echo e(route('superAdmin.index')); ?>" class="dash-link"><span class="dash-micon"><i
+                                class="ti ti-user"></i></span><span class="dash-mtext"><?php echo e(__('Super Admins')); ?></span></a>
+                </li>
             <?php else: ?>
                 <?php if(Gate::check('Manage User') ||
                         Gate::check('Manage Role') ||
@@ -165,12 +169,12 @@
                         class="dash-item dash-hasmenu <?php echo e(Request::segment(1) == 'devices' ? ' active dash-trigger' : ''); ?> ">
                         <a href="#!" class="dash-link"><span class="dash-micon"><i
                                     class="fas fa-desktop"></i></span><span
-                                class="dash-mtext"><?php echo e(__('Device')); ?></span><span class="dash-arrow"><i
+                                class="dash-mtext"><?php echo e(__('Users Devices')); ?></span><span class="dash-arrow"><i
                                     data-feather="chevron-right"></i></span></a>
                         <ul class="dash-submenu <?php echo e(Request::route()->getName() == 'index.ip' ? ' active' : ''); ?> ">
 
                             <li class="dash-item <?php echo e(Request::segment(1) == 'devices' ? 'active' : ''); ?> ">
-                                <a class="dash-link" href="<?php echo e(route('index.ip')); ?>"><?php echo e(__('Devices Ip')); ?></a>
+                                <a class="dash-link" href="<?php echo e(route('index.ip')); ?>"><?php echo e(__('Devices Info')); ?></a>
                             </li>
 
                         </ul>
@@ -207,7 +211,7 @@
                         class="dash-item <?php echo e(Request::segment(1) == 'employee' && Request::segment(2) == '' ? 'active' : ''); ?>">
                         <a href="<?php echo e(route('employee.index')); ?>" class="dash-link"><span class="dash-micon"><i
                                     class="ti ti-user"></i></span><span
-                                class="dash-mtext"><?php echo e(__('Employee')); ?></span></a>
+                                class="dash-mtext"><?php echo e(__('Employees')); ?></span></a>
                     </li>
                 <?php endif; ?>
             <?php endif; ?>
@@ -218,7 +222,7 @@
                 <li class="dash-item <?php echo e(Request::segment(1) == 'manager' && Request::segment(2) == '' ? 'active' : ''); ?>">
                     <a href="<?php echo e(route('manager.index')); ?>" class="dash-link"><span class="dash-micon"><i
                                 class="fas fa-user-tie"></i></span><span
-                            class="dash-mtext"><?php echo e(__('Manager')); ?></span></a>
+                            class="dash-mtext"><?php echo e(__('Managers')); ?></span></a>
                 </li>
             <?php endif; ?>
 

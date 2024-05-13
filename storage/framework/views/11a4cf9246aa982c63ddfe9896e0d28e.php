@@ -37,13 +37,15 @@
 
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <?php echo Form::label('phone', __('Phone'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                        <?php echo Form::label('phone', __('Phone'), ['class' => 'form-label']); ?>
+
                                         <?php echo Form::text('phone', null, ['class' => 'form-control']); ?>
 
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <?php echo Form::label('dob', __('Date of Birth'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                            <?php echo Form::label('dob', __('Date of Birth'), ['class' => 'form-label']); ?>
+
                                             <?php echo Form::text('dob', null, ['class' => 'form-control d_week', 'id' => 'data_picker1']); ?>
 
                                         </div>
@@ -71,15 +73,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <?php echo Form::label('address', __('Address'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                    <?php echo Form::label('address', __('Address'), ['class' => 'form-label']); ?>
+
                                     <?php echo Form::textarea('address', null, ['class' => 'form-control', 'rows' => 3]); ?>
 
                                 </div>
 
                                 
                                 <div class="form-group">
-                                    <?php echo e(Form::label('timezone', __('Timezone'), ['class' => 'col-form-label'])); ?>
-
+                                    <?php echo e(Form::label('timezone', __('Timezone'), ['class' => 'col-form-label'])); ?><span class="text-danger pl-1">*</span>
 
                                     <select type="text" name="timezone" class="form-control select2" id="timezone">
                                         <option value=""><?php echo e(__('Select Timezone')); ?></option>
@@ -118,24 +120,21 @@
                                         <?php echo csrf_field(); ?>
                                         
                                         <div class="form-group ">
-                                            <?php echo Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']); ?>
-
-                                            <?php echo Form::text('employee_id', $employeesId, ['class' => 'form-control', 'disabled' => 'disabled']); ?>
-
-                                        </div>
-
-                                        
-                                        <div class="form-group col-md-6">
-                                            <?php echo e(Form::label('branch_id', __('Select Branch*'), ['class' => 'form-label'])); ?>
-
-                                            <?php echo e(Form::select('branch_id', $branches, null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Select Branch', 'id' => 'branch_id'])); ?>
+                                            <?php echo Form::label('employee_id', __('Employee ID'), ['class' => 'form-label']); ?><span class="text-danger pl-1">*</span>
+                                            <?php echo Form::text('employee_id', $employee->employee_id, ['class' => 'form-control',]); ?>
 
                                         </div>
 
                                         
                                         <div class="form-group col-md-6">
-                                            <?php echo e(Form::label('department_id', __('Select Department*'), ['class' => 'form-label'])); ?>
+                                            <?php echo e(Form::label('branch_id', __('Select Branch'), ['class' => 'form-label'])); ?><span class="text-danger pl-1">*</span>
+                                            <?php echo e(Form::select('branch_id', $branches, null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => __('Select Branch'), 'id' => 'branch_id'])); ?>
 
+                                        </div>
+
+                                        
+                                        <div class="form-group col-md-6">
+                                            <?php echo e(Form::label('department_id', __('Select Department'), ['class' => 'form-label'])); ?><span class="text-danger pl-1">*</span>
                                             <div class="department_div">
                                                 <?php echo e(Form::select('department_id', $departments, null, ['class' => 'form-control department_id', 'id' => 'department_id', 'required' => 'required', 'id' => 'department_id'])); ?>
 
@@ -144,15 +143,14 @@
 
                                         
                                         <div class="form-group col-md-6">
-                                            <?php echo e(Form::label('designation_id', __('Select Designation'), ['class' => 'form-label', 'required' => 'required'])); ?>
-
+                                            <?php echo e(Form::label('designation_id', __('Select Designation'), ['class' => 'form-label', 'required' => 'required'])); ?><span class="text-danger pl-1">*</span>
 
 
                                             <div class="form-icon-user">
                                                 <div class="designation_div">
                                                     <select class="form-control designation_id select2"
                                                         name="designation_id" id="choices-multiple"
-                                                        placeholder="Select Designation">
+                                                        placeholder="<?php echo e(__('Select Designation')); ?>">
                                                     </select>
                                                 </div>
                                             </div>
@@ -160,16 +158,15 @@
 
                                          
                                     <div class="form-group col-md-6">
-                                        <?php echo e(Form::label('job_type', __('Job Type'), ['class' => 'form-label'])); ?>
+                                        <?php echo e(Form::label('job_type', __('Job Type'), ['class' => 'form-label'])); ?><span class="text-danger pl-1">*</span>
 
-
-                                        <?php echo e(Form::select('job_type', $jobTypes, null, ['class' => 'form-control', 'id' => 'job_type', 'placeholder' => 'Select User Job Type', 'required' => 'required'])); ?>
+                                        <?php echo e(Form::select('job_type',array_map('__', $jobTypes), null, ['class' => 'form-control', 'id' => 'job_type', 'placeholder' => __('Select User Job Type'), 'required' => 'required'])); ?>
 
                                     </div>
 
                                         
                                         <div class="form-group ">
-                                            <?php echo Form::label('company_doj', 'Company Date Of Joining', ['class' => 'form-label']); ?>
+                                            <?php echo Form::label('company_doj', __('Company Date Of Joining'), ['class' => 'form-label']); ?>
 
                                             <?php echo Form::date('company_doj', null, [
                                                 'class' => 'form-control ',
@@ -181,8 +178,7 @@
 
                                         
                                     <div class="form-group col-md-6">
-                                        <?php echo e(Form::label('work_start_time', __('work Start Time *'), ['class' => 'col-form-label'])); ?>
-
+                                        <?php echo e(Form::label('work_start_time', __('Work Start Time'), ['class' => 'col-form-label'])); ?><span class="text-danger pl-1">*</span>
 
                                         <?php echo e(Form::time('work_start_time', \Carbon\Carbon::parse($employee->work_start_time)->format('h:i') , ['class' => 'form-control timepicker_format'])); ?>
 
@@ -202,8 +198,7 @@ unset($__errorArgs, $__bag); ?>
 
                                     
                                     <div class="form-group col-md-6">
-                                        <?php echo e(Form::label('work_end_time', __('work End Time *'), ['class' => 'col-form-label'])); ?>
-
+                                        <?php echo e(Form::label('work_end_time', __('Work End Time'), ['class' => 'col-form-label'])); ?><span class="text-danger pl-1">*</span>
                                         <?php echo e(Form::time('work_end_time', \Carbon\Carbon::parse($employee->work_end_time)->format('h:i'), ['class' => 'form-control timepicker_format'])); ?>
 
                                         <?php $__errorArgs = ['work_end_time'];

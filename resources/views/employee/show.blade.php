@@ -188,7 +188,7 @@
                                 <div class="col-md-6">
                                     <div class="info text-sm">
                                         <strong class="font-bold">{{ __('Holidays Balance') }} :</strong>
-                                        <span>{{ $employee->leave_balance }} Days</span>
+                                        <span>{{ $employee->leave_balance ." ".  __('Days')}}</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

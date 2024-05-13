@@ -55,7 +55,7 @@ class EmployeeController extends Controller
                     $query->where('manager_id', $user->id);
                 })->get();
             } else {
-                $employees = Employee::where('created_by', \Auth::user()->creatorId())->with(['branch', 'department', 'designation', 'user'])->get();
+                $employees = Employee::where('created_by', \Auth::user()->creatorId())->with(['branch', 'department', 'designation', 'user'])->orderBy('id', 'desc')->get();
             }
 
             return view('employee.index', compact('employees'));
@@ -95,8 +95,8 @@ class EmployeeController extends Controller
                     'name' => 'required',
                     'dob' => 'required',
                     'gender' => 'required',
-                    'phone' => 'required|numeric',
-                    'address' => 'required',
+                    // 'phone' => 'required|numeric',
+                    // 'address' => 'required',
                     'email' => 'required|unique:users',
                     'password' => 'required',
                     'branch_id' => 'required|exists:branches,id',
@@ -104,7 +104,7 @@ class EmployeeController extends Controller
                     'designation_id' => 'required|exists:designations,id',
                     'document.*' => 'required',
                     'timezone' => 'required',
-                    'leave_balance' => 'required|integer',
+                    // 'leave_balance' => 'required|integer',
                     'role' => 'required|exists:roles,id',
                     'job_type' => ['required', 'string', Rule::in(array_keys(Employee::JOBTYPES))],
                     'work_start_time' => 'required|date_format:H:i',
@@ -197,15 +197,15 @@ class EmployeeController extends Controller
                     'name' => $request['name'],
                     'dob' => $request['dob'],
                     'gender' => $request['gender'],
-                    'phone' => $request['phone'],
-                    'address' => $request['address'],
-                    'email' => $request['email'],
-                    'password' => Hash::make($request['password']),
-                    'employee_id' => $this->employeeNumber(),
+                    'phone' => $request['phone'] ?? null,
+                    'address' => $request['address']  ?? "",
+                    'email' => $request['email']  ?? "",
+                    'password' => Hash::make($request['password'])  ?? "",
+                    'employee_id' => $request['employee_id'] ?? $this->employeeNumber(),
                     'branch_id' => $request['branch_id'],
                     'department_id' => $request['department_id'],
                     'designation_id' => $request['designation_id'],
-                    'company_doj' => $request['company_doj'],
+                    'company_doj' => $request['company_doj']??null,
                     'documents' => $document_implode,
                     'account_holder_name' => $request['account_holder_name'],
                     'account_number' => $request['account_number'],
@@ -214,7 +214,7 @@ class EmployeeController extends Controller
                     'branch_location' => $request['branch_location'],
                     'tax_payer_id' => $request['tax_payer_id'],
                     'created_by' => \Auth::user()->creatorId(),
-                    'leave_balance' => $request['leave_balance'],
+                    'leave_balance' => $request['leave_balance'] ?? 0,
                     'job_type' => $request['job_type'],
                     'work_start_time' => $request['work_start_time'],
                     'work_end_time' => $request['work_end_time'],
@@ -317,8 +317,8 @@ class EmployeeController extends Controller
                     'name' => 'required',
                     'dob' => 'required',
                     'gender' => 'required',
-                    'phone' => 'required|numeric',
-                    'address' => 'required',
+                    // 'phone' => 'required|numeric',
+                    // 'address' => 'required',
                     'timezone' => 'required',
 
                 ]

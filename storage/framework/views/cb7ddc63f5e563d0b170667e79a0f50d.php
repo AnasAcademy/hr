@@ -190,7 +190,7 @@
                                 <div class="col-md-6">
                                     <div class="info text-sm">
                                         <strong class="font-bold"><?php echo e(__('Holidays Balance')); ?> :</strong>
-                                        <span><?php echo e($employee->leave_balance); ?> Days</span>
+                                        <span><?php echo e($employee->leave_balance ." ".  __('Days')); ?></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

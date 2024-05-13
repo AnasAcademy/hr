@@ -169,12 +169,12 @@
                         class="dash-item dash-hasmenu {{ Request::segment(1) == 'devices' ? ' active dash-trigger' : '' }} ">
                         <a href="#!" class="dash-link"><span class="dash-micon"><i
                                     class="fas fa-desktop"></i></span><span
-                                class="dash-mtext">{{ __('Device') }}</span><span class="dash-arrow"><i
+                                class="dash-mtext">{{ __('Users Devices') }}</span><span class="dash-arrow"><i
                                     data-feather="chevron-right"></i></span></a>
                         <ul class="dash-submenu {{ Request::route()->getName() == 'index.ip' ? ' active' : '' }} ">
 
                             <li class="dash-item {{ Request::segment(1) == 'devices' ? 'active' : '' }} ">
-                                <a class="dash-link" href="{{ route('index.ip') }}">{{ __('Devices Ip') }}</a>
+                                <a class="dash-link" href="{{ route('index.ip') }}">{{ __('Devices Info') }}</a>
                             </li>
 
                         </ul>
@@ -211,7 +211,7 @@
                         class="dash-item {{ Request::segment(1) == 'employee' && Request::segment(2) == '' ? 'active' : '' }}">
                         <a href="{{ route('employee.index') }}" class="dash-link"><span class="dash-micon"><i
                                     class="ti ti-user"></i></span><span
-                                class="dash-mtext">{{ __('Employee') }}</span></a>
+                                class="dash-mtext">{{ __('Employees') }}</span></a>
                     </li>
                 @endif
             @endif
@@ -222,7 +222,7 @@
                 <li class="dash-item {{ Request::segment(1) == 'manager' && Request::segment(2) == '' ? 'active' : '' }}">
                     <a href="{{ route('manager.index') }}" class="dash-link"><span class="dash-micon"><i
                                 class="fas fa-user-tie"></i></span><span
-                            class="dash-mtext">{{ __('Manager') }}</span></a>
+                            class="dash-mtext">{{ __('Managers') }}</span></a>
                 </li>
             @endcan
 
