@@ -196,13 +196,13 @@
                                 <div class="col-md-6">
                                     <div class="info text-sm">
                                         <strong class="font-bold"><?php echo e(__('Work Start Time')); ?> :</strong>
-                                        <span><?php echo e(\Auth::user()->TimeFormat($employee->work_start_time)); ?> </span>
+                                        <span><?php echo e(\Auth::user()->TimeFormat($employee->user->work_start_time)); ?> </span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="info text-sm">
                                         <strong class="font-bold"><?php echo e(__('Work End Time')); ?> :</strong>
-                                        <span><?php echo e(\Auth::user()->TimeFormat($employee->work_end_time)); ?> </span>
+                                        <span><?php echo e(\Auth::user()->TimeFormat($employee->user->work_end_time)); ?> </span>
                                     </div>
                                 </div>
 

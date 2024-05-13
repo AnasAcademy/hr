@@ -211,6 +211,7 @@
                                     <th><?php echo e(__('Clock Out')); ?></th>
                                     <th><?php echo e(__('Late')); ?></th>
                                     <th><?php echo e(__('Early Leaving')); ?></th>
+                                    <th><?php echo e(__('Working Hours')); ?></th>
                                     
                                     <?php if(Gate::check('Edit Attendance') || Gate::check('Delete Attendance')): ?>
                                         <th width="200px"><?php echo e(__('Action')); ?></th>
@@ -233,6 +234,7 @@
                                         </td>
                                         <td><?php echo e($attendance->late); ?></td>
                                         <td><?php echo e($attendance->early_leaving); ?></td>
+                                        <td><?php echo e($attendance->work_hours); ?></td>
                                         
                                         <?php if(Gate::check('Edit Attendance') || Gate::check('Delete Attendance')): ?>
                                             <td class="Action">

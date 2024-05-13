@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Reset Password')); ?>
 
@@ -102,4 +101,4 @@ unset($__errorArgs, $__bag); ?>
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.auth', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/auth/reset-password.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.auth', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\User\OneDrive - اكاديمية انس للفنون البصرية\Desktop\hr\resources\views/auth/reset-password.blade.php ENDPATH**/ ?>

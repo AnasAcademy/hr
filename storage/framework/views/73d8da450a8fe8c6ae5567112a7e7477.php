@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Manage Bulk Attendance')); ?>
 
@@ -272,4 +271,4 @@
     </script>
 <?php $__env->stopPush(); ?>
 
-<?php echo $__env->make('layouts.admin', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH F:\emem\Work\Anas Academy\hr\resources\views/attendance/bulk.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.admin', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\User\OneDrive - اكاديمية انس للفنون البصرية\Desktop\hr\resources\views/attendance/bulk.blade.php ENDPATH**/ ?>

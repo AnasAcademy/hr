@@ -45,13 +45,14 @@
                     <div class="card-body">
                         <div class="d-flex gap-5 align-items-baseline flex-wrap mb-5">
                             <p class="text-muted pb-0-5">
-                                <?php echo e(__('My Office Time: ' . \Auth::user()->TimeFormat($officeTime['startTime']) . ' to ' . \Auth::user()->TimeFormat($officeTime['endTime']))); ?>
+
+                                <?php echo e(__('My Office Time:') ." ". \Auth::user()->TimeFormat(auth()->user()->employee->work_start_time)    .' '.__('to').' '.  \Auth::user()->TimeFormat(auth()->user()->employee->work_end_time)); ?>
 
                             </p>
                             <div id="countdown" class="btn btn-info text-center d-none"></div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 float-right border-right">
+                            <div class="col-sm-6 mb-3 float-right border-right">
                                 <?php echo e(Form::open(['url' => 'attendanceemployee/attendance', 'method' => 'post', 'id' => 'clockInForm'])); ?>
 
                                 <input type="hidden" name="fingerprint" id="lockInFingerprint">
@@ -65,7 +66,7 @@
                                 <?php echo e(Form::close()); ?>
 
                             </div>
-                            <div class="col-md-6 float-left">
+                            <div class="col-sm-6 float-left">
                                 <?php if(!empty($employeeAttendance) && $employeeAttendance->clock_out == '00:00:00'): ?>
                                     <?php echo e(Form::model($employeeAttendance, ['route' => ['attendanceemployee.update', $employeeAttendance->id], 'method' => 'PUT', 'id' => 'clockOutForm'])); ?>
 
@@ -764,10 +765,13 @@
                 <?php if(!empty($employeeAttendance)): ?>
                     <?php
                         [$hours, $minutes] = explode(':', $employeeAttendance->clock_in);
-                        $workHours = strtotime($officeTime['endTime']) - strtotime($officeTime['startTime']);
+                        $workHours = strtotime(auth()->user()->employee->work_end_time) - strtotime(auth()->user()->employee->work_start_time);
                         $workHours = $workHours / (60 * 60);
-                    ?>
+                        ?>
+                        console.log(<?php echo e($workHours); ?>);
                     var startTime = new Date();
+                    console.log(<?php echo e($hours); ?>);
+                    console.log(startTime);
                     startTime.setHours(<?php echo e($hours); ?>);
                     startTime.setMinutes(<?php echo e($minutes); ?>);
                     startTime.setSeconds(0);

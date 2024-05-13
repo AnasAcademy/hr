@@ -180,7 +180,7 @@
                                     <div class="form-group col-md-6">
                                         <?php echo e(Form::label('work_start_time', __('Work Start Time'), ['class' => 'col-form-label'])); ?><span class="text-danger pl-1">*</span>
 
-                                        <?php echo e(Form::time('work_start_time', \Carbon\Carbon::parse($employee->work_start_time)->format('h:i') , ['class' => 'form-control timepicker_format'])); ?>
+                                        <?php echo e(Form::time('work_start_time', \Carbon\Carbon::parse($employee->work_start_time) , ['class' => 'form-control timepicker_format'])); ?>
 
                                         <?php $__errorArgs = ['work_start_time'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -199,7 +199,7 @@ unset($__errorArgs, $__bag); ?>
                                     
                                     <div class="form-group col-md-6">
                                         <?php echo e(Form::label('work_end_time', __('Work End Time'), ['class' => 'col-form-label'])); ?><span class="text-danger pl-1">*</span>
-                                        <?php echo e(Form::time('work_end_time', \Carbon\Carbon::parse($employee->work_end_time)->format('h:i'), ['class' => 'form-control timepicker_format'])); ?>
+                                        <?php echo e(Form::time('work_end_time', \Carbon\Carbon::parse($employee->work_end_time), ['class' => 'form-control timepicker_format'])); ?>
 
                                         <?php $__errorArgs = ['work_end_time'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
