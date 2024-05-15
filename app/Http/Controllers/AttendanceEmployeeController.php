@@ -509,11 +509,15 @@ class AttendanceEmployeeController extends Controller
             $date = $user->convertDateToUserTimezone(date("Y-m-d"));
             $time = $user->convertTimeToUserTimezone(date("H:i:s"));
 
+
             // get user timeZone
             $timeZone = $user->timezone ?? config('app.timezone');
 
             // get current time according to user timezone
             $currentDateTime = strtotime(Carbon::now($timeZone));
+
+
+            // dd(['timeZone' => $time, 'datezone' => $date, 'time' => date("H:i:s"), 'date' => date("Y-m-d"), 'currentDateTime' => $currentDateTime, 'timezoneArea' => $timeZone]);
 
             //early Leaving
             $totalEarlyLeavingSeconds = strtotime($date . $endTime) - $currentDateTime;
@@ -554,7 +558,7 @@ class AttendanceEmployeeController extends Controller
             $difference = $clockOutTime->diff($clockInTime);
 
             // Add the difference to the initial hours
-            $workingHours = Carbon::parse($todayAttendance->work_hours)->addHours($difference->h)->addMinutes($difference->i)->addSeconds($difference->s);
+            // $workingHours = Carbon::parse($todayAttendance->work_hours)->addHours($difference->h)->addMinutes($difference->i)->addSeconds($difference->s);
 
             $attendanceEmployee['clock_out']     = $time;
             $attendanceEmployee['early_leaving'] = $earlyLeaving;
@@ -796,6 +800,9 @@ class AttendanceEmployeeController extends Controller
         date_default_timezone_set('Europe/Bucharest');
         $date = date("Y-m-d"); //$user->convertDateToUserTimezone(date("Y-m-d"));
         $time = date("H:i:s"); //$user->convertTimeToUserTimezone(date("H:i:s"));
+
+        dd(['time' => $time, 'date' => $date, 'timezone'=> $user->convertTimeToUserTimezone(date("H:i:s")), 'datezone'=> $user->convertDateToUserTimezone(date("Y-m-d")), 'userzone'=> $user->timezone, 'configzone' => config('app.timezone')]);
+
         if (strtotime($startTime) > strtotime($time)) {
             return redirect()->back()->with('error', __("You can\\'t clock in now wait the time to be ") . $user->timeFormat($startTime));
         }

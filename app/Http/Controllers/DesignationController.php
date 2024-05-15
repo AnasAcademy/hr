@@ -43,7 +43,7 @@ class DesignationController extends Controller
                 $request->all(),
                 [
                     'department_id' => 'required',
-                    'name' => 'required|max:20',
+                    'name' => 'required',
                 ]
             );
             if ($validator->fails()) {
@@ -75,7 +75,7 @@ class DesignationController extends Controller
 
         if (\Auth::user()->can('Edit Designation')) {
             if ($designation->created_by == \Auth::user()->creatorId()) {
-                
+
                 $departments = Department::get()->map(function ($department) {
                     $department->name =   $department->name . ' (' . $department->branch->name . ')';
                     return $department;
